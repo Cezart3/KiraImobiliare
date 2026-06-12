@@ -50,7 +50,7 @@ def list_listings(
     q: str | None = None,
     include_nearby: bool = False,
     sort: Annotated[str, Query(pattern="^(newest|price_asc|price_desc|parking)$")] = "newest",
-    page: Annotated[int, Query(ge=1)] = 1,
+    page: Annotated[int, Query(ge=1, le=1000)] = 1,
     page_size: Annotated[int, Query(ge=1, le=60)] = 24,
 ):
     cutoff = utcnow() - timedelta(days=settings.listing_active_days)

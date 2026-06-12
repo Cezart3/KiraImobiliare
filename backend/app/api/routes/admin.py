@@ -14,6 +14,7 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
+from app.core import ratelimit
 from app.core.cities import load_cities
 from app.core.config import settings
 from app.db.models import Listing, ParkingMatch, ParkingSpot, ScrapeRun, User, utcnow
@@ -40,6 +41,7 @@ class ScrapeRequest(BaseModel):
 @router.post("/admin/scrape")
 def trigger_scrape(req: ScrapeRequest, request: Request):
     _check_admin(request)
+    ratelimit.enforce(request, "admin-scrape", 10)
     if req.city not in load_cities():
         raise HTTPException(status_code=404, detail=f"Unknown city: {req.city}")
     t = threading.Thread(

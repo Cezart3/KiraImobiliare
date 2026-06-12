@@ -27,6 +27,11 @@ _PRUNE_EVERY = 200  # cache-size check frequency (every N writes)
 _write_count = 0
 
 
+def _host_allowed(url: str) -> bool:
+    host = urlsplit(url).netloc.lower().split(":")[0]
+    return any(host == h or host.endswith("." + h) for h in allowed_image_hosts())
+
+
 def _fetch_capped(u: str) -> tuple[bytes, str]:
     try:
         r = requests.get(
@@ -35,6 +40,10 @@ def _fetch_capped(u: str) -> tuple[bytes, str]:
     except requests.RequestException as e:
         raise HTTPException(status_code=502, detail="Upstream fetch failed") from e
     with r:
+        # anti-SSRF: a whitelisted CDN must not be able to bounce us elsewhere
+        # via redirects — re-check the FINAL url after requests followed them
+        if not _host_allowed(str(r.url)):
+            raise HTTPException(status_code=403, detail="Redirected off whitelist")
         if r.status_code != 200:
             raise HTTPException(status_code=502, detail=f"Upstream HTTP {r.status_code}")
         ct = (r.headers.get("content-type") or "").split(";")[0].strip().lower()
@@ -88,8 +97,7 @@ def image_proxy(u: Annotated[str, Query(max_length=700)], request: Request):
     parts = urlsplit(u)
     if parts.scheme not in ("http", "https"):
         raise HTTPException(status_code=400, detail="Invalid URL")
-    host = parts.netloc.lower().split(":")[0]
-    if not any(host == h or host.endswith("." + h) for h in allowed_image_hosts()):
+    if not _host_allowed(u):
         raise HTTPException(status_code=403, detail="Host not allowed")
 
     cache_dir = settings.image_cache_dir
@@ -102,7 +110,10 @@ def image_proxy(u: Annotated[str, Query(max_length=700)], request: Request):
         return Response(
             content=body_path.read_bytes(),
             media_type=ct_path.read_text(encoding="utf-8"),
-            headers={"Cache-Control": "public, max-age=604800"},
+            headers={
+                "Cache-Control": "public, max-age=604800",
+                "X-Content-Type-Options": "nosniff",
+            },
         )
 
     # cache miss = upstream egress; rate-limit it per client
@@ -116,5 +127,8 @@ def image_proxy(u: Annotated[str, Query(max_length=700)], request: Request):
     return Response(
         content=content,
         media_type=ct,
-        headers={"Cache-Control": "public, max-age=604800"},
+        headers={
+            "Cache-Control": "public, max-age=604800",
+            "X-Content-Type-Options": "nosniff",
+        },
     )

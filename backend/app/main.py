@@ -19,6 +19,17 @@ logging.basicConfig(
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_db()
+    log = logging.getLogger(__name__)
+    if settings.secret_key == "dev-secret-change-me" or len(settings.secret_key) < 32:
+        log.warning(
+            "SECURITY: RS_SECRET_KEY is default/short — fine for dev, NEVER for prod "
+            "(generate one: openssl rand -hex 32)"
+        )
+    if settings.cookie_secure and settings.enable_admin_endpoints:
+        log.warning(
+            "SECURITY: admin endpoints are open while cookie_secure=true suggests "
+            "production — set RS_ENABLE_ADMIN_ENDPOINTS=false + RS_ADMIN_TOKEN"
+        )
     yield
 
 
@@ -50,7 +61,11 @@ async def global_rate_limit(request: Request, call_next):
                 status_code=429,
                 content={"detail": "Prea multe cereri. Reîncearcă în scurt timp."},
             )
-    return await call_next(request)
+    response = await call_next(request)
+    response.headers.setdefault("X-Content-Type-Options", "nosniff")
+    response.headers.setdefault("Referrer-Policy", "strict-origin-when-cross-origin")
+    response.headers.setdefault("X-Frame-Options", "DENY")
+    return response
 
 api = APIRouter(prefix="/api")
 for r in (

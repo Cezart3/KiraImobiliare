@@ -52,11 +52,23 @@ class MeOut(BaseModel):
     google_client_id: str | None = None  # frontend needs it to render the button
 
 
+# constant-time-ish login: when the account doesn't exist we still burn one
+# bcrypt verification so response timing doesn't reveal which emails have accounts
+_TIMING_PAD_HASH = hash_password("timing-pad-not-a-real-password")
+
+
 def _normalize_email(email: str) -> str:
     email = email.strip().lower()
-    if not _EMAIL_RE.match(email):
+    if len(email) > 254 or not _EMAIL_RE.match(email):
         raise HTTPException(status_code=422, detail="Adresă de email invalidă")
     return email
+
+
+def _validate_password(password: str) -> None:
+    if len(password) < 8:
+        raise HTTPException(status_code=422, detail="Parola: minim 8 caractere")
+    if len(password.encode("utf-8")) > 72:  # bcrypt hard limit — would raise otherwise
+        raise HTTPException(status_code=422, detail="Parola: maxim 72 de caractere")
 
 
 def _set_session(response: Response, user_id: int) -> None:
@@ -98,8 +110,7 @@ def register(
 ):
     ratelimit.enforce(request, "auth", settings.auth_rate_limit_per_min)
     email = _normalize_email(creds.email)
-    if len(creds.password) < 8:
-        raise HTTPException(status_code=422, detail="Parola: minim 8 caractere")
+    _validate_password(creds.password)
     if db.scalar(select(User).where(User.email == email)):
         raise HTTPException(status_code=409, detail="Există deja un cont cu acest email")
     user = User(email=email, password_hash=hash_password(creds.password))
@@ -124,7 +135,10 @@ def login(
             status_code=401,
             detail="Cont creat cu Google — folosește butonul „Continuă cu Google”",
         )
-    if user is None or not verify_password(creds.password, user.password_hash):
+    if user is None:
+        verify_password(creds.password, _TIMING_PAD_HASH)  # keep timing uniform
+        raise HTTPException(status_code=401, detail="Email sau parolă greșite")
+    if not verify_password(creds.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Email sau parolă greșite")
     _set_session(response, user.id)
     return _me(user)

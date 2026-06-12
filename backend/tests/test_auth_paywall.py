@@ -107,6 +107,28 @@ def test_register_validation(client):
         ).status_code
         == 422
     )
+    # bcrypt hard limit: >72 bytes must be a clean 422, not a 500
+    assert (
+        client.post(
+            "/api/auth/register", json={"email": "ok@example.com", "password": "x" * 80}
+        ).status_code
+        == 422
+    )
+    # oversized email -> 422 (column is 255; Postgres would error on insert)
+    assert (
+        client.post(
+            "/api/auth/register",
+            json={"email": "a" * 250 + "@example.com", "password": "parola123"},
+        ).status_code
+        == 422
+    )
+    # long password at LOGIN must not crash either (verify fails safe -> 401)
+    assert (
+        client.post(
+            "/api/auth/login", json={"email": "ana@example.com", "password": "y" * 200}
+        ).status_code
+        == 401
+    )
 
 
 def test_google_login_creates_account_and_blocks_password(client, monkeypatch):
