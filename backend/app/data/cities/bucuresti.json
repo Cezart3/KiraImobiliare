@@ -1,0 +1,286 @@
+{
+  "slug": "bucuresti",
+  "name": "București",
+  "county": "București",
+  "aliases": [
+    "bucuresti",
+    "bucharest"
+  ],
+  "center": {
+    "lat": 44.4268,
+    "lon": 26.1025
+  },
+  "radius_km": 13,
+  "sites": {
+    "storia": {
+      "location": "bucuresti"
+    },
+    "olx": {
+      "location": "bucuresti"
+    },
+    "imobiliare": {
+      "location": "bucuresti"
+    },
+    "publi24": {
+      "location": "bucuresti/bucuresti"
+    },
+    "lajumate": {
+      "location": "bucuresti-ilfov/bucuresti"
+    }
+  },
+  "zones": [
+    {
+      "slug": "sector-1",
+      "name": "Sector 1",
+      "aliases": [
+        "sect 1",
+        "sect. 1"
+      ],
+      "lat": 44.4879451,
+      "lon": 26.050155,
+      "verified": true
+    },
+    {
+      "slug": "sector-2",
+      "name": "Sector 2",
+      "aliases": [
+        "sect 2",
+        "sect. 2"
+      ],
+      "lat": 44.4595849,
+      "lon": 26.130345,
+      "verified": true
+    },
+    {
+      "slug": "sector-3",
+      "name": "Sector 3",
+      "aliases": [
+        "sect 3",
+        "sect. 3"
+      ],
+      "lat": 44.4182836,
+      "lon": 26.1650992,
+      "verified": true
+    },
+    {
+      "slug": "sector-4",
+      "name": "Sector 4",
+      "aliases": [
+        "sect 4",
+        "sect. 4"
+      ],
+      "lat": 44.3819026,
+      "lon": 26.1190178,
+      "verified": true
+    },
+    {
+      "slug": "sector-5",
+      "name": "Sector 5",
+      "aliases": [
+        "sect 5",
+        "sect. 5"
+      ],
+      "lat": 44.4050544,
+      "lon": 26.0716509,
+      "verified": true
+    },
+    {
+      "slug": "sector-6",
+      "name": "Sector 6",
+      "aliases": [
+        "sect 6",
+        "sect. 6"
+      ],
+      "lat": 44.4478746,
+      "lon": 26.0324476,
+      "verified": true
+    },
+    {
+      "slug": "militari",
+      "name": "Militari",
+      "aliases": [
+        "lujerului",
+        "iuliu maniu"
+      ],
+      "lat": 44.4349533,
+      "lon": 26.0206552,
+      "verified": true
+    },
+    {
+      "slug": "drumul-taberei",
+      "name": "Drumul Taberei",
+      "aliases": [
+        "drumul sarii",
+        "favorit"
+      ],
+      "lat": 44.41981,
+      "lon": 26.0283834,
+      "verified": true
+    },
+    {
+      "slug": "titan",
+      "name": "Titan",
+      "aliases": [
+        "1 decembrie",
+        "auchan titan"
+      ],
+      "lat": 44.4257917,
+      "lon": 26.162722,
+      "verified": true
+    },
+    {
+      "slug": "berceni",
+      "name": "Berceni",
+      "aliases": [
+        "sun plaza"
+      ],
+      "lat": 44.3886959,
+      "lon": 26.1180036,
+      "verified": true
+    },
+    {
+      "slug": "rahova",
+      "name": "Rahova",
+      "aliases": [
+        "ferentari"
+      ],
+      "lat": 44.406474,
+      "lon": 26.063243,
+      "verified": true
+    },
+    {
+      "slug": "tei",
+      "name": "Tei",
+      "aliases": [
+        "lacul tei"
+      ],
+      "lat": 44.4620505,
+      "lon": 26.1182531,
+      "verified": true
+    },
+    {
+      "slug": "colentina",
+      "name": "Colentina",
+      "aliases": [
+        "doamna ghica"
+      ],
+      "lat": 44.4676744,
+      "lon": 26.1422559,
+      "verified": true
+    },
+    {
+      "slug": "aviatiei",
+      "name": "Aviației",
+      "aliases": [
+        "aviatiei",
+        "expozitiei"
+      ],
+      "lat": 44.4826693,
+      "lon": 26.0971203,
+      "verified": true
+    },
+    {
+      "slug": "pipera",
+      "name": "Pipera",
+      "aliases": [],
+      "lat": 44.4806131,
+      "lon": 26.116635,
+      "verified": true
+    },
+    {
+      "slug": "dristor",
+      "name": "Dristor",
+      "aliases": [
+        "mihai bravu"
+      ],
+      "lat": 44.4185777,
+      "lon": 26.1403805,
+      "verified": true
+    },
+    {
+      "slug": "tineretului",
+      "name": "Tineretului",
+      "aliases": [
+        "parcul tineretului"
+      ],
+      "lat": 44.4096333,
+      "lon": 26.1111105,
+      "verified": true
+    },
+    {
+      "slug": "crangasi",
+      "name": "Crângași",
+      "aliases": [
+        "crangasi"
+      ],
+      "lat": 44.4531382,
+      "lon": 26.048119,
+      "verified": true
+    },
+    {
+      "slug": "pantelimon",
+      "name": "Pantelimon",
+      "aliases": [],
+      "lat": 44.4422604,
+      "lon": 26.167889,
+      "verified": true
+    },
+    {
+      "slug": "vitan",
+      "name": "Vitan",
+      "aliases": [
+        "mall vitan"
+      ],
+      "lat": 44.4141205,
+      "lon": 26.1270761,
+      "verified": true
+    },
+    {
+      "slug": "unirii",
+      "name": "Unirii",
+      "aliases": [
+        "piata unirii",
+        "centru"
+      ],
+      "lat": 44.428006,
+      "lon": 26.1025098,
+      "verified": true
+    }
+  ],
+  "nearby_towns": [
+    {
+      "slug": "popesti-leordeni",
+      "name": "Popești-Leordeni",
+      "aliases": [
+        "popesti leordeni"
+      ],
+      "lat": 44.3599143,
+      "lon": 26.1506818,
+      "verified": true
+    },
+    {
+      "slug": "bragadiru",
+      "name": "Bragadiru",
+      "aliases": [],
+      "lat": 44.3852351,
+      "lon": 26.0415266,
+      "verified": true
+    },
+    {
+      "slug": "voluntari",
+      "name": "Voluntari",
+      "aliases": [],
+      "lat": 44.4337255,
+      "lon": 26.1690933,
+      "verified": true
+    },
+    {
+      "slug": "chiajna",
+      "name": "Chiajna",
+      "aliases": [],
+      "lat": 44.4704456,
+      "lon": 25.9803038,
+      "verified": true
+    }
+  ]
+}

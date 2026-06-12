@@ -1,0 +1,194 @@
+{
+  "slug": "timisoara",
+  "name": "Timișoara",
+  "county": "Timiș",
+  "aliases": [
+    "timisoara"
+  ],
+  "center": {
+    "lat": 45.7489,
+    "lon": 21.2087
+  },
+  "radius_km": 8,
+  "sites": {
+    "storia": {
+      "location": "timis"
+    },
+    "olx": {
+      "location": "timisoara"
+    },
+    "imobiliare": {
+      "location": "judetul-timis/timisoara"
+    },
+    "publi24": {
+      "location": "timis/timisoara"
+    },
+    "lajumate": {
+      "location": "timis/timisoara"
+    }
+  },
+  "zones": [
+    {
+      "slug": "circumvalatiunii",
+      "name": "Circumvalațiunii",
+      "aliases": [
+        "circumvalatiunii"
+      ],
+      "lat": 45.7593451,
+      "lon": 21.2140323,
+      "verified": true
+    },
+    {
+      "slug": "iosefin",
+      "name": "Iosefin",
+      "aliases": [
+        "iosefin"
+      ],
+      "lat": 45.7442399,
+      "lon": 21.2090531,
+      "verified": true
+    },
+    {
+      "slug": "elisabetin",
+      "name": "Elisabetin",
+      "aliases": [],
+      "lat": 45.7416201,
+      "lon": 21.225628,
+      "verified": true
+    },
+    {
+      "slug": "fabric",
+      "name": "Fabric",
+      "aliases": [],
+      "lat": 45.7569891,
+      "lon": 21.2498888,
+      "verified": true
+    },
+    {
+      "slug": "cetate",
+      "name": "Cetate",
+      "aliases": [
+        "centru",
+        "zona centrala",
+        "ultracentral"
+      ],
+      "lat": 45.7560376,
+      "lon": 21.228846,
+      "verified": true
+    },
+    {
+      "slug": "freidorf",
+      "name": "Freidorf",
+      "aliases": [],
+      "lat": 45.727077,
+      "lon": 21.1805573,
+      "verified": true
+    },
+    {
+      "slug": "ronat",
+      "name": "Ronaț",
+      "aliases": [
+        "ronat"
+      ],
+      "lat": 45.7567011,
+      "lon": 21.187325,
+      "verified": true
+    },
+    {
+      "slug": "mehala",
+      "name": "Mehala",
+      "aliases": [],
+      "lat": 45.7642474,
+      "lon": 21.2040894,
+      "verified": true
+    },
+    {
+      "slug": "blascovici",
+      "name": "Blașcovici",
+      "aliases": [
+        "blascovici"
+      ],
+      "lat": 45.7571021,
+      "lon": 21.2002234,
+      "verified": true
+    },
+    {
+      "slug": "dambovita",
+      "name": "Dâmbovița",
+      "aliases": [
+        "dambovita"
+      ],
+      "lat": 45.7339571,
+      "lon": 21.198609,
+      "verified": true
+    },
+    {
+      "slug": "soarelui",
+      "name": "Soarelui",
+      "aliases": [
+        "zona soarelui"
+      ],
+      "lat": 45.7341079,
+      "lon": 21.2487273,
+      "verified": true
+    },
+    {
+      "slug": "torontalului",
+      "name": "Torontalului",
+      "aliases": [
+        "calea torontalului"
+      ],
+      "lat": 45.773587,
+      "lon": 21.2119515,
+      "verified": true
+    },
+    {
+      "slug": "girocului",
+      "name": "Girocului",
+      "aliases": [
+        "calea girocului"
+      ],
+      "lat": 45.7318471,
+      "lon": 21.231879,
+      "verified": true
+    }
+  ],
+  "nearby_towns": [
+    {
+      "slug": "dumbravita",
+      "name": "Dumbrăvița",
+      "aliases": [
+        "dumbravita"
+      ],
+      "lat": 45.7847196,
+      "lon": 21.235837,
+      "verified": true
+    },
+    {
+      "slug": "giroc",
+      "name": "Giroc",
+      "aliases": [],
+      "lat": 45.7149704,
+      "lon": 21.2198416,
+      "verified": true
+    },
+    {
+      "slug": "mosnita-noua",
+      "name": "Moșnița Nouă",
+      "aliases": [
+        "mosnita noua"
+      ],
+      "lat": 45.735,
+      "lon": 21.3,
+      "verified": false
+    },
+    {
+      "slug": "ghiroda",
+      "name": "Ghiroda",
+      "aliases": [],
+      "lat": 45.7605855,
+      "lon": 21.2788978,
+      "verified": true
+    }
+  ]
+}

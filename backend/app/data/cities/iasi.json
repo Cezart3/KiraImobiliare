@@ -1,0 +1,166 @@
+{
+  "slug": "iasi",
+  "name": "Iași",
+  "county": "Iași",
+  "aliases": [
+    "iasi"
+  ],
+  "center": {
+    "lat": 47.1585,
+    "lon": 27.6014
+  },
+  "radius_km": 7,
+  "sites": {
+    "storia": {
+      "location": "iasi"
+    },
+    "olx": {"location": "iasi_39939"},
+    "imobiliare": {
+      "location": "judetul-iasi/iasi"
+    },
+    "publi24": {
+      "location": "iasi/iasi"
+    },
+    "lajumate": {
+      "location": "iasi/iasi"
+    }
+  },
+  "zones": [
+    {
+      "slug": "tatarasi",
+      "name": "Tătărași",
+      "aliases": [
+        "tatarasi"
+      ],
+      "lat": 47.1610399,
+      "lon": 27.6113534,
+      "verified": true
+    },
+    {
+      "slug": "copou",
+      "name": "Copou",
+      "aliases": [],
+      "lat": 47.1801944,
+      "lon": 27.5656845,
+      "verified": true
+    },
+    {
+      "slug": "alexandru-cel-bun",
+      "name": "Alexandru cel Bun",
+      "aliases": [
+        "alexandru"
+      ],
+      "lat": 47.145,
+      "lon": 27.62,
+      "verified": false
+    },
+    {
+      "slug": "nicolina",
+      "name": "Nicolina",
+      "aliases": [],
+      "lat": 47.1488579,
+      "lon": 27.5776323,
+      "verified": true
+    },
+    {
+      "slug": "podu-ros",
+      "name": "Podu Roș",
+      "aliases": [
+        "podu ros"
+      ],
+      "lat": 47.1505621,
+      "lon": 27.5865091,
+      "verified": true
+    },
+    {
+      "slug": "pacurari",
+      "name": "Păcurari",
+      "aliases": [
+        "pacurari"
+      ],
+      "lat": 47.1740452,
+      "lon": 27.5578839,
+      "verified": true
+    },
+    {
+      "slug": "centru",
+      "name": "Centru",
+      "aliases": [
+        "ultracentral",
+        "zona centrala",
+        "piata unirii"
+      ],
+      "lat": 47.1621622,
+      "lon": 27.5885797,
+      "verified": true
+    },
+    {
+      "slug": "galata",
+      "name": "Galata",
+      "aliases": [],
+      "lat": 47.1539038,
+      "lon": 27.5613754,
+      "verified": true
+    },
+    {
+      "slug": "bucium",
+      "name": "Bucium",
+      "aliases": [],
+      "lat": 47.1242658,
+      "lon": 27.6222515,
+      "verified": true
+    },
+    {
+      "slug": "canta",
+      "name": "Canta",
+      "aliases": [],
+      "lat": 47.1731944,
+      "lon": 27.5478055,
+      "verified": true
+    },
+    {
+      "slug": "dacia",
+      "name": "Dacia",
+      "aliases": [],
+      "lat": 47.1673251,
+      "lon": 27.5496454,
+      "verified": true
+    },
+    {
+      "slug": "mircea-cel-batran",
+      "name": "Mircea cel Bătrân",
+      "aliases": [
+        "mircea"
+      ],
+      "lat": 47.1548766,
+      "lon": 27.5692134,
+      "verified": true
+    }
+  ],
+  "nearby_towns": [
+    {
+      "slug": "valea-lupului",
+      "name": "Valea Lupului",
+      "aliases": [],
+      "lat": 47.1773857,
+      "lon": 27.5021393,
+      "verified": true
+    },
+    {
+      "slug": "miroslava",
+      "name": "Miroslava",
+      "aliases": [],
+      "lat": 47.1496298,
+      "lon": 27.4905285,
+      "verified": true
+    },
+    {
+      "slug": "ciurea",
+      "name": "Ciurea",
+      "aliases": [],
+      "lat": 47.0681029,
+      "lon": 27.5644439,
+      "verified": true
+    }
+  ]
+}

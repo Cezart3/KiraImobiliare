@@ -1,0 +1,50 @@
+[project]
+name = "rentscalper-backend"
+version = "0.1.0"
+description = "RentScalper — Romanian rental listings aggregator (API + scraping worker)"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy>=2.0.30",
+    "pydantic>=2.7",
+    "pydantic-settings>=2.3",
+    "requests>=2.32",
+    "beautifulsoup4>=4.12",
+    "apscheduler>=3.10,<4",
+    "tenacity>=8.3",
+    "stripe>=10",
+    "PyJWT>=2.8",
+    "bcrypt>=4.1",
+    "google-auth>=2.30",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.5",
+    "httpx>=0.27",
+]
+postgres = [
+    "psycopg2-binary>=2.9",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"tools/*" = ["E501"]  # one-off probe/maintenance scripts
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

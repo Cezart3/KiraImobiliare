@@ -1,0 +1,24 @@
+# python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+
+# env / secrets
+.env
+
+# runtime data (db, image cache, logs)
+backend/var/
+
+# node
+node_modules/
+frontend/dist/
+
+# misc
+.DS_Store
+Thumbs.db
+docs/_probe.html

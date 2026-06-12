@@ -1,0 +1,150 @@
+{
+  "slug": "targu-mures",
+  "name": "Târgu Mureș",
+  "county": "Mureș",
+  "aliases": [
+    "targu mures",
+    "tg mures",
+    "tirgu mures"
+  ],
+  "center": {
+    "lat": 46.5527,
+    "lon": 24.5575
+  },
+  "radius_km": 6,
+  "sites": {
+    "storia": {
+      "location": "mures"
+    },
+    "olx": {
+      "location": "targu-mures"
+    },
+    "imobiliare": {
+      "location": "judetul-mures/targu-mures"
+    },
+    "publi24": {
+      "location": "mures/targu-mures"
+    },
+    "lajumate": {
+      "location": "mures/targu-mures"
+    }
+  },
+  "zones": [
+    {
+      "slug": "tudor",
+      "name": "Tudor",
+      "aliases": [
+        "tudor vladimirescu"
+      ],
+      "lat": 46.5351287,
+      "lon": 24.5834007,
+      "verified": true
+    },
+    {
+      "slug": "unirii",
+      "name": "Unirii",
+      "aliases": [
+        "cartierul unirii"
+      ],
+      "lat": 46.5630928,
+      "lon": 24.5474991,
+      "verified": true
+    },
+    {
+      "slug": "dambu-pietros",
+      "name": "Dâmbu Pietros",
+      "aliases": [
+        "dambu pietros"
+      ],
+      "lat": 46.565,
+      "lon": 24.56,
+      "verified": false
+    },
+    {
+      "slug": "centru",
+      "name": "Centru",
+      "aliases": [
+        "ultracentral",
+        "zona centrala",
+        "piata trandafirilor"
+      ],
+      "lat": 46.5394804,
+      "lon": 24.5768488,
+      "verified": true
+    },
+    {
+      "slug": "tirgu-mures-nord",
+      "name": "Cartierul Nord",
+      "aliases": [
+        "zona nord"
+      ],
+      "lat": 46.57,
+      "lon": 24.55,
+      "verified": false
+    },
+    {
+      "slug": "mureseni",
+      "name": "Mureșeni",
+      "aliases": [],
+      "lat": 46.5241689,
+      "lon": 24.5179442,
+      "verified": true
+    },
+    {
+      "slug": "rovinari",
+      "name": "Rovinari",
+      "aliases": [],
+      "lat": 46.5429443,
+      "lon": 24.5394538,
+      "verified": true
+    },
+    {
+      "slug": "aleea-carpati",
+      "name": "Aleea Carpați",
+      "aliases": [
+        "zona carpati"
+      ],
+      "lat": 46.5538638,
+      "lon": 24.5585753,
+      "verified": true
+    },
+    {
+      "slug": "cornisa",
+      "name": "Cornișa",
+      "aliases": [],
+      "lat": 46.5516523,
+      "lon": 24.5753378,
+      "verified": true
+    }
+  ],
+  "nearby_towns": [
+    {
+      "slug": "sangeorgiu-de-mures",
+      "name": "Sângeorgiu de Mureș",
+      "aliases": [
+        "sangeorgiu de mures"
+      ],
+      "lat": 46.5764335,
+      "lon": 24.6042074,
+      "verified": true
+    },
+    {
+      "slug": "corunca",
+      "name": "Corunca",
+      "aliases": [],
+      "lat": 46.5209075,
+      "lon": 24.6176402,
+      "verified": true
+    },
+    {
+      "slug": "sincraiu-de-mures",
+      "name": "Sâncraiu de Mureș",
+      "aliases": [
+        "sancraiu de mures"
+      ],
+      "lat": 46.5462653,
+      "lon": 24.5181918,
+      "verified": true
+    }
+  ]
+}

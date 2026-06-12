@@ -1,0 +1,19 @@
+# Optional services. Default dev setup needs NOTHING from here (SQLite).
+# Start Postgres only when you outgrow SQLite:
+#   docker compose up -d postgres
+#   set RS_DATABASE_URL=postgresql+psycopg2://rentscalper:rentscalper@localhost:5432/rentscalper
+#   pip install -e "backend[postgres]"
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: rentscalper
+      POSTGRES_PASSWORD: rentscalper
+      POSTGRES_DB: rentscalper
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

@@ -1,0 +1,227 @@
+{
+  "slug": "cluj-napoca",
+  "name": "Cluj-Napoca",
+  "county": "Cluj",
+  "aliases": [
+    "cluj napoca",
+    "cluj"
+  ],
+  "center": {
+    "lat": 46.7712,
+    "lon": 23.6236
+  },
+  "radius_km": 7,
+  "sites": {
+    "storia": {
+      "location": "cluj"
+    },
+    "olx": {
+      "location": "cluj-napoca"
+    },
+    "imobiliare": {
+      "location": "judetul-cluj/cluj-napoca"
+    },
+    "publi24": {
+      "location": "cluj/cluj-napoca"
+    },
+    "lajumate": {
+      "location": "cluj/cluj-napoca"
+    },
+    "capital": {
+      "enabled": true
+    }
+  },
+  "zones": [
+    {
+      "slug": "manastur",
+      "name": "Mănăștur",
+      "aliases": [
+        "calea manastur"
+      ],
+      "lat": 46.7554185,
+      "lon": 23.5565892,
+      "verified": true
+    },
+    {
+      "slug": "marasti",
+      "name": "Mărăști",
+      "aliases": [
+        "piata marasti"
+      ],
+      "lat": 46.7804568,
+      "lon": 23.6125126,
+      "verified": true
+    },
+    {
+      "slug": "gheorgheni",
+      "name": "Gheorgheni",
+      "aliases": [],
+      "lat": 46.7663539,
+      "lon": 23.6168223,
+      "verified": true
+    },
+    {
+      "slug": "grigorescu",
+      "name": "Grigorescu",
+      "aliases": [],
+      "lat": 46.7680429,
+      "lon": 23.5535428,
+      "verified": true
+    },
+    {
+      "slug": "centru",
+      "name": "Centru",
+      "aliases": [
+        "ultracentral",
+        "zona centrala",
+        "centrul orasului",
+        "piata unirii",
+        "piata mihai viteazu"
+      ],
+      "lat": 46.7687648,
+      "lon": 23.5900905,
+      "verified": true
+    },
+    {
+      "slug": "zorilor",
+      "name": "Zorilor",
+      "aliases": [
+        "observatorului"
+      ],
+      "lat": 46.7555595,
+      "lon": 23.5857936,
+      "verified": true
+    },
+    {
+      "slug": "buna-ziua",
+      "name": "Bună Ziua",
+      "aliases": [],
+      "lat": 46.7498055,
+      "lon": 23.5984619,
+      "verified": true
+    },
+    {
+      "slug": "iris",
+      "name": "Iris",
+      "aliases": [],
+      "lat": 46.7951071,
+      "lon": 23.6035121,
+      "verified": true
+    },
+    {
+      "slug": "dambul-rotund",
+      "name": "Dâmbul Rotund",
+      "aliases": [],
+      "lat": 46.7875377,
+      "lon": 23.5674139,
+      "verified": true
+    },
+    {
+      "slug": "someseni",
+      "name": "Someșeni",
+      "aliases": [],
+      "lat": 46.788805,
+      "lon": 23.6509907,
+      "verified": true
+    },
+    {
+      "slug": "gruia",
+      "name": "Gruia",
+      "aliases": [],
+      "lat": 46.7771503,
+      "lon": 23.5768325,
+      "verified": true
+    },
+    {
+      "slug": "andrei-muresanu",
+      "name": "Andrei Mureșanu",
+      "aliases": [],
+      "lat": 46.7618391,
+      "lon": 23.6095578,
+      "verified": true
+    },
+    {
+      "slug": "intre-lacuri",
+      "name": "Între Lacuri",
+      "aliases": [],
+      "lat": 46.7763627,
+      "lon": 23.6256649,
+      "verified": true
+    },
+    {
+      "slug": "sopor",
+      "name": "Sopor",
+      "aliases": [
+        "soporului"
+      ],
+      "lat": 46.7612568,
+      "lon": 23.6544189,
+      "verified": true
+    },
+    {
+      "slug": "borhanci",
+      "name": "Borhanci",
+      "aliases": [],
+      "lat": 46.7468793,
+      "lon": 23.6386995,
+      "verified": true
+    },
+    {
+      "slug": "bulgaria",
+      "name": "Bulgaria",
+      "aliases": [
+        "abator"
+      ],
+      "lat": 46.7889169,
+      "lon": 23.6184909,
+      "verified": true
+    },
+    {
+      "slug": "plopilor",
+      "name": "Plopilor",
+      "aliases": [
+        "platinia",
+        "sala polivalenta"
+      ],
+      "lat": 46.7652153,
+      "lon": 23.5640263,
+      "verified": true
+    },
+    {
+      "slug": "europa",
+      "name": "Europa",
+      "aliases": [
+        "calea turzii"
+      ],
+      "lat": 46.7448828,
+      "lon": 23.585719,
+      "verified": true
+    }
+  ],
+  "nearby_towns": [
+    {
+      "slug": "floresti",
+      "name": "Florești",
+      "aliases": [],
+      "lat": 46.7556941,
+      "lon": 23.5372132,
+      "verified": true
+    },
+    {
+      "slug": "baciu",
+      "name": "Baciu",
+      "aliases": [],
+      "lat": 46.7862374,
+      "lon": 23.5076375,
+      "verified": true
+    },
+    {
+      "slug": "apahida",
+      "name": "Apahida",
+      "aliases": [],
+      "lat": 46.8042919,
+      "lon": 23.7110633,
+      "verified": true
+    }
+  ]
+}

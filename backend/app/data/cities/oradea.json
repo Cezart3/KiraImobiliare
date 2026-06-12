@@ -1,0 +1,162 @@
+{
+  "slug": "oradea",
+  "name": "Oradea",
+  "county": "Bihor",
+  "aliases": [
+    "oradea mare"
+  ],
+  "center": {
+    "lat": 47.0465,
+    "lon": 21.9189
+  },
+  "radius_km": 7,
+  "sites": {
+    "storia": {
+      "location": "bihor"
+    },
+    "olx": {
+      "location": "oradea"
+    },
+    "imobiliare": {
+      "location": "judetul-bihor/oradea"
+    },
+    "publi24": {
+      "location": "bihor/oradea"
+    },
+    "lajumate": {
+      "location": "bihor/oradea"
+    }
+  },
+  "zones": [
+    {
+      "slug": "rogerius",
+      "name": "Rogerius",
+      "aliases": [],
+      "lat": 47.0776592,
+      "lon": 21.9164294,
+      "verified": true
+    },
+    {
+      "slug": "nufarul",
+      "name": "Nufărul",
+      "aliases": [],
+      "lat": 47.0324887,
+      "lon": 21.9570118,
+      "verified": true
+    },
+    {
+      "slug": "ioan-bogdan",
+      "name": "Ioșia",
+      "aliases": [
+        "iosia"
+      ],
+      "lat": 47.0575778,
+      "lon": 21.9022311,
+      "verified": true
+    },
+    {
+      "slug": "velenta",
+      "name": "Velența",
+      "aliases": [
+        "velenta"
+      ],
+      "lat": 47.0494182,
+      "lon": 21.9498705,
+      "verified": true
+    },
+    {
+      "slug": "oncea",
+      "name": "Oncea",
+      "aliases": [],
+      "lat": 47.090968,
+      "lon": 21.9189239,
+      "verified": true
+    },
+    {
+      "slug": "europa",
+      "name": "Europa",
+      "aliases": [
+        "cartierul europa"
+      ],
+      "lat": 47.04188,
+      "lon": 21.91377,
+      "verified": true
+    },
+    {
+      "slug": "ciuperca",
+      "name": "Ciuperca",
+      "aliases": [],
+      "lat": 47.0586336,
+      "lon": 21.9505418,
+      "verified": true
+    },
+    {
+      "slug": "centru",
+      "name": "Centru",
+      "aliases": [
+        "ultracentral",
+        "zona centrala",
+        "cetate"
+      ],
+      "lat": 47.0179175,
+      "lon": 21.8580837,
+      "verified": true
+    },
+    {
+      "slug": "decebal",
+      "name": "Decebal",
+      "aliases": [],
+      "lat": 47.0653782,
+      "lon": 21.9227391,
+      "verified": true
+    },
+    {
+      "slug": "gara",
+      "name": "Gara",
+      "aliases": [
+        "zona gara"
+      ],
+      "lat": 47.0704339,
+      "lon": 21.9344838,
+      "verified": true
+    },
+    {
+      "slug": "podgoria",
+      "name": "Podgoria",
+      "aliases": [],
+      "lat": 47.0597114,
+      "lon": 22.0022391,
+      "verified": true
+    }
+  ],
+  "nearby_towns": [
+    {
+      "slug": "sanmartin",
+      "name": "Sânmartin",
+      "aliases": [
+        "sanmartin"
+      ],
+      "lat": 47.0051671,
+      "lon": 21.9741651,
+      "verified": true
+    },
+    {
+      "slug": "osorhei",
+      "name": "Oșorhei",
+      "aliases": [
+        "osorhei"
+      ],
+      "lat": 47.0412898,
+      "lon": 22.0290905,
+      "verified": true
+    },
+    {
+      "slug": "biharia",
+      "name": "Biharia",
+      "aliases": [],
+      "lat": 47.1566199,
+      "lon": 21.9123602,
+      "verified": true
+    }
+  ]
+}
