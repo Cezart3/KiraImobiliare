@@ -22,3 +22,4 @@ frontend/dist/
 .DS_Store
 Thumbs.db
 docs/_probe.html
+.playwright-mcp/
