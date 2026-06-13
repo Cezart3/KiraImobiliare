@@ -33,11 +33,14 @@ export function CookiesPage() {
       </p>
 
       <h2 className="mt-6 text-lg font-semibold text-slate-900 dark:text-neutral-100">
-        Ștergerea datelor din browser
+        Acceptare, refuz și ștergere
       </h2>
       <p>
-        Poți șterge oricând cookie-ul de sesiune și preferințele salvate local, cu un singur
-        click. Acțiunea te deconectează și readuce setările la valorile implicite.
+        La prima vizită îți cerem să accepți sau să refuzi acest cookie. Întrucât singurul
+        cookie este cel de logare, dacă îl refuzi poți folosi site-ul în continuare fără cont
+        — niciun cookie nu este setat până nu te autentifici. Te poți răzgândi oricând:
+        butonul de mai jos șterge cookie-ul de sesiune și preferințele salvate local (te
+        deconectează și readuce setările la valorile implicite).
       </p>
       {cleared ? (
         <p className="mt-3 font-medium text-emerald-700 dark:text-emerald-400">

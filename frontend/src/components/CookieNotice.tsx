@@ -2,48 +2,45 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Cookie, X } from 'lucide-react'
 
-const STORAGE_KEY = 'cookie-notice-dismissed'
+const STORAGE_KEY = 'cookie-choice' // 'accepted' | 'rejected'
 
 /**
- * Cookie notice.
+ * Cookie consent notice.
  *
- * We only ever set ONE cookie: `rs_session` — a strictly necessary, httpOnly
- * login cookie, set only after the user signs in. We use NO analytics, ads or
- * tracking cookies, so under the ePrivacy Directive / GDPR no opt-in consent is
- * legally required and there is nothing non-essential to "reject".
+ * We currently set exactly ONE cookie: `rs_session` — a strictly necessary,
+ * httpOnly cookie that exists ONLY to keep you logged in, and is set only when
+ * you sign in. We use NO analytics, advertising or tracking cookies.
  *
- * To stay transparent (and compliant) the banner therefore:
- *  - states plainly that only an essential cookie is used,
- *  - gives a clear, direct way to manage/delete it ("Gestionează / dezactivează"
- *    -> the Cookies page, which has a one-click clear button),
- *  - lets the user dismiss the banner ("Am înțeles").
+ * Under ePrivacy/GDPR a strictly-necessary cookie needs no opt-in. We still
+ * offer Accept / Reject for transparency ("better safe than sorry"):
+ *  - Accept: fine, the login cookie may be used when you sign in.
+ *  - Reject: we record your choice; since the only cookie is the login one,
+ *    rejecting simply means "I don't want the login cookie" — you can keep
+ *    browsing without an account (no cookie is set unless you log in). We also
+ *    point you to the Cookies page where you can clear it anytime in one click.
  *
- * Dismissal is stored in localStorage (a device preference, never sent to us).
+ * The choice itself is stored in localStorage (a device preference, not sent to
+ * us, not a cookie).
  */
 export function CookieNotice() {
   const navigate = useNavigate()
-  const [dismissed, setDismissed] = useState(() => {
+  const [decided, setDecided] = useState(() => {
     try {
-      return localStorage.getItem(STORAGE_KEY) === '1'
+      return localStorage.getItem(STORAGE_KEY) !== null
     } catch {
       return false
     }
   })
 
-  if (dismissed) return null
+  if (decided) return null
 
-  const dismiss = () => {
+  const choose = (choice: 'accepted' | 'rejected') => {
     try {
-      localStorage.setItem(STORAGE_KEY, '1')
+      localStorage.setItem(STORAGE_KEY, choice)
     } catch {
       // ignore (private mode etc.) — banner just reappears next visit
     }
-    setDismissed(true)
-  }
-
-  const manage = () => {
-    dismiss()
-    navigate('/cookies')
+    setDecided(true)
   }
 
   return (
@@ -52,30 +49,40 @@ export function CookieNotice() {
         <div className="flex flex-1 items-start gap-3">
           <Cookie className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
           <p className="flex-1 leading-relaxed">
-            Folosim un singur cookie esențial, pentru autentificare — fără
-            urmărire și fără publicitate. Nu sunt necesare cookie-uri pentru care
-            să-ți cerem acordul. Le poți vedea și dezactiva oricând din pagina de
-            cookie-uri.
+            Folosim un singur cookie, strict pentru sesiunea de logare — fără
+            urmărire și fără publicitate. Îl poți accepta sau refuza, iar dacă
+            te răzgândești îl poți dezactiva oricând din{' '}
+            <button
+              type="button"
+              onClick={() => {
+                choose('rejected')
+                navigate('/cookies')
+              }}
+              className="font-medium text-emerald-700 underline underline-offset-2 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
+            >
+              pagina de cookie-uri
+            </button>
+            .
           </p>
         </div>
         <div className="flex flex-shrink-0 items-center gap-2 self-end sm:self-center">
           <button
             type="button"
-            onClick={manage}
+            onClick={() => choose('rejected')}
             className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-neutral-600 dark:text-neutral-200 dark:hover:bg-neutral-800"
           >
-            Gestionează / dezactivează
+            Refuz
           </button>
           <button
             type="button"
-            onClick={dismiss}
+            onClick={() => choose('accepted')}
             className="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition-colors hover:bg-emerald-700"
           >
-            Am înțeles
+            Accept
           </button>
           <button
             type="button"
-            onClick={dismiss}
+            onClick={() => choose('rejected')}
             aria-label="Închide"
             className="rounded-lg p-1 text-slate-400 transition-colors hover:bg-slate-100 dark:text-neutral-500 dark:hover:bg-neutral-800"
           >
