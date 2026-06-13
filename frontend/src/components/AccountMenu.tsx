@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { CheckCircle2, ChevronDown, CreditCard, LogOut, Trash2, User, Unlock, X } from 'lucide-react'
 import { useMe } from '@/hooks/useMe'
 import {
@@ -8,14 +9,14 @@ import {
   usePortalMutation,
 } from '@/hooks/useBilling'
 import { ApiError } from '@/api/client'
-import { AuthModal } from './AuthModal'
 import { DeleteAccountDialog } from './DeleteAccountDialog'
 
-/** Top-right account area: "Intră în cont" when anonymous, or a dropdown
- * with subscription/account actions when authenticated. */
+/** Top-right account area: "Intră în cont" / "Creează cont" when anonymous
+ * (navigates to the dedicated /cont page), or a dropdown with subscription/
+ * account actions when authenticated. */
 export function AccountMenu() {
   const { data: me } = useMe()
-  const [authOpen, setAuthOpen] = useState(false)
+  const navigate = useNavigate()
   const [menuOpen, setMenuOpen] = useState(false)
   const [deleteOpen, setDeleteOpen] = useState(false)
   const [deleted, setDeleted] = useState(false)
@@ -84,14 +85,22 @@ export function AccountMenu() {
   if (!me?.authenticated) {
     return (
       <>
-        <button
-          type="button"
-          onClick={() => setAuthOpen(true)}
-          className="inline-flex h-10 items-center rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
-        >
-          Intră în cont
-        </button>
-        <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => navigate('/cont?mode=register')}
+            className="hidden h-10 items-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 sm:inline-flex dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800"
+          >
+            Creează cont
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/cont')}
+            className="inline-flex h-10 items-center rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
+          >
+            Intră în cont
+          </button>
+        </div>
         {deletedNotice}
       </>
     )

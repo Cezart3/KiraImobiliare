@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Lock, ShieldCheck } from 'lucide-react'
 import { useMe } from '@/hooks/useMe'
 import { useCheckoutMutation } from '@/hooks/useBilling'
 import { ApiError } from '@/api/client'
 import { formatAnunturiCount } from '@/lib/format'
-import { AuthModal } from './AuthModal'
 
 interface PaywallBannerProps {
   total: number
@@ -15,7 +14,7 @@ interface PaywallBannerProps {
  * results were cut by the freemium paywall (`locked: true`). */
 export function PaywallBanner({ total, visibleLimit }: PaywallBannerProps) {
   const { data: me } = useMe()
-  const [authOpen, setAuthOpen] = useState(false)
+  const navigate = useNavigate()
   const checkoutMutation = useCheckoutMutation()
 
   const errorMessage =
@@ -23,7 +22,8 @@ export function PaywallBanner({ total, visibleLimit }: PaywallBannerProps) {
 
   const handleUnlock = () => {
     if (!me?.authenticated) {
-      setAuthOpen(true)
+      const next = `${window.location.pathname}${window.location.search}`
+      navigate(`/cont?next=${encodeURIComponent(next)}`)
       return
     }
     checkoutMutation.mutate()
@@ -65,12 +65,6 @@ export function PaywallBanner({ total, visibleLimit }: PaywallBannerProps) {
         <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
         Plată securizată prin Stripe · Card sau Apple Pay
       </p>
-
-      <AuthModal
-        open={authOpen}
-        onClose={() => setAuthOpen(false)}
-        onSuccess={() => checkoutMutation.mutate()}
-      />
     </div>
   )
 }

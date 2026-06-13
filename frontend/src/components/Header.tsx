@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Home, Search } from 'lucide-react'
 import type { City } from '@/api/types'
+import { SITE_NAME } from '@/lib/site'
 import { CitySelect } from './CitySelect'
 import { ThemeToggle } from './ThemeToggle'
 import { AccountMenu } from './AccountMenu'
@@ -56,7 +57,7 @@ export function Header({
             <Home className="h-5 w-5" aria-hidden="true" />
           </span>
           <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-neutral-50">
-            RentScalper
+            {SITE_NAME}
           </span>
         </div>
 

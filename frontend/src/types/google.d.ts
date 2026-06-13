@@ -1,6 +1,6 @@
 // Minimal type declarations for the Google Identity Services (GSI) client
 // script, loaded at runtime via <script src="https://accounts.google.com/gsi/client">.
-// See AuthModal.tsx for usage. We only type the small surface we use.
+// See AuthPage.tsx for usage. We only type the small surface we use.
 
 interface GoogleCredentialResponse {
   credential: string
