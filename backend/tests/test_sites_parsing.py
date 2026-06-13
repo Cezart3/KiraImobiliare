@@ -1,10 +1,11 @@
 """Pure parsing tests for site adapters — inline fixtures, no network."""
 from bs4 import BeautifulSoup
 
+from app.scraping.extractors.price import PRICE_TEXT_RE
 from app.scraping.sites.capital import _CAP_PRICE_RE, CapitalScraper
 from app.scraping.sites.imobiliare import ImobiliareScraper
 from app.scraping.sites.olx import OlxScraper, _extract_js_string, _photo_urls
-from app.scraping.sites.publi24 import _PRICE_TXT_RE, Publi24Scraper
+from app.scraping.sites.publi24 import Publi24Scraper
 from app.scraping.sites.storia import StoriaScraper, _next_data, _parse_rooms
 
 # --- olx ----------------------------------------------------------------------
@@ -97,8 +98,22 @@ def test_imobiliare_card_parse():
 # --- publi24 --------------------------------------------------------------------
 
 def test_publi24_price_regex():
-    m = _PRICE_TXT_RE.search("Apartament 2 camere 350 € Cluj-Napoca")
+    m = PRICE_TEXT_RE.search("Apartament 2 camere 350 € Cluj-Napoca")
     assert m and m.group(1).strip() == "350"
+
+
+def test_publi24_card_with_badge_counters_and_price_node():
+    html = (
+        '<div class="article-item">'
+        '<a href="/anunt/y">Promovat 3 24 Penthouse exclusivist</a>'
+        '<h2>Penthouse exclusivist</h2>'
+        '<div class="article-price">1 500 EUR</div>'
+        "</div>"
+    )
+    card = BeautifulSoup(html, "html.parser").select_one("div.article-item")
+    raw = Publi24Scraper()._to_raw(card)
+    assert raw.title == "Penthouse exclusivist"
+    assert raw.price_value == "1 500"  # -> 1500 EUR, not 41500
 
 
 def test_publi24_card_parse():

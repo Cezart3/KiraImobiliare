@@ -67,6 +67,7 @@ class Listing(Base):
 
     price_eur: Mapped[float | None] = mapped_column(Float, index=True)
     price_raw: Mapped[str] = mapped_column(String(64), default="")
+    price_negotiable: Mapped[bool] = mapped_column(Boolean, default=False)
     rooms: Mapped[int | None] = mapped_column(Integer, index=True)
     surface_m2: Mapped[float | None] = mapped_column(Float)
     floor: Mapped[str | None] = mapped_column(String(32))

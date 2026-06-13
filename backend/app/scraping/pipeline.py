@@ -31,6 +31,12 @@ _SHORT_STAY = re.compile(
     r"cazare (?:muncitori|in regim)|zilnic\b|saptamanal|pe termen scurt"
 )
 
+# \b keeps "nenegociabil" (fixed price) from matching
+_NEGOTIABLE = re.compile(r"\bnegocia")
+
+# sale ads leaking into rental feeds ("De vânzare apartament...", 126.000 EUR)
+_SALE_AD = re.compile(r"\bde vanzare\b|\bvand\b|\bvindem\b")
+
 _PRECISION_RANK = {"exact": 4, "street": 3, "zone": 2, "city": 1, "none": 0}
 
 
@@ -49,10 +55,14 @@ def _naive_utc(dt: datetime | None) -> datetime | None:
 def drop_reason_rent(raw: RawListing, price_eur: float | None) -> str | None:
     if looks_like_parking_only(raw.title):
         return "parking-only"
+    if _SALE_AD.search(fold(raw.title)):
+        return "sale-ad"
     if _SHORT_STAY.search(fold(_full_text(raw))):
         return "short-stay"
     if price_eur is not None and price_eur < settings.rent_min_eur:
         return "below-min-price"
+    if price_eur is not None and price_eur > settings.rent_max_eur:
+        return "sale-or-misparse"
     return None
 
 
@@ -97,9 +107,14 @@ def apply_extractions(
         listing.source_id = raw.source_id
 
     price = to_eur(raw.price_value, raw.price_currency, settings.ron_per_eur)
+    if price is not None and price > settings.rent_max_eur:
+        price = None  # parse glitch — keep the listing, not the rocket price
     if price is not None:
         listing.price_eur = price
         listing.price_raw = f"{raw.price_value} {raw.price_currency}".strip()[:64]
+    # sticky: detail text often carries it while the re-scraped card does not
+    if _NEGOTIABLE.search(fold(text)):
+        listing.price_negotiable = True
 
     listing.rooms = raw.rooms or extract_rooms(text) or listing.rooms
     listing.surface_m2 = raw.surface_m2 or extract_surface(text) or listing.surface_m2

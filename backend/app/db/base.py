@@ -44,3 +44,23 @@ def init_db() -> None:
     from app.db import models  # noqa: F401  (register tables)
 
     Base.metadata.create_all(engine)
+    _micro_migrate()
+
+
+def _micro_migrate() -> None:
+    """create_all never alters existing tables; add late columns here.
+    (Replace with Alembic if the schema starts moving often.)"""
+    from sqlalchemy import inspect, text
+
+    added = {
+        "listings": {"price_negotiable": "BOOLEAN NOT NULL DEFAULT 0"},
+    }
+    insp = inspect(engine)
+    with engine.begin() as conn:
+        for table, cols in added.items():
+            if table not in insp.get_table_names():
+                continue
+            existing = {c["name"] for c in insp.get_columns(table)}
+            for name, ddl in cols.items():
+                if name not in existing:
+                    conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {name} {ddl}"))

@@ -36,6 +36,7 @@ class ListingOut(BaseModel):
     title: str
     snippet: str = ""
     price_eur: float | None
+    price_negotiable: bool = False
     rooms: int | None
     surface_m2: float | None
     floor: str | None

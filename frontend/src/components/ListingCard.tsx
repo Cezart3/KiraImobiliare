@@ -111,6 +111,11 @@ export function ListingCard({ listing, onOpenParking, openBestParking }: Listing
         <div className="flex items-baseline justify-between gap-2">
           <span className="text-lg font-bold text-slate-900 dark:text-neutral-50">
             {formatPriceMonthly(listing.price_eur)}
+            {listing.price_negotiable && (
+              <span className="ml-1.5 align-middle text-[11px] font-medium uppercase tracking-wide text-emerald-600 dark:text-emerald-400">
+                negociabil
+              </span>
+            )}
           </span>
           {relativeTime && (
             <span className="whitespace-nowrap text-xs text-slate-400 dark:text-neutral-500" title={absoluteTime}>

@@ -27,6 +27,7 @@ class Settings(BaseSettings):
 
     # quality filters
     rent_min_eur: int = 120            # below this => parking spot / short-stay noise
+    rent_max_eur: int = 15000          # above this => price misparse; keep listing, drop price
     parking_max_eur: int = 200         # above this => mis-listed apartment, not a spot
 
     # scheduler

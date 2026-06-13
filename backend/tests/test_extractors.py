@@ -152,3 +152,47 @@ def test_street_stopword_truncation():
 
 def test_street_none():
     assert extract_street("apartament frumos in cartier linistit") == ""
+
+
+# ---------- price text anchoring (publi24 badge-counter bug) ----------
+
+
+def test_find_price_text_ignores_glued_counters():
+    from app.scraping.extractors.price import find_price_text, to_eur
+
+    def parse(s):
+        f = find_price_text(s)
+        return to_eur(f[0], f[1]) if f else None
+
+    assert parse("04 1 500 EUR") == 1500          # was 41500
+    assert parse("05 250 EUR") == 250             # was 5250
+    assert parse("Promovat 3 24 Apartament 2 cam 550 EUR") == 550
+    assert parse("550 EUR") == 550
+    assert parse("1.500 eur") == 1500
+    assert parse("1 500 EUR") == 1500
+    assert parse("2 000 lei") == 400              # 5 RON/EUR default
+    assert parse("fara pret") is None
+
+
+def test_negotiable_flag_detection():
+    import re
+
+    from app.core.textutil import fold
+
+    neg = re.compile(r"\bnegocia")
+    assert neg.search(fold("Pret 350 EUR negociabil"))
+    assert neg.search(fold("usor negociabil!"))
+    assert not neg.search(fold("pret fix nenegociabil"))
+    assert not neg.search(fold("apartament 2 camere"))
+
+
+def test_to_eur_separator_disambiguation():
+    from app.scraping.extractors.price import to_eur
+
+    assert to_eur("1.500 eur") == 1500          # RO thousands
+    assert to_eur("906.29 EUR") == 906.3        # decimal dot (imobiliare)
+    assert to_eur("3023.79 eur") == 3023.8
+    assert to_eur("1,000", "EUR") == 1000       # EN thousands (capital)
+    assert to_eur("906,29 eur") == 906.3        # decimal comma
+    assert to_eur("1.234.567 eur") == 1234567
+    assert to_eur("2 000 lei") == 400

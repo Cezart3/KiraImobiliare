@@ -67,6 +67,7 @@ export interface Listing {
   title: string
   snippet: string | null
   price_eur: number | null
+  price_negotiable: boolean
   rooms: number | null
   surface_m2: number | null
   floor: string | null

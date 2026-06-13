@@ -14,13 +14,15 @@ from bs4 import BeautifulSoup
 from app.core.cities import CityConfig
 from app.core.textutil import squash_ws
 from app.scraping.base import RawListing, SiteScraper, register
+from app.scraping.extractors.price import find_price_text
 from app.scraping.http import PoliteSession
 
 log = logging.getLogger(__name__)
 
 BASE = "https://www.publi24.ro"
 _LDJSON_RE = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.S)
-_PRICE_TXT_RE = re.compile(r"(\d[\d.\s]{1,9})\s*(€|eur|euro|lei|ron)", re.I)
+# cards prefix text with badge counters ("Promovat 3 24 ..."); strip them from titles
+_TITLE_JUNK_RE = re.compile(r"^(?:promovat\s+)?\d+\s+\d+\s+", re.I)
 
 
 class Publi24Scraper(SiteScraper):
@@ -39,14 +41,25 @@ class Publi24Scraper(SiteScraper):
             return None
         url = urljoin(BASE, a["href"])
         card_text = squash_ws(c.get_text(" "))
-        title = squash_ws(a.get_text(" "))[:120] or card_text[:80]
 
+        # title: the h2/.article-title node is clean; anchors/card text carry
+        # badge counters ("Promovat 3 24 ...") that must be stripped
+        tnode = c.select_one("h2, [class*='article-title']")
+        title = squash_ws(tnode.get_text(" ")) if tnode else ""
+        if not title:
+            title = _TITLE_JUNK_RE.sub("", squash_ws(a.get_text(" ")) or card_text[:80])
+        title = title[:120]
+
+        # price: dedicated node first ("550 EUR"); regex fallback is anchored so
+        # the badge counters can't glue onto the number (1500, not 41500)
         price_value = ""
         price_currency = ""
-        mp = _PRICE_TXT_RE.search(card_text)
-        if mp:
-            price_value = mp.group(1).strip()
-            price_currency = mp.group(2)
+        pnode = c.select_one(".article-price, [class*='article-price']")
+        found = find_price_text(
+            squash_ws(pnode.get_text(" ")) if pnode else card_text
+        )
+        if found:
+            price_value, price_currency = found
 
         return RawListing(
             site=self.site,
