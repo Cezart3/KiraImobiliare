@@ -42,7 +42,8 @@ A polite scraping worker downloads public listing pages → a regex pipeline ext
 the facts from messy Romanian text (heating, parking, price, rooms, street) →
 everything is geocoded and matched against nearby rentable parking spots → a FastAPI
 backend serves it and a React SPA displays it. No listings ship in the repo: each user
-generates their own data locally on first run (a few minutes), then it's instant.
+generates their own data locally on first run (roughly 10–15 minutes per city — it
+fetches every listing from all sources, with progress shown live), then it's instant.
 
 ```
 backend/   Python 3.12 · FastAPI · SQLAlchemy 2.0 (typed) · APScheduler · SQLite · pytest
@@ -80,7 +81,8 @@ npm run dev
 ```
 
 Open **http://localhost:5173**, pick a city, click **"Actualizează anunțuri"** (Refresh
-listings). The first refresh takes a few minutes; afterwards it's instant.
+listings). The first refresh takes ~10–15 minutes (it pulls every current listing from
+all sources — you'll see live progress); afterwards it's instant.
 
 ### For developers
 ```bash
