@@ -7,6 +7,7 @@ import { PrivacyPage } from '@/pages/legal/PrivacyPage'
 import { TermsPage } from '@/pages/legal/TermsPage'
 import { CookiesPage } from '@/pages/legal/CookiesPage'
 import { AboutPage } from '@/pages/legal/AboutPage'
+import { NotFoundPage } from '@/pages/NotFoundPage'
 import { CookieNotice } from '@/components/CookieNotice'
 import { CompareProvider } from '@/context/CompareContext'
 import { ApiError } from '@/api/client'
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
       { path: '/termeni', element: <TermsPage /> },
       { path: '/cookies', element: <CookiesPage /> },
       { path: '/despre', element: <AboutPage /> },
+      { path: '*', element: <NotFoundPage /> },
     ],
   },
 ])

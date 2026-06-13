@@ -26,10 +26,11 @@ export function CookiesPage() {
         Folosim un singur cookie: <code>rs_session</code> — cookie esențial de autentificare
         (httpOnly), strict necesar funcționării contului; expiră după 30 de zile sau la
         deconectare. Pentru cookie-urile strict necesare nu este cerut consimțământul
-        (Directiva ePrivacy). Preferința de temă (mod întunecat) se salvează local în browserul
-        tău (localStorage) și nu ne este transmisă. Nu folosim cookie-uri de publicitate,
-        tracking sau analytics. La plata prin Stripe, pagina de checkout aparține Stripe și
-        folosește propriile cookie-uri (vezi politica Stripe).
+        (Directiva ePrivacy). În plus, salvăm local în browserul tău (localStorage, nu cookie-uri,
+        nu ne sunt transmise): preferința de temă (mod întunecat), anunțurile salvate la favorite
+        când nu ești autentificat, și alegerea ta privind acest cookie. Nu folosim cookie-uri de
+        publicitate, tracking sau analytics. La plata prin Stripe, pagina de checkout aparține
+        Stripe și folosește propriile cookie-uri (vezi politica Stripe).
       </p>
 
       <h2 className="mt-6 text-lg font-semibold text-slate-900 dark:text-neutral-100">

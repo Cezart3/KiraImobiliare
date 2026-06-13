@@ -32,6 +32,16 @@ export function PrivacyPage() {
               Date tehnice: adresa IP este folosită temporar (în memorie) pentru limitarea
               abuzurilor (rate limiting) și în jurnalele serverului pentru securitate.
             </>,
+            <>
+              Adresa pentru calculul distanței: dacă introduci o adresă/un reper pentru a vedea
+              cât de aproape e o chirie, acel text este trimis către serviciul de geocodare
+              OpenStreetMap (Nominatim) ca să obținem coordonatele. Nu îl asociem cu contul tău.
+            </>,
+            <>
+              Preferințe salvate local în browserul tău (localStorage): tema (mod întunecat),
+              anunțurile salvate la favorite când nu ești autentificat, și alegerea ta privind
+              cookie-ul. Aceste date rămân pe dispozitivul tău și nu ne sunt transmise.
+            </>,
             <>Cookie de sesiune: un singur cookie esențial (rs_session) care te ține autentificat.</>,
           ]}
         />
@@ -50,9 +60,10 @@ export function PrivacyPage() {
             </>,
             <>Securitate, prevenirea abuzurilor — interes legitim (lit. f).</>,
             <>
-              Anunțurile afișate provin din surse publice (site-uri de imobiliare) și pot conține
-              date publicate de autorii anunțurilor; le indexăm pe temeiul interesului legitim, iar
-              fiecare anunț trimite către sursa originală.
+              Anunțurile afișate provin din surse publice (site-uri de imobiliare); le indexăm pe
+              temeiul interesului legitim, iar fiecare anunț trimite către sursa originală.
+              Eliminăm automat datele de contact (numere de telefon, adrese de email) din textul
+              anunțurilor pe care îl păstrăm — contactul rămâne disponibil pe anunțul original.
             </>,
           ]}
         />
@@ -63,6 +74,10 @@ export function PrivacyPage() {
           items={[
             <>Stripe Payments Europe Ltd. — procesator de plăți (vezi politica lor de confidențialitate).</>,
             <>Google LLC — doar dacă folosești autentificarea Google.</>,
+            <>
+              OpenStreetMap Foundation (Nominatim) — doar textul adresei introduse de tine pentru
+              calculul distanței, fără alte date personale.
+            </>,
             <>Furnizorul de găzduire al serverului (UE).</>,
             <>Nu vindem și nu închiriem datele tale nimănui.</>,
           ]}
