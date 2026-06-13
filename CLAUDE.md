@@ -24,7 +24,9 @@ Target cities: Cluj-Napoca, Oradea, Timisoara, Iasi, Targu Mures, Bucuresti.
 - Listing "active" = `last_seen_at` within `RS_LISTING_ACTIVE_DAYS` (no delete jobs).
 - Card click goes to the ORIGINAL listing URL; images go through `/api/img?u=` proxy (host whitelist = adapters' `image_hosts`).
 - Parking taxonomy: included / likely_included / area_possible / none / unknown + separate ParkingMatch rows for rentable spots nearby. `is_approx` when either side geocoded at zone/city precision.
-- Scrapers must stay polite: PoliteSession (per-host delay), page caps, budget-capped detail fetches; never retry non-200.
+- Scrapers must stay polite: PoliteSession (per-host delay), page caps, budget-capped detail fetches; never retry non-200. Identifiable UA ("KiraBot", points to /despre); only scrape robots.txt-allowed listing pages (verified: storia/olx/imobiliare/publi24 allow the result+offer paths we hit).
+- GDPR data minimisation: `core/textutil.redact_personal` strips phone numbers + emails from stored title/description (applied in `pipeline.apply_extractions` + `upsert_parking`). Never store contact details — users get them on the original ad we link to.
+- Legal: in-app /despre (good-faith aggregation + source opt-out), /termeni has an IP + anti-scraping clause, /confidentialitate, /cookies. Product name "Kira" © in Terms.
 - Settings via `.env` at repo root, prefix `RS_` (see `.env.example`).
 - Freemium paywall: free users get first `RS_FREE_LISTING_LIMIT` listings, but `total` in `/api/listings` is ALWAYS the real count (product requirement). Gating lives ONLY server-side in `listings.py`; never trust the client.
 - Subscription: 15 RON/month Stripe. Cancel must stay one click (Billing Portal). Checkout has an idempotency key + server-side duplicate-subscription check — keep both when touching billing.

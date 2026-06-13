@@ -16,7 +16,7 @@ from app.core.cities import (
     mentions_other_city,
 )
 from app.core.config import settings
-from app.core.textutil import fold
+from app.core.textutil import fold, redact_personal
 from app.db.models import GeoPrecision, Listing, ParkingSpot, utcnow
 from app.scraping.base import RawListing
 from app.scraping.extractors.address import extract_street, has_house_number
@@ -110,10 +110,12 @@ def apply_extractions(
     """Idempotent: runs on insert, on re-scrape, and after detail enrichment."""
     text = _full_text(raw)
 
+    # store redacted copies (no phone numbers / emails — GDPR data minimisation);
+    # extraction below still uses the in-memory `text` which keeps street/landmark
     if raw.title:
-        listing.title = raw.title
+        listing.title = redact_personal(raw.title)
     if raw.description and len(raw.description) > len(listing.description or ""):
-        listing.description = raw.description
+        listing.description = redact_personal(raw.description)
     if raw.images:
         listing.images = raw.images[:8]
     if raw.location_text:
@@ -238,9 +240,9 @@ def upsert_parking(
         db.add(spot)
 
     text = _full_text(raw)
-    spot.title = raw.title or spot.title
+    spot.title = redact_personal(raw.title) or spot.title
     if raw.description and len(raw.description) > len(spot.description or ""):
-        spot.description = raw.description
+        spot.description = redact_personal(raw.description)
     if price is not None:
         spot.price_eur = price
     kind, numbered = classify_parking_spot(text)

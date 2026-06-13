@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
 
     # scraping politeness
+    user_agent: str = ""               # override the default identifiable UA if a source blocks it
     request_delay_s: float = 1.5
     request_timeout_s: int = 25
     max_pages_per_site: int = 10

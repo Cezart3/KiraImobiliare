@@ -42,6 +42,23 @@ export function TermsPage() {
         </p>
       </LegalSection>
 
+      <LegalSection title="Proprietate intelectuală și utilizare permisă">
+        <p>
+          Codul sursă, designul, textele, structura bazei de date și elementele derivate
+          create de noi (clasificarea încălzirii și a parcării, potrivirea cu locurile de
+          parcare, estimările de distanță, organizarea pe zone și repere) sunt protejate de
+          dreptul de autor și aparțin {SITE_NAME}. Marca, numele și logo-ul {SITE_NAME} ne
+          aparțin. © 2026 {SITE_NAME}. Toate drepturile rezervate.
+        </p>
+        <p>
+          Este interzisă, fără acordul nostru scris: copierea, reproducerea sau crearea de
+          lucrări derivate din serviciu; extragerea automată a datelor noastre (scraping,
+          crawling, apeluri automate către API sau pagini); reutilizarea bazei noastre de
+          date, integral sau a unei părți substanțiale. Poți folosi serviciul normal, ca
+          utilizator, pentru a căuta chirii pentru tine.
+        </p>
+      </LegalSection>
+
       <LegalSection title="Limitarea răspunderii">
         <p>
           Serviciul este furnizat «ca atare». Nu garantăm că toate anunțurile existente pe piață

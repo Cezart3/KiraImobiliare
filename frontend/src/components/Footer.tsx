@@ -62,6 +62,11 @@ export function Footer({ citySlug }: FooterProps) {
             <p className="text-sm font-semibold text-slate-900 dark:text-neutral-50">Legal</p>
             <ul className="mt-3 flex flex-col gap-2 text-sm text-slate-500 dark:text-neutral-400">
               <li>
+                <Link to="/despre" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
+                  Despre
+                </Link>
+              </li>
+              <li>
                 <Link to="/confidentialitate" className="transition-colors hover:text-emerald-600 dark:hover:text-emerald-400">
                   Politica de confidențialitate
                 </Link>

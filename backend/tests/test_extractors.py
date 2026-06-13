@@ -269,3 +269,22 @@ def test_find_landmark_cluj():
     assert find_landmark(c, "zona Expo Transilvania").slug == "expo-transilvania"
     assert find_landmark(c, "langa Iulius Mall").slug == "iulius-mall"
     assert find_landmark(c, "apartament fara reper in Manastur") is None
+
+
+def test_redact_personal():
+    from app.core.textutil import redact_personal
+
+    # RO mobile in various formats -> removed
+    assert "0786 454 209" not in redact_personal("Sunati la 0786 454 209 pentru vizionari")
+    assert "0786454209" not in redact_personal("tel 0786454209")
+    assert "+40786454209" not in redact_personal("contact +40786454209")
+    # email removed
+    assert "ion@gmail.com" not in redact_personal("scrie la ion@gmail.com")
+    # placeholder left behind, rest of text intact
+    out = redact_personal("Apartament 2 camere, 0721 222 333, zona Centru")
+    assert "Apartament 2 camere" in out and "zona Centru" in out
+    assert "[contact pe site]" in out
+    # does NOT eat surfaces / years / prices
+    assert redact_personal("suprafata 54 mp, anul 2020, pret 450 EUR") == (
+        "suprafata 54 mp, anul 2020, pret 450 EUR"
+    )

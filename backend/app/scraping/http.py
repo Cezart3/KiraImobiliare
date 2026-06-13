@@ -15,9 +15,12 @@ from app.core.config import settings
 
 log = logging.getLogger(__name__)
 
-UA = (
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
-    "(KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+# Honest, identifiable User-Agent: a browser token (many CDNs reject non-browser
+# UAs) plus a clear self-identification + contact, signalling good-faith,
+# polite aggregation that links back to the source. Override via RS_USER_AGENT.
+UA = settings.user_agent or (
+    "Mozilla/5.0 (compatible; KiraBot/1.0; +https://kiraimobiliare.ro/despre) "
+    "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
 )
 HEADERS = {
     "User-Agent": UA,
