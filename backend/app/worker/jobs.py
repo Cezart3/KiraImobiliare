@@ -21,18 +21,23 @@ log = logging.getLogger(__name__)
 # parking words worth a full-description fetch when the status is still weak
 _PARKING_HINT = ("parcare", "garaj", "parking")
 _WEAK_PARKING = {"unknown", "likely_included"}
+# street words: if geo is only zone/city but the text says "strada/str", the
+# exact address is probably folded in the full description -> fetch it
+_STREET_HINT = ("strada ", "str. ", "str.", " bd ", "bulevard", "calea ", "aleea ")
+_WEAK_GEO = {"zone", "city", "none", None}
 
 
 def _needs_enrich(obj) -> bool:
     if len(obj.description or "") < 200 or not obj.images:
         return True
+    hay = f"{obj.title} {obj.description}".lower()
     # parking still ambiguous but the title/snippet mentions parking -> the
     # decisive phrase is likely folded inside the full description
-    if obj.parking_status in _WEAK_PARKING:
-        hay = f"{obj.title} {obj.description}".lower()
-        if any(w in hay for w in _PARKING_HINT):
-            return True
-    return False
+    if obj.parking_status in _WEAK_PARKING and any(w in hay for w in _PARKING_HINT):
+        return True
+    # weak geolocation but a street is mentioned -> pull the full text so the
+    # street extractor can pin it instead of falling back to the zone centroid
+    return obj.geo_precision in _WEAK_GEO and any(w in hay for w in _STREET_HINT)
 
 
 def _scrape_kind(

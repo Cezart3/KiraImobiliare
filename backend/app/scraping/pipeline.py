@@ -7,7 +7,14 @@ from datetime import UTC, datetime
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from app.core.cities import CityConfig, Place, find_town, find_zone, mentions_other_city
+from app.core.cities import (
+    CityConfig,
+    Place,
+    find_landmark,
+    find_town,
+    find_zone,
+    mentions_other_city,
+)
 from app.core.config import settings
 from app.core.textutil import fold
 from app.db.models import GeoPrecision, Listing, ParkingSpot, utcnow
@@ -37,7 +44,9 @@ _NEGOTIABLE = re.compile(r"\bnegocia")
 # sale ads leaking into rental feeds ("De vânzare apartament...", 126.000 EUR)
 _SALE_AD = re.compile(r"\bde vanzare\b|\bvand\b|\bvindem\b")
 
-_PRECISION_RANK = {"exact": 4, "street": 3, "zone": 2, "city": 1, "none": 0}
+_PRECISION_RANK = {
+    "exact": 5, "street": 4, "landmark": 3, "zone": 2, "city": 1, "none": 0
+}
 
 
 def _full_text(raw: RawListing) -> str:
@@ -71,10 +80,13 @@ def _geolocate(
     zone: Place | None,
     town: Place | None,
     street: str,
+    landmark: Place | None,
     geocoder: Geocoder,
 ) -> tuple[float, float, str]:
-    """Pick the best coordinates we can justify. Town listings use the town centroid
-    (streets there would mis-geocode under the main city's viewbox)."""
+    """Best coordinates we can justify, in order of specificity:
+    street(+number) > known landmark > zone centroid > city centre.
+    Town listings use the town centroid (streets there would mis-geocode under
+    the main city's viewbox)."""
     if town:
         return town.lat, town.lon, GeoPrecision.ZONE.value
     if street:
@@ -84,6 +96,9 @@ def _geolocate(
         if coords and haversine_m(coords[0], coords[1], city.lat, city.lon) <= max_m:
             prec = GeoPrecision.EXACT if has_house_number(street) else GeoPrecision.STREET
             return coords[0], coords[1], prec.value
+    if landmark:
+        # exact coordinates of a known reference point — no network call needed
+        return landmark.lat, landmark.lon, GeoPrecision.LANDMARK.value
     if zone:
         return zone.lat, zone.lon, GeoPrecision.ZONE.value
     return city.lat, city.lon, GeoPrecision.CITY.value
@@ -137,19 +152,26 @@ def apply_extractions(
         listing.zone_slug = zone.slug
 
     street = extract_street(text, city.stop_terms())
+    # a known reference point (mall, OMV, Expo...) named in title/desc — better
+    # than the zone centroid when there's no explicit street
+    landmark = find_landmark(city, raw.title, raw.location_text, raw.description)
     listing.address_extracted = (
         f"{street}, {zone.name}" if street and zone
-        else street or (zone.name if zone else "") or (town.name if town else "")
+        else street
+        or (f"lângă {landmark.name}" if landmark else "")
+        or (zone.name if zone else "")
+        or (town.name if town else "")
     )[:255]
 
     new_rank = (
-        4 if (street and has_house_number(street))
-        else 3 if street
+        5 if (street and has_house_number(street))
+        else 4 if street
+        else 3 if landmark
         else 2 if (zone or town)
         else 1
     )
     if new_rank > _PRECISION_RANK.get(listing.geo_precision or "none", 0):
-        lat, lon, prec = _geolocate(city, zone, town, street, geocoder)
+        lat, lon, prec = _geolocate(city, zone, town, street, landmark, geocoder)
         listing.lat, listing.lon, listing.geo_precision = lat, lon, prec
 
     if listing.price_eur and listing.rooms and listing.surface_m2:

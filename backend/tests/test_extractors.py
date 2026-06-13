@@ -238,11 +238,12 @@ def test_needs_enrich_parking_hint():
     from app.worker.jobs import _needs_enrich
 
     class L:
-        def __init__(self, title, desc, status, images):
+        def __init__(self, title, desc, status, images, geo="exact"):
             self.title = title
             self.description = desc
             self.parking_status = status
             self.images = images
+            self.geo_precision = geo
 
     long_desc = "x" * 250
     # weak status + parking in title -> enrich
@@ -254,3 +255,17 @@ def test_needs_enrich_parking_hint():
     assert not _needs_enrich(L("Apartament 2 camere", long_desc, "unknown", ["a"]))
     # thin desc always enriches
     assert _needs_enrich(L("Apartament", "scurt", "included", ["a"]))
+    # weak geo + street mention -> enrich to pin the exact address
+    assert _needs_enrich(L("Apartament strada Cojocnei", long_desc, "included", ["a"], geo="zone"))
+    # weak geo, no street mention -> no need
+    assert not _needs_enrich(L("Apartament zona buna", long_desc, "included", ["a"], geo="zone"))
+
+
+def test_find_landmark_cluj():
+    from app.core.cities import find_landmark, get_city
+
+    c = get_city("cluj-napoca")
+    assert find_landmark(c, "Marasti/Kaufland/Anina").slug == "kaufland-marasti"
+    assert find_landmark(c, "zona Expo Transilvania").slug == "expo-transilvania"
+    assert find_landmark(c, "langa Iulius Mall").slug == "iulius-mall"
+    assert find_landmark(c, "apartament fara reper in Manastur") is None

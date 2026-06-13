@@ -223,5 +223,179 @@
       "lon": 23.7110633,
       "verified": true
     }
+  ],
+  "landmarks": [
+    {
+      "slug": "kaufland-marasti",
+      "name": "Kaufland Mărăști",
+      "lat": 46.7816,
+      "lon": 23.6207,
+      "aliases": [
+        "kaufland marasti",
+        "zona kaufland",
+        "kaufland"
+      ]
+    },
+    {
+      "slug": "iulius-mall",
+      "name": "Iulius Mall",
+      "lat": 46.7704,
+      "lon": 23.6243,
+      "aliases": [
+        "iulius mall",
+        "iulius",
+        "zona iulius"
+      ]
+    },
+    {
+      "slug": "expo-transilvania",
+      "name": "Expo Transilvania",
+      "lat": 46.7833,
+      "lon": 23.6258,
+      "aliases": [
+        "expo transilvania",
+        "zona expo",
+        "expo"
+      ]
+    },
+    {
+      "slug": "the-office",
+      "name": "The Office",
+      "lat": 46.7771,
+      "lon": 23.621,
+      "aliases": [
+        "the office",
+        "the ofiice",
+        "the offices"
+      ]
+    },
+    {
+      "slug": "the-nest",
+      "name": "The Nest",
+      "lat": 46.779,
+      "lon": 23.608,
+      "aliases": [
+        "the nest"
+      ]
+    },
+    {
+      "slug": "piata-marasti",
+      "name": "Piața Mărăști",
+      "lat": 46.7782,
+      "lon": 23.6143,
+      "aliases": [
+        "piata marasti"
+      ]
+    },
+    {
+      "slug": "farmec",
+      "name": "Farmec",
+      "lat": 46.7826,
+      "lon": 23.619,
+      "aliases": [
+        "farmec",
+        "zona farmec"
+      ]
+    },
+    {
+      "slug": "lidl-marasti",
+      "name": "Lidl Mărăști",
+      "lat": 46.7799,
+      "lon": 23.6166,
+      "aliases": [
+        "lidl marasti"
+      ]
+    },
+    {
+      "slug": "vivo-polus",
+      "name": "VIVO! (Polus)",
+      "lat": 46.792,
+      "lon": 23.524,
+      "aliases": [
+        "vivo",
+        "polus",
+        "zona polus",
+        "centrul comercial polus"
+      ]
+    },
+    {
+      "slug": "golden-tulip",
+      "name": "Golden Tulip (Zorilor)",
+      "lat": 46.757,
+      "lon": 23.586,
+      "aliases": [
+        "golden tulip"
+      ]
+    },
+    {
+      "slug": "iulius-mall-gheorgheni",
+      "name": "Gheorgheni / Iulius",
+      "lat": 46.769,
+      "lon": 23.623,
+      "aliases": [
+        "zona iulius gheorgheni"
+      ]
+    },
+    {
+      "slug": "sigma-center",
+      "name": "Sigma Center",
+      "lat": 46.7641,
+      "lon": 23.6072,
+      "aliases": [
+        "sigma center",
+        "zona sigma"
+      ]
+    },
+    {
+      "slug": "calea-turzii-omv",
+      "name": "OMV Calea Turzii",
+      "lat": 46.756,
+      "lon": 23.599,
+      "aliases": [
+        "omv calea turzii",
+        "omv turzii"
+      ]
+    },
+    {
+      "slug": "hoia",
+      "name": "Pădurea Hoia",
+      "lat": 46.766,
+      "lon": 23.526,
+      "aliases": [
+        "zona hoia",
+        "padurea hoia"
+      ]
+    },
+    {
+      "slug": "gara",
+      "name": "Gara Cluj",
+      "lat": 46.7847,
+      "lon": 23.5972,
+      "aliases": [
+        "zona garii",
+        "gara cluj",
+        "langa gara"
+      ]
+    },
+    {
+      "slug": "umf",
+      "name": "UMF / Centru medical",
+      "lat": 46.7693,
+      "lon": 23.5876,
+      "aliases": [
+        "umf",
+        "zona umf"
+      ]
+    },
+    {
+      "slug": "ubb-centru",
+      "name": "UBB Centru",
+      "lat": 46.7677,
+      "lon": 23.5895,
+      "aliases": [
+        "ubb",
+        "universitate babes"
+      ]
+    }
   ]
 }

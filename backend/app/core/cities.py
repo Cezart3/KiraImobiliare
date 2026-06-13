@@ -40,6 +40,7 @@ class CityConfig:
     sites: dict
     zones: tuple[Place, ...]
     nearby_towns: tuple[Place, ...]
+    landmarks: tuple[Place, ...]   # well-known reference points (malls, etc.)
 
     def stop_terms(self) -> frozenset[str]:
         """City-name tokens, used to truncate street extraction."""
@@ -80,6 +81,7 @@ def load_cities() -> dict[str, CityConfig]:
             sites=d.get("sites", {}),
             zones=tuple(_place(z) for z in d.get("zones", [])),
             nearby_towns=tuple(_place(t) for t in d.get("nearby_towns", [])),
+            landmarks=tuple(_place(lm) for lm in d.get("landmarks", [])),
         )
     return out
 
@@ -106,6 +108,12 @@ def find_zone(city: CityConfig, *texts: str | None) -> Place | None:
 
 def find_town(city: CityConfig, *texts: str | None) -> Place | None:
     return _find_place(city.nearby_towns, *texts)
+
+
+def find_landmark(city: CityConfig, *texts: str | None) -> Place | None:
+    """A known reference point named in the text (e.g. 'zona Kaufland Mărăști').
+    More specific than the zone centroid, less than a full street address."""
+    return _find_place(city.landmarks, *texts)
 
 
 def mentions_other_city(text: str | None, current_slug: str) -> bool:

@@ -41,10 +41,11 @@ class Heating(StrEnum):
 
 
 class GeoPrecision(StrEnum):
-    EXACT = "exact"     # street + number
-    STREET = "street"   # street-level geocode
-    ZONE = "zone"       # neighbourhood centroid
-    CITY = "city"       # city-centre fallback
+    EXACT = "exact"        # street + number
+    STREET = "street"      # street-level geocode
+    LANDMARK = "landmark"  # known reference point (mall, etc.) named in the text
+    ZONE = "zone"          # neighbourhood centroid
+    CITY = "city"          # city-centre fallback
     NONE = "none"
 
 
