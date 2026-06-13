@@ -29,16 +29,22 @@ def _resolve_origins(
     db: Session, near: list[str], city_slug: str
 ) -> list[tuple[float, float, str]]:
     """Geocode up to a few user-supplied origin addresses (free, cached). Returns
-    (lat, lon, label) for each one we could place."""
+    (lat, lon, label) for each one we could place.
+
+    Hardened against abuse: caps the number of origins, the address length, and
+    the live-geocode budget per request (cached lookups are unlimited and free;
+    only genuinely-new addresses hit Nominatim, max 1/sec per OSM policy)."""
     cities = load_cities()
     city = cities.get(city_slug)
     if city is None:
         return []
-    geocoder = Geocoder(db)
+    # small per-request budget: a normal user supplies 1-3 distinct addresses;
+    # this stops someone spamming unique strings from hammering OSM through us
+    geocoder = Geocoder(db, budget=_MAX_ORIGINS)
     out: list[tuple[float, float, str]] = []
     seen: set[str] = set()
     for raw in near[:_MAX_ORIGINS]:
-        label = " ".join((raw or "").split()).strip()
+        label = " ".join((raw or "").split()).strip()[:120]  # cap length
         if not label or label.lower() in seen:
             continue
         seen.add(label.lower())

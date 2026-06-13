@@ -9,6 +9,7 @@ import { CookiesPage } from '@/pages/legal/CookiesPage'
 import { AboutPage } from '@/pages/legal/AboutPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 import { CookieNotice } from '@/components/CookieNotice'
+import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { CompareProvider } from '@/context/CompareContext'
 import { ApiError } from '@/api/client'
 
@@ -54,9 +55,11 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
+    <ErrorBoundary>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ErrorBoundary>
   )
 }
 
