@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL } from '@/lib/site'
+import { CONTACT_EMAIL, SITE_NAME } from '@/lib/site'
 import { LegalLayout, LegalSection } from './LegalLayout'
 
 export function TermsPage() {
@@ -6,7 +6,7 @@ export function TermsPage() {
     <LegalLayout title="Termeni și condiții">
       <LegalSection title="Serviciul">
         <p>
-          RentForYou este un motor de căutare/agregator de anunțuri de închiriere publicate pe
+          {SITE_NAME} este un motor de căutare/agregator de anunțuri de închiriere publicate pe
           site-uri terțe din România. Nu suntem agenție imobiliară, nu intermediem tranzacții și
           nu suntem autorii anunțurilor. Fiecare anunț afișat trimite către pagina originală de pe
           site-ul sursă; corectitudinea informațiilor din anunțuri aparține autorilor și

@@ -275,7 +275,7 @@ export function AuthPage() {
         </div>
 
         <Link
-          to="/"
+          to="/cauta"
           className="mt-6 inline-flex items-center gap-1.5 self-center text-sm font-medium text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />

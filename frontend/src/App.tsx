@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom'
+import { LandingPage } from '@/pages/LandingPage'
 import { SearchPage } from '@/pages/SearchPage'
 import { AuthPage } from '@/pages/AuthPage'
 import { PrivacyPage } from '@/pages/legal/PrivacyPage'
@@ -37,7 +38,8 @@ const router = createBrowserRouter([
   {
     element: <RootLayout />,
     children: [
-      { path: '/', element: <SearchPage /> },
+      { path: '/', element: <LandingPage /> },
+      { path: '/cauta', element: <SearchPage /> },
       { path: '/cont', element: <AuthPage /> },
       { path: '/confidentialitate', element: <PrivacyPage /> },
       { path: '/termeni', element: <TermsPage /> },

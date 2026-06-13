@@ -1,9 +1,11 @@
-# RentForYou
+# Kira
 
 **A rental-listings aggregator for Romania** — one search across many real-estate
 sites, with filters the source sites don't offer: own-boiler vs district heating,
 parking taxonomy, and automatic matching of apartments with nearby *rentable*
 parking spots (walking distance included).
+
+> Product name: **Kira** (kiraimobiliare.ro). Repository: `RentForYou`.
 
 Built end to end: a polite scraping worker, a Romanian-language extraction
 pipeline, a FastAPI backend with accounts + Stripe subscriptions, and a React SPA.
@@ -23,7 +25,7 @@ pipeline, a FastAPI backend with accounts + Stripe subscriptions, and a React SP
 Romanian rental portals each cover a slice of the market and none let you filter on
 what actually matters to a renter: *does the flat have its own gas boiler or is it on
 city district heating?* *Is parking included, or is there a rentable spot nearby?*
-RentForYou scrapes the listings, **extracts those facts from free Romanian text**,
+Kira scrapes the listings, **extracts those facts from free Romanian text**,
 geocodes them, and lets you filter — then sends every click back to the original ad.
 
 ## Highlights

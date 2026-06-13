@@ -17,7 +17,7 @@ export function LegalLayout({ title, children }: LegalLayoutProps) {
     <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-neutral-950">
       <div className="mx-auto w-full max-w-3xl flex-1 px-4 py-8 sm:px-6 lg:px-8">
         <Link
-          to="/"
+          to="/cauta"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />

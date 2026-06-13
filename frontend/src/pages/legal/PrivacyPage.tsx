@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, OPERATOR } from '@/lib/site'
+import { CONTACT_EMAIL, OPERATOR, SITE_NAME } from '@/lib/site'
 import { LegalLayout, LegalList, LegalSection } from './LegalLayout'
 
 export function PrivacyPage() {
@@ -6,7 +6,7 @@ export function PrivacyPage() {
     <LegalLayout title="Politica de confidențialitate">
       <LegalSection title="Cine suntem">
         <p>
-          RentForYou (denumit în continuare «Serviciul») este operat de {OPERATOR}. Contact pentru
+          {SITE_NAME} (denumit în continuare «Serviciul») este operat de {OPERATOR}. Contact pentru
           orice întrebare legată de datele personale: {CONTACT_EMAIL}. Serviciul agregă anunțuri
           publice de închiriere din România și oferă funcții de căutare și filtrare.
         </p>

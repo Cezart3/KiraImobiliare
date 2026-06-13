@@ -10,8 +10,8 @@ interface FooterProps {
   citySlug?: string
 }
 
-const IDEA_MAILTO = `mailto:${CONTACT_EMAIL}?subject=%5BRentForYou%5D%20Idee%20de%20func%C8%9Bionalitate`
-const BUG_MAILTO = `mailto:${CONTACT_EMAIL}?subject=%5BRentForYou%5D%20Bug%20g%C4%83sit`
+const IDEA_MAILTO = `mailto:${CONTACT_EMAIL}?subject=%5BKira%5D%20Idee%20de%20func%C8%9Bionalitate`
+const BUG_MAILTO = `mailto:${CONTACT_EMAIL}?subject=%5BKira%5D%20Bug%20g%C4%83sit`
 
 export function Footer({ citySlug }: FooterProps) {
   const { data, isLoading } = useCityStats(Boolean(citySlug))

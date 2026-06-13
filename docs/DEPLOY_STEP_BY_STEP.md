@@ -1,4 +1,4 @@
-# Deploy RentForYou — pas cu pas, de la zero
+# Deploy Kira — pas cu pas, de la zero
 
 Ghid complet pentru cineva care n-a făcut niciodată deploy. Urmează în ordine.
 Costuri totale: **~4 €/lună (Hetzner) + ~10 €/an (domeniu)**. Stripe ia comision per
@@ -15,7 +15,7 @@ Legendă: `█ TU` = faci tu în browser/cont. `$` = comandă în terminal SSH (
   markup) sau **Namecheap** / **porkbun.com**.
 - Caută un `.ro` (~10–12 €/an la registrar RO ca rotld.ro) sau un `.com` (~10 €/an).
   `.com` e cel mai simplu internațional; `.ro` e local.
-- Cumpără-l. Notează-l. În acest ghid îl numesc `EXEMPLU.ro` — înlocuiește peste tot
+- Cumpără-l. Notează-l. În acest ghid îl numesc `kiraimobiliare.ro` — înlocuiește peste tot
   cu al tău.
 - NU cumpăra add-on-uri (privacy uneori e gratis, restul nu-ți trebuie).
 
@@ -38,7 +38,7 @@ Pe PC-ul tău Windows, în PowerShell:
 
 ```powershell
 # generează o cheie (Enter la toate întrebările, fără passphrase e ok pentru început)
-ssh-keygen -t ed25519 -C "rentforyou-deploy"
+ssh-keygen -t ed25519 -C "kira-deploy"
 # arată cheia PUBLICĂ (asta o dai lui Hetzner — e SIGUR să o arăți)
 type $env:USERPROFILE\.ssh\id_ed25519.pub
 ```
@@ -56,7 +56,7 @@ Copiază tot ce afișează ultima comandă (începe cu `ssh-ed25519 ...`).
 4. **Type**: tab **Shared vCPU** → **CX22** (2 vCPU, 4 GB, ~3.8 €/lună). Suficient
    cu marjă mare pentru >1000 utilizatori/zi.
 5. **SSH key**: → "Add SSH key" → lipește cheia PUBLICĂ din Partea 1 → Add.
-6. **Name**: `rentforyou`.
+6. **Name**: `kira`.
 7. **Create & Buy now**.
 8. După ~30 sec ai un **IP public** (ex. `203.0.113.45`). Notează-l → în ghid `IP_SERVER`.
 
@@ -74,7 +74,7 @@ La registrarul unde ai cumpărat domeniul, în secțiunea DNS, adaugă 2 înregi
 Salvează. Propagarea durează de la câteva minute la câteva ore. Verifici cu:
 
 ```powershell
-nslookup EXEMPLU.ro
+nslookup kiraimobiliare.ro
 ```
 Când îți răspunde cu `IP_SERVER`, e gata.
 
@@ -111,7 +111,7 @@ curl -1sLf 'https://dl.cloudsmith.io/public/caddy/stable/debian.deb.txt' | tee /
 apt update && apt install -y caddy
 
 # user dedicat (nu rulăm app ca root)
-adduser --system --group rentforyou
+adduser --system --group kira
 ```
 
 ---
@@ -122,8 +122,8 @@ Tot pe server:
 
 ```bash
 # clonează codul
-git clone https://github.com/Cezart3/RentForYou.git /srv/rentforyou
-cd /srv/rentforyou
+git clone https://github.com/Cezart3/RentForYou.git /srv/kira
+cd /srv/kira
 
 # backend: mediu virtual + dependențe
 cd backend
@@ -139,7 +139,7 @@ npm run build
 ### 5.1 Fișierul de configurare `.env`
 
 ```bash
-cd /srv/rentforyou
+cd /srv/kira
 cp .env.example .env
 # generează un secret tare pentru sesiuni:
 openssl rand -hex 32
@@ -151,8 +151,8 @@ nano .env
 ```
 RS_SECRET_KEY=<lipește secretul de la openssl>
 RS_COOKIE_SECURE=true
-RS_APP_BASE_URL=https://EXEMPLU.ro
-RS_CORS_ORIGINS=["https://EXEMPLU.ro"]
+RS_APP_BASE_URL=https://kiraimobiliare.ro
+RS_CORS_ORIGINS=["https://kiraimobiliare.ro"]
 RS_ENABLE_ADMIN_ENDPOINTS=false
 RS_ADMIN_TOKEN=<rulează încă un `openssl rand -hex 32` și pune aici>
 
@@ -168,22 +168,22 @@ Salvează în nano: `Ctrl+O`, Enter, `Ctrl+X`.
 
 ```bash
 # dă fișierele pe seama userului dedicat
-chown -R rentforyou:rentforyou /srv/rentforyou
+chown -R kira:kira /srv/kira
 ```
 
 ### 5.2 Servicii systemd (pornesc automat, repornesc la crash/reboot)
 
 ```bash
 # API
-cat > /etc/systemd/system/rentforyou-api.service <<'EOF'
+cat > /etc/systemd/system/kira-api.service <<'EOF'
 [Unit]
-Description=RentForYou API
+Description=Kira API
 After=network.target
 
 [Service]
-User=rentforyou
-WorkingDirectory=/srv/rentforyou/backend
-ExecStart=/srv/rentforyou/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
+User=kira
+WorkingDirectory=/srv/kira/backend
+ExecStart=/srv/kira/backend/.venv/bin/uvicorn app.main:app --host 127.0.0.1 --port 8000
 Restart=always
 
 [Install]
@@ -191,15 +191,15 @@ WantedBy=multi-user.target
 EOF
 
 # Worker (scraping periodic — ține anunțurile la zi)
-cat > /etc/systemd/system/rentforyou-worker.service <<'EOF'
+cat > /etc/systemd/system/kira-worker.service <<'EOF'
 [Unit]
-Description=RentForYou scraping worker
+Description=Kira scraping worker
 After=network.target
 
 [Service]
-User=rentforyou
-WorkingDirectory=/srv/rentforyou/backend
-ExecStart=/srv/rentforyou/backend/.venv/bin/python -m app.worker.scheduler
+User=kira
+WorkingDirectory=/srv/kira/backend
+ExecStart=/srv/kira/backend/.venv/bin/python -m app.worker.scheduler
 Restart=always
 
 [Install]
@@ -207,9 +207,9 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable --now rentforyou-api rentforyou-worker
+systemctl enable --now kira-api kira-worker
 # verifică:
-systemctl status rentforyou-api --no-pager
+systemctl status kira-api --no-pager
 curl -s http://127.0.0.1:8000/api/health    # trebuie {"status":"ok","db":true}
 ```
 
@@ -217,7 +217,7 @@ curl -s http://127.0.0.1:8000/api/health    # trebuie {"status":"ok","db":true}
 
 ```bash
 cat > /etc/caddy/Caddyfile <<'EOF'
-EXEMPLU.ro, www.EXEMPLU.ro {
+kiraimobiliare.ro, www.kiraimobiliare.ro {
     encode gzip
     request_body {
         max_size 2MB
@@ -226,24 +226,24 @@ EXEMPLU.ro, www.EXEMPLU.ro {
         reverse_proxy 127.0.0.1:8000
     }
     handle {
-        root * /srv/rentforyou/frontend/dist
+        root * /srv/kira/frontend/dist
         try_files {path} /index.html
         file_server
     }
 }
 EOF
-# ÎNLOCUIEȘTE EXEMPLU.ro cu domeniul tău în fișierul de mai sus (nano /etc/caddy/Caddyfile)
+# ÎNLOCUIEȘTE kiraimobiliare.ro cu domeniul tău în fișierul de mai sus (nano /etc/caddy/Caddyfile)
 systemctl reload caddy
 ```
 
 Caddy ia singur certificat HTTPS de la Let's Encrypt (gratuit). Deschide
-**https://EXEMPLU.ro** în browser → trebuie să vezi site-ul. 🎉
+**https://kiraimobiliare.ro** în browser → trebuie să vezi site-ul. 🎉
 
 ### 5.4 Prima populare cu anunțuri
 
 ```bash
 # rulează un scrape pe toate orașele acum (workerul oricum o face periodic)
-sudo -u rentforyou /srv/rentforyou/backend/.venv/bin/python \
+sudo -u kira /srv/kira/backend/.venv/bin/python \
   -m app.worker.scheduler --once
 ```
 
@@ -253,7 +253,7 @@ sudo -u rentforyou /srv/rentforyou/backend/.venv/bin/python \
 
 ### 6.1 Produs + preț
 - dashboard.stripe.com (colț stânga-sus comută pe **Test mode**).
-- Products → Add product → nume "RentForYou Plus" → preț **recurring**, **15 RON**,
+- Products → Add product → nume "Kira Plus" → preț **recurring**, **15 RON**,
   **monthly** → Save. Copiază **Price ID** (`price_...`) → în `.env` `RS_STRIPE_PRICE_ID`.
 
 ### 6.2 Cheie secretă
@@ -262,7 +262,7 @@ sudo -u rentforyou /srv/rentforyou/backend/.venv/bin/python \
 
 ### 6.3 Webhook (ca abonamentele să se sincronizeze automat)
 - Developers → Webhooks → Add endpoint:
-  - URL: `https://EXEMPLU.ro/api/billing/webhook`
+  - URL: `https://kiraimobiliare.ro/api/billing/webhook`
   - Events: `checkout.session.completed`, `customer.subscription.created`,
     `customer.subscription.updated`, `customer.subscription.deleted`
   - Add endpoint → copiază **Signing secret** (`whsec_...`) → `.env`
@@ -270,8 +270,8 @@ sudo -u rentforyou /srv/rentforyou/backend/.venv/bin/python \
 
 ```bash
 # după ce ai pus cheile în .env:
-nano /srv/rentforyou/.env        # editezi
-systemctl restart rentforyou-api  # reîncarcă config
+nano /srv/kira/.env        # editezi
+systemctl restart kira-api  # reîncarcă config
 ```
 
 ### 6.4 Test plată
@@ -288,10 +288,10 @@ Diferența test → live e mică:
    verifică fiscal), IBAN pentru payout.
 2. Comută dashboard pe **Live mode**, refă pasul 6.1–6.3 (produs + chei + webhook
    sunt SEPARATE în live) → pune cheile `sk_live_...`, `price_...` (live),
-   `whsec_...` (live) în `.env` → `systemctl restart rentforyou-api`.
+   `whsec_...` (live) în `.env` → `systemctl restart kira-api`.
 3. **Apple Pay / Google Pay**: Stripe → Settings → Payment methods → activează
    Wallets. Pentru Apple Pay: Settings → Payment method domains → adaugă
-   `EXEMPLU.ro` (Stripe verifică automat că domeniul e al tău).
+   `kiraimobiliare.ro` (Stripe verifică automat că domeniul e al tău).
 
 ---
 
@@ -300,9 +300,9 @@ Diferența test → live e mică:
 1. console.cloud.google.com → creează proiect → "APIs & Services" → "OAuth consent
    screen" → External → completează minim (nume app, email).
 2. "Credentials" → Create credentials → **OAuth client ID** → Web application.
-   - Authorized JavaScript origins: `https://EXEMPLU.ro`
+   - Authorized JavaScript origins: `https://kiraimobiliare.ro`
 3. Copiază **Client ID** (`...apps.googleusercontent.com`) → `.env`
-   `RS_GOOGLE_CLIENT_ID` → `systemctl restart rentforyou-api`.
+   `RS_GOOGLE_CLIENT_ID` → `systemctl restart kira-api`.
 4. Butonul Google apare automat pe `/cont`.
 
 ---
@@ -311,25 +311,25 @@ Diferența test → live e mică:
 
 ```bash
 # update cod după ce mai lucrăm:
-cd /srv/rentforyou && git pull
+cd /srv/kira && git pull
 cd backend && ./.venv/bin/pip install -e .          # dacă s-au schimbat deps
 cd ../frontend && npm ci && npm run build           # dacă s-a schimbat frontend
-systemctl restart rentforyou-api rentforyou-worker
+systemctl restart kira-api kira-worker
 
 # loguri live:
-journalctl -u rentforyou-api -f
-journalctl -u rentforyou-worker -f
+journalctl -u kira-api -f
+journalctl -u kira-worker -f
 
 # metrici (anunțuri active, prospețime surse, abonați):
-curl -s -H "X-Admin-Token: <RS_ADMIN_TOKEN>" https://EXEMPLU.ro/api/admin/stats
+curl -s -H "X-Admin-Token: <RS_ADMIN_TOKEN>" https://kiraimobiliare.ro/api/admin/stats
 
 # backup zilnic DB (cron):
 crontab -e
 # adaugă linia:
-0 4 * * * sqlite3 /srv/rentforyou/backend/var/rentscalper.db ".backup /root/rs-backup-$(date +\%F).db"
+0 4 * * * sqlite3 /srv/kira/backend/var/rentscalper.db ".backup /root/rs-backup-$(date +\%F).db"
 ```
 
-Monitorizare uptime gratis: înregistrează `https://EXEMPLU.ro/api/health` la
+Monitorizare uptime gratis: înregistrează `https://kiraimobiliare.ro/api/health` la
 **uptimerobot.com** → primești email dacă pică.
 
 ---

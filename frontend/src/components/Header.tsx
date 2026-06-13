@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Home, Search } from 'lucide-react'
 import type { City } from '@/api/types'
 import { SITE_NAME } from '@/lib/site'
@@ -55,14 +56,14 @@ export function Header({
         {/* Row 1 (mobile): brand on the left, theme + account on the right.
             On sm+ this row becomes part of the single flex row below. */}
         <div className="flex items-center justify-between gap-3 sm:contents">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2" aria-label={`${SITE_NAME} — acasă`}>
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600 text-white">
               <Home className="h-5 w-5" aria-hidden="true" />
             </span>
             <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-neutral-50">
               {SITE_NAME}
             </span>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-3 sm:order-last">
             <ThemeToggle />
