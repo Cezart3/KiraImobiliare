@@ -37,6 +37,16 @@ class Settings(BaseSettings):
     scrape_interval_min: int = 180
     listing_active_days: int = 4       # listing shown while seen within N days
 
+    # monitoring / alerts (SMTP optional — alerts skipped if unset)
+    alert_email: str = ""             # where to send "a source broke" emails
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_from: str = ""               # defaults to smtp_user if empty
+    # a source is "stale" if its newest active listing is older than this (hours)
+    source_stale_hours: int = 12
+
     # parking <-> rent matching
     parking_match_max_m: int = 1000
     parking_matches_per_listing: int = 5

@@ -137,11 +137,14 @@ din trafic" devine practic imposibil.
 
 - **Sănătate**: `curl https://domeniu/api/health` → `{"status":"ok","db":true}`
   (uptime monitoring gratuit: UptimeRobot pe acest URL, alertă pe email).
-- **Metrici operaționale**: setează `RS_ADMIN_TOKEN` în `.env`, apoi:
-  `curl -H "X-Admin-Token: <token>" https://domeniu/api/admin/stats`
-  → anunțuri active per oraș, **prospețimea fiecărei surse** (`newest_seen_min_ago` —
-  dacă o sursă urcă peste câteva ore, adapterul ei e stricat), erori de scrape din
-  ultimele 24h, număr utilizatori/abonați.
+- **Panou admin vizual**: `https://domeniu/api/admin` — dashboard cu verdict de
+  sănătate (ok/atenție/eroare), anunțuri active, prospețimea fiecărei surse
+  (ok/stale), ultimele rulări de scrape, erori 24h, coverage (% cu poză/preț/geo),
+  utilizatori/abonați. Introdu `RS_ADMIN_TOKEN` o dată. JSON brut:
+  `curl -H "X-Admin-Token: <token>" https://domeniu/api/admin/stats`.
+- **Alerte email automate**: setează `RS_ALERT_EMAIL` + `RS_SMTP_*` (Gmail = App
+  Password). Primești email când un scrape eșuează sau o sursă întoarce 0 anunțuri
+  (adapter stricat). Fără SMTP, problemele apar doar în loguri + pe dashboard.
 - **Loguri**: `journalctl -u rentscalper-api -f` și `journalctl -u rentscalper-worker -f`.
 - **Capacitate măsurată** (load test `backend/tools/load_test.py`, mix realist de
   filtre): ~165 req/s pe un singur proces, p95 < 0,8 s la 100 de cereri concurente,

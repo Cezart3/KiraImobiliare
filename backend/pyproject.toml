@@ -45,6 +45,7 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.ruff.lint.per-file-ignores]
 "tools/*" = ["E501"]  # one-off probe/maintenance scripts
+"app/api/routes/admin.py" = ["E501"]  # embedded HTML/CSS/JS dashboard string
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -151,8 +151,11 @@ def test_admin_stats(client):
     body = r.json()
     assert body["listings_active"] == 3  # stale row excluded
     assert body["listings_total"] == 4
-    assert {f["site"] for f in body["source_freshness"]} == {"storia", "olx"}
-    assert all(f["newest_seen_min_ago"] < 10 for f in body["source_freshness"])
+    assert {s["site"] for s in body["sources"]} == {"storia", "olx"}
+    assert all(s["age_min"] < 10 for s in body["sources"])
+    assert all(s["status"] == "ok" for s in body["sources"])
+    assert body["health"] in ("ok", "warn", "error")
+    assert "coverage" in body and "with_image_pct" in body["coverage"]
 
 
 def test_admin_stats_token_guard(client, monkeypatch):

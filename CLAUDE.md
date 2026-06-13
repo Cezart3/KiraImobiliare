@@ -33,6 +33,7 @@ Target cities: Cluj-Napoca, Oradea, Timisoara, Iasi, Targu Mures, Bucuresti.
 - Auth endpoints are rate-limited per IP (`core/ratelimit.py`, in-memory — swap for Redis if multi-worker).
 - Account deletion (`/auth/delete-account`) must cancel live Stripe subs first (GDPR erasure without zombie charges).
 - Deploy: single Hetzner VPS (Caddy + uvicorn + worker via systemd) — see `docs/DEPLOY.md`. Prod checklist: RS_SECRET_KEY (32+ chars), RS_COOKIE_SECURE=true, RS_ENABLE_ADMIN_ENDPOINTS=false.
+- Monitoring: `/api/admin` HTML dashboard (token-gated, server-rendered) + `/api/admin/stats` JSON (`_build_stats`): health verdict, per-source freshness ok/stale, last scrape runs, 24h errors, coverage %, users/subscribers. `services/alerts.py` emails (SMTP optional, deduped 6h) when a scrape errors or a source returns 0 — called from `worker/jobs.run_scrape_city`.
 
 ## Task delegation (user preference)
 Use cheaper-model agents (sonnet/haiku) for: new site adapters (give them `storia.py` + an old-script reference), city data files, frontend components, docs. Keep for the main model: extractor semantics, pipeline/matching changes, API contract changes.
