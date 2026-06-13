@@ -65,6 +65,14 @@ _WEAK = [
 ]
 _ANY = re.compile(r"parcare|garaj")
 _INCLUS = re.compile(r"inclus")
+# a genuine "parcare ... inclus(a)" that is NOT itself negated — used to catch
+# both-options ads: "(fara loc de parcare) ... (cu loc de parcare inclus)" or
+# "2500 lei cu parcare inclusa / 2300 lei fara". There the base price has no
+# parking but it's obtainable as a paid upgrade -> AREA_POSSIBLE, not NONE.
+_INCL_PHRASE = re.compile(
+    r"(?<!fara )(?<!include )(?:loc(?:ul)? de )?parcare\w* "
+    r"(?:supraterana |subterana )?inclus(?:a|e)?"
+)
 
 _NONE_RE = [re.compile(p) for p in _NONE]
 _EXTRA_RE = [re.compile(p) for p in _EXTRA_COST]
@@ -82,8 +90,15 @@ def classify_parking(text: str, structured_hint: bool = False) -> tuple[ParkingS
     # "...nu dispune de loc propriu, dar exista posibilitate de parcare in zona":
     # the flat has no OWN spot but area parking exists -> area_possible, not none.
     has_area = any(r.search(t) for r in _AREA_RE)
+    # both-options ad: a "no parking" line AND a genuine "parcare inclusa" line
+    # (two price tiers) -> parking is obtainable, just not in the base price.
+    both_options = (
+        any(r.search(t) for r in _NONE_RE) and _INCL_PHRASE.search(t) is not None
+    )
     if not t:
         status, conf = ParkingStatus.UNKNOWN, 0
+    elif both_options:
+        status, conf = ParkingStatus.AREA_POSSIBLE, 2
     elif any(r.search(t) for r in _NONE_RE) and not has_area:
         status, conf = ParkingStatus.NONE, 3
     elif any(r.search(t) for r in _EXTRA_RE) and not _INCLUS.search(t):

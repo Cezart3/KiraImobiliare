@@ -41,6 +41,26 @@ def test_parking_none():
     assert s == ParkingStatus.NONE
 
 
+def test_parking_both_options_ad_is_area():
+    # two price tiers — base price has no parking, a higher one includes it.
+    # parking IS obtainable, just not in the base rent -> area_possible, not none.
+    s, _ = classify_parking(
+        "chirie 400 eur (fără loc de parcare). chirie 450 eur (cu loc de parcare inclus)"
+    )
+    assert s == ParkingStatus.AREA_POSSIBLE
+    s, _ = classify_parking("2500 lei cu parcare supraterană inclusă, 2300 lei fără parcare")
+    assert s == ParkingStatus.AREA_POSSIBLE
+
+
+def test_parking_no_own_spot_stays_none():
+    # "doesn't have its OWN spot" is still NONE — the bare 'cu loc de parcare'
+    # fragment must not flip it via the both-options rule.
+    s, _ = classify_parking("apartamentul nu dispune de loc de parcare propriu")
+    assert s == ParkingStatus.NONE
+    s, _ = classify_parking("prețul nu include locul de parcare")
+    assert s == ParkingStatus.NONE
+
+
 def test_parking_unknown():
     s, c = classify_parking("Apartament 2 camere lângă parc")  # 'parc' != 'parcare'
     assert s == ParkingStatus.UNKNOWN and c == 0

@@ -22,7 +22,7 @@ export function RefreshControl({ scrape, city }: RefreshControlProps) {
         className="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-70 dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800"
       >
         <RefreshCw className={`h-4 w-4 ${running ? 'animate-spin' : ''}`} aria-hidden="true" />
-        {running ? 'Se actualizează… (poate dura câteva minute)' : 'Actualizează anunțuri'}
+        {running ? 'Se actualizează… (prima dată ~10–15 min)' : 'Actualizează anunțuri'}
       </button>
 
       {running && progress && (
