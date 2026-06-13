@@ -137,6 +137,12 @@ data stays at the source — the site only indexes and links back to the origina
 Privacy, Terms and Cookie policies are served in-app (`/confidentialitate`,
 `/termeni`, `/cookies`); GDPR erasure is one click in the account menu.
 
+## License
+
+[MIT](LICENSE) — free to use/modify with attribution, provided "as is".
+This is a personal/educational project; if you run the scrapers, you are
+responsible for complying with each source site's Terms of Service.
+
 ---
 
 <sub>Author: Cezar Tocaciu · [LinkedIn](https://www.linkedin.com/in/tocaciu-cezar-0865373b6/) · built with a Romanian rental market in mind.</sub>
