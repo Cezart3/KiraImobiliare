@@ -139,4 +139,4 @@ Privacy, Terms and Cookie policies are served in-app (`/confidentialitate`,
 
 ---
 
-<sub>Author: Cezar Tocaciu · built with a Romanian rental market in mind.</sub>
+<sub>Author: Cezar Tocaciu · [LinkedIn](https://www.linkedin.com/in/tocaciu-cezar-0865373b6/) · built with a Romanian rental market in mind.</sub>
