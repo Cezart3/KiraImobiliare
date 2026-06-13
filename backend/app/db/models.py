@@ -180,6 +180,22 @@ class User(Base):
         return self.sub_period_end is not None and self.sub_period_end > utcnow()
 
 
+class Favorite(Base):
+    """A listing saved by a logged-in user. Anonymous users keep favorites in
+    localStorage client-side; on login the client syncs them up here."""
+    __tablename__ = "favorites"
+    __table_args__ = (UniqueConstraint("user_id", "listing_id", name="uq_fav_user_listing"),)
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    listing_id: Mapped[int] = mapped_column(
+        ForeignKey("listings.id", ondelete="CASCADE"), index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
+
+
 class ScrapeRun(Base):
     __tablename__ = "scrape_runs"
 

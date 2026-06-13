@@ -58,6 +58,11 @@ class ListingOut(BaseModel):
     dedup_group: str | None
     parking_match_count: int = 0
     best_parking: ParkingMatchOut | None = None
+    # set only when the request supplied origin address(es) via `near`
+    distance_to_origin_m: int | None = None
+    distance_to_origin_walk_min: float | None = None
+    distance_origin_label: str | None = None   # which origin it's measured from
+    distance_maps_url: str | None = None
 
 
 class ListingDetailOut(ListingOut):

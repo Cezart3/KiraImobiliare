@@ -6,7 +6,16 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 import app.scraping.sites  # noqa: F401  (import side-effect: register site adapters)
-from app.api.routes import admin, auth, billing, images, listings, meta, parking
+from app.api.routes import (
+    admin,
+    auth,
+    billing,
+    favorites,
+    images,
+    listings,
+    meta,
+    parking,
+)
 from app.core import ratelimit
 from app.core.config import settings
 from app.db.base import init_db
@@ -76,6 +85,7 @@ for r in (
     admin.router,
     auth.router,
     billing.router,
+    favorites.router,
 ):
     api.include_router(r)
 
