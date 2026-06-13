@@ -108,7 +108,7 @@ interface ParkingMatchRowProps {
 
 function ParkingMatchRow({ match }: ParkingMatchRowProps) {
   const { parking, distance_m, walk_min, is_approx, maps_url } = match
-  const walkDistance = formatWalkDistance(distance_m, walk_min)
+  const walkDistance = formatWalkDistance(distance_m, walk_min, is_approx)
   const kindLabel = PARKING_KIND_LABELS[parking.kind]
 
   return (

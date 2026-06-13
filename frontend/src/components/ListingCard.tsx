@@ -186,10 +186,16 @@ export function ListingCard({ listing, onOpenParking, openBestParking }: Listing
               >
                 <ParkingCircle className="h-3 w-3" aria-hidden="true" />
                 P · {listing.parking_match_count} parcări
-                {listing.best_parking?.walk_min !== null &&
-                  listing.best_parking?.walk_min !== undefined && (
-                    <> · ~{Math.round(listing.best_parking.walk_min)} min</>
-                  )}
+                {(() => {
+                  const bp = listing.best_parking
+                  if (!bp) return null
+                  // both geocoded to the same zone centroid -> distance is ~0 and
+                  // not meaningful; say "same area" instead of a fake "~0 min"
+                  if (bp.is_approx && bp.distance_m != null && bp.distance_m < 150)
+                    return <> · aceeași zonă</>
+                  if (bp.walk_min != null) return <> · ~{Math.max(1, Math.round(bp.walk_min))} min</>
+                  return null
+                })()}
               </button>
             )}
           </div>

@@ -73,14 +73,18 @@ export const PARKING_KIND_LABELS: Record<ParkingKind, string> = {
   unknown: '—',
 }
 
-/** Formats a walking distance/time, e.g. "~350 m · ~5 min pe jos". */
+/** Formats a walking distance/time, e.g. "~350 m · ~5 min pe jos".
+ *  When both sides were geocoded to the same zone centroid the distance is ~0
+ *  and not meaningful, so we say "în aceeași zonă" instead of "~0 m". */
 export function formatWalkDistance(
   distanceM: number | null,
   walkMin: number | null,
+  isApprox = false,
 ): string | null {
+  if (isApprox && distanceM !== null && distanceM < 150) return 'în aceeași zonă'
   const parts: string[] = []
   if (distanceM !== null) parts.push(`~${Math.round(distanceM)} m`)
-  if (walkMin !== null) parts.push(`~${Math.round(walkMin)} min pe jos`)
+  if (walkMin !== null) parts.push(`~${Math.max(1, Math.round(walkMin))} min pe jos`)
   if (parts.length === 0) return null
   return parts.join(' · ')
 }
