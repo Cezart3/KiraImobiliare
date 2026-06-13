@@ -63,7 +63,8 @@ class Settings(BaseSettings):
 
     # freemium paywall
     paywall_enabled: bool = True
-    free_listing_limit: int = 8                # anonymous/free users see this many
+    free_listing_limit: int = 9                # anonymous/free users see this many
+                                               # (9 = full 3x3 grid on desktop)
 
     # Stripe (subscription "RentScalper Plus", 15 RON/month)
     stripe_secret_key: str = ""
