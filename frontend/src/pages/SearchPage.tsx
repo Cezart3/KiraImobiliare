@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { SlidersHorizontal, X } from 'lucide-react'
-import { useCities, useListings } from '@/api/queries'
+import { Heart, LayoutGrid, Scale, SlidersHorizontal, X } from 'lucide-react'
+import { useCities, useListings, useFavoriteListings } from '@/api/queries'
 import {
   clearedFilters,
   countActiveFilters,
@@ -9,6 +9,9 @@ import {
   filtersToSearchParams,
   type Filters,
 } from '@/lib/searchParams'
+import { getCachedListings } from '@/lib/listingCache'
+import { useFavorites } from '@/hooks/useFavorites'
+import { useCompare } from '@/hooks/useCompare'
 import { Header } from '@/components/Header'
 import { FilterSidebar } from '@/components/FilterSidebar'
 import { ListingGrid } from '@/components/ListingGrid'
@@ -16,6 +19,8 @@ import { ListingGridSkeleton } from '@/components/Skeletons'
 import { EmptyState, ErrorState } from '@/components/EmptyState'
 import { Pagination } from '@/components/Pagination'
 import { ParkingDrawer } from '@/components/ParkingDrawer'
+import { CompareDrawer } from '@/components/CompareDrawer'
+import { BestFavorite } from '@/components/BestFavorite'
 import { Footer } from '@/components/Footer'
 import { PaywallBanner } from '@/components/PaywallBanner'
 import { CheckoutReturnBanner } from '@/components/CheckoutReturnBanner'
@@ -28,8 +33,12 @@ export function SearchPage() {
 
   const [filtersOpen, setFiltersOpen] = useState(false)
   const [parkingListingId, setParkingListingId] = useState<number | null>(null)
+  const [favoritesView, setFavoritesView] = useState(false)
+  const [compareOpen, setCompareOpen] = useState(false)
 
   const checkoutReturn = usePostCheckoutReturn(searchParams, setSearchParams)
+  const favorites = useFavorites()
+  const compare = useCompare()
 
   const { data: cities, isLoading: citiesLoading } = useCities()
   const {
@@ -42,6 +51,26 @@ export function SearchPage() {
   } = useListings(filters)
 
   const currentCity = cities?.find((c) => c.slug === filters.city)
+
+  // "Favorite" view fetches the saved listings by id from the backend, so they
+  // show regardless of what's cached this session, and can be ranked by distance.
+  const favoriteIds = Array.from(favorites.ids)
+  const { data: fetchedFavorites, isLoading: favoritesLoading } = useFavoriteListings(
+    favoritesView ? favoriteIds : [],
+    filters.near,
+  )
+  const favoriteListings = fetchedFavorites ?? []
+
+  // compare can mix favorites + browsed listings; fall back to the session cache
+  const compareListings = getCachedListings(compare.selectedIds)
+
+  // Gentle hint when `near` was supplied but nothing could be geocoded.
+  const showNoOriginNotice =
+    !favoritesView &&
+    filters.near.length > 0 &&
+    !listingsLoading &&
+    (listingsData?.items.length ?? 0) > 0 &&
+    (listingsData?.items.every((item) => item.distance_to_origin_m === null) ?? false)
 
   const updateFilters = useCallback(
     (patch: Partial<Filters>, options?: { replace?: boolean }) => {
@@ -106,7 +135,7 @@ export function SearchPage() {
 
         <div className="flex-1">
           {/* Mobile filter toggle */}
-          <div className="mb-4 lg:hidden">
+          <div className="mb-4 flex items-center justify-between gap-3 lg:hidden">
             <button
               type="button"
               onClick={() => setFiltersOpen(true)}
@@ -122,7 +151,70 @@ export function SearchPage() {
             </button>
           </div>
 
-          {listingsLoading ? (
+          {/* "Toate" / "Favorite" view toggle */}
+          <div className="mb-4 inline-flex rounded-lg border border-slate-200 bg-white p-1 dark:border-neutral-700 dark:bg-neutral-900">
+            <button
+              type="button"
+              onClick={() => setFavoritesView(false)}
+              aria-pressed={!favoritesView}
+              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                !favoritesView
+                  ? 'bg-emerald-600 text-white'
+                  : 'text-slate-600 hover:text-slate-800 dark:text-neutral-300 dark:hover:text-neutral-100'
+              }`}
+            >
+              <LayoutGrid className="h-3.5 w-3.5" aria-hidden="true" />
+              Toate
+            </button>
+            <button
+              type="button"
+              onClick={() => setFavoritesView(true)}
+              aria-pressed={favoritesView}
+              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                favoritesView
+                  ? 'bg-emerald-600 text-white'
+                  : 'text-slate-600 hover:text-slate-800 dark:text-neutral-300 dark:hover:text-neutral-100'
+              }`}
+            >
+              <Heart className="h-3.5 w-3.5" aria-hidden="true" />
+              Favorite ({favorites.count})
+            </button>
+          </div>
+
+          {showNoOriginNotice && (
+            <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-400">
+              Nu am putut localiza adresa — încearcă să fii mai specific.
+            </p>
+          )}
+
+          {favoritesView ? (
+            favoritesLoading ? (
+              <ListingGridSkeleton />
+            ) : favoriteListings.length > 0 ? (
+              <>
+                <BestFavorite
+                  listings={favoriteListings}
+                  persons={filters.persons}
+                  hasAddress={filters.near.length > 0}
+                />
+                <ListingGrid
+                  listings={favoriteListings}
+                  onOpenParking={setParkingListingId}
+                  persons={filters.persons}
+                />
+              </>
+            ) : (
+              <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white px-6 py-16 text-center dark:border-neutral-700 dark:bg-neutral-900">
+                <Heart className="mb-3 h-10 w-10 text-slate-300 dark:text-neutral-600" aria-hidden="true" />
+                <p className="text-base font-medium text-slate-700 dark:text-neutral-300">
+                  Anunțurile salvate apar aici
+                </p>
+                <p className="mt-1 text-sm text-slate-400 dark:text-neutral-500">
+                  Apasă inima de pe un anunț ca să-l salvezi.
+                </p>
+              </div>
+            )
+          ) : listingsLoading ? (
             <ListingGridSkeleton />
           ) : listingsError ? (
             <ErrorState message={errorMessage} onRetry={() => void refetchListings()} />
@@ -133,6 +225,7 @@ export function SearchPage() {
                   listings={listingsData.items}
                   onOpenParking={setParkingListingId}
                   openBestParking={filters.parking.includes('rentable_nearby')}
+                  persons={filters.persons}
                 />
               </div>
 
@@ -205,6 +298,39 @@ export function SearchPage() {
       )}
 
       <ParkingDrawer listingId={parkingListingId} onClose={() => setParkingListingId(null)} />
+
+      <CompareDrawer
+        listings={compareOpen ? compareListings : []}
+        persons={filters.persons}
+        onClose={() => setCompareOpen(false)}
+      />
+
+      {/* Floating "Compară" bar — appears once 2+ listings are selected.
+          Positioned above the cookie notice (which also sits at the bottom). */}
+      {compare.selectedIds.length >= 2 && !compareOpen && (
+        <div className="fixed inset-x-0 bottom-20 z-40 flex justify-center px-4">
+          <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg dark:border-neutral-700 dark:bg-neutral-900">
+            <span className="text-sm font-medium text-slate-700 dark:text-neutral-200">
+              {compare.selectedIds.length} anunțuri selectate
+            </span>
+            <button
+              type="button"
+              onClick={() => setCompareOpen(true)}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
+            >
+              <Scale className="h-3.5 w-3.5" aria-hidden="true" />
+              Compară ({compare.selectedIds.length})
+            </button>
+            <button
+              type="button"
+              onClick={compare.clear}
+              className="text-sm font-medium text-slate-500 transition-colors hover:text-slate-700 dark:text-neutral-400 dark:hover:text-neutral-200"
+            >
+              Renunță
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

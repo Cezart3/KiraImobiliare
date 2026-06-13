@@ -1,18 +1,23 @@
 import { useState } from 'react'
-import { Home, MapPin, Maximize2, Layers, Images, ParkingCircle } from 'lucide-react'
+import { Bus, Heart, Home, MapPin, Maximize2, Layers, Images, ParkingCircle, Scale } from 'lucide-react'
 import type { Listing } from '@/api/types'
 import { imageProxyUrl } from '@/api/client'
 import {
   formatAbsoluteTime,
   formatFloor,
+  formatPrice,
   formatPriceMonthly,
   formatRelativeTime,
   formatRoomsShort,
   formatSiteName,
   formatSurface,
+  formatWalkDistance,
   HEATING_LABELS,
   PARKING_STATUS_LABELS,
 } from '@/lib/format'
+import { pricePerPerson, recommendationFor } from '@/lib/recommendation'
+import { useFavorites } from '@/hooks/useFavorites'
+import { useCompare } from '@/hooks/useCompare'
 import { Badge } from './primitives'
 
 interface ListingCardProps {
@@ -21,6 +26,8 @@ interface ListingCardProps {
   /** With the "rentable_nearby" filter active, a card click also opens the
    * nearest rentable parking ad alongside the listing. */
   openBestParking?: boolean
+  /** Declared number of tenants — drives "preț/persoană" and the "Recomandat" badge. */
+  persons?: number
 }
 
 const PARKING_STATUS_STYLES: Record<string, string> = {
@@ -30,8 +37,10 @@ const PARKING_STATUS_STYLES: Record<string, string> = {
   none: 'border border-slate-200 bg-slate-50 text-slate-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400',
 }
 
-export function ListingCard({ listing, onOpenParking, openBestParking }: ListingCardProps) {
+export function ListingCard({ listing, onOpenParking, openBestParking, persons = 1 }: ListingCardProps) {
   const [imgError, setImgError] = useState(false)
+  const { isFavorite, toggle: toggleFavorite } = useFavorites()
+  const { isSelected, toggle: toggleCompare, atMax } = useCompare()
 
   const hasImage = listing.images.length > 0 && !imgError
   const relativeTime = formatRelativeTime(listing.posted_at ?? listing.first_seen_at)
@@ -41,6 +50,12 @@ export function ListingCard({ listing, onOpenParking, openBestParking }: Listing
   const roomsLabel = formatRoomsShort(listing.rooms)
   const surfaceLabel = formatSurface(listing.surface_m2)
   const floorLabel = formatFloor(listing.floor)
+  const walkDistance = formatWalkDistance(listing.distance_to_origin_m, listing.distance_to_origin_walk_min)
+  const perPerson = pricePerPerson(listing.price_eur, persons)
+  const recommended = recommendationFor(persons, listing)
+  const favorite = isFavorite(listing.id)
+  const compareSelected = isSelected(listing.id)
+  const compareDisabled = !compareSelected && atMax
 
   const handleOpen = () => {
     window.open(listing.url, '_blank', 'noopener,noreferrer')
@@ -81,14 +96,30 @@ export function ListingCard({ listing, onOpenParking, openBestParking }: Listing
           </div>
         )}
 
-        <div className="absolute left-2 top-2">
+        <div className="absolute left-2 top-2 flex flex-col items-start gap-1.5">
           <Badge className="bg-white/90 text-slate-700 shadow-sm backdrop-blur-sm dark:bg-neutral-900/90 dark:text-neutral-200">
             {formatSiteName(listing.site)}
           </Badge>
+          {recommended && (
+            <Badge className="bg-emerald-600/95 text-white shadow-sm">Recomandat pentru tine</Badge>
+          )}
         </div>
 
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleFavorite(listing.id)
+          }}
+          aria-label={favorite ? 'Elimină de la favorite' : 'Salvează la favorite'}
+          aria-pressed={favorite}
+          className="absolute right-2 top-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-slate-500 shadow-sm backdrop-blur-sm transition-colors hover:text-emerald-600 dark:bg-neutral-900/90 dark:text-neutral-300 dark:hover:text-emerald-400"
+        >
+          <Heart className={favorite ? 'h-4 w-4 fill-emerald-600 text-emerald-600 dark:fill-emerald-400 dark:text-emerald-400' : 'h-4 w-4'} aria-hidden="true" />
+        </button>
+
         {listing.images.length > 1 && (
-          <div className="absolute right-2 top-2">
+          <div className="absolute right-2 top-12">
             <Badge className="bg-black/55 text-white">
               <Images className="mr-1 h-3 w-3" aria-hidden="true" />
               {listing.images.length} foto
@@ -105,6 +136,21 @@ export function ListingCard({ listing, onOpenParking, openBestParking }: Listing
             </Badge>
           </div>
         )}
+
+        <label
+          onClick={(e) => e.stopPropagation()}
+          className="absolute bottom-2 right-2 inline-flex cursor-pointer items-center gap-1 rounded-md bg-white/90 px-2 py-1 text-xs font-medium text-slate-700 shadow-sm backdrop-blur-sm transition-colors hover:bg-white dark:bg-neutral-900/90 dark:text-neutral-200 dark:hover:bg-neutral-900"
+        >
+          <input
+            type="checkbox"
+            checked={compareSelected}
+            disabled={compareDisabled}
+            onChange={() => toggleCompare(listing.id)}
+            className="h-3.5 w-3.5 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500/30 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-600 dark:bg-neutral-800"
+          />
+          <Scale className="h-3 w-3" aria-hidden="true" />
+          Compară
+        </label>
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-4">
@@ -123,6 +169,12 @@ export function ListingCard({ listing, onOpenParking, openBestParking }: Listing
             </span>
           )}
         </div>
+
+        {perPerson !== null && (
+          <p className="-mt-1.5 text-xs text-slate-500 dark:text-neutral-400">
+            {formatPrice(perPerson)} € / persoană
+          </p>
+        )}
 
         <h3 className="line-clamp-2 text-sm font-medium leading-snug text-slate-800 dark:text-neutral-200">
           {listing.title}
@@ -154,6 +206,24 @@ export function ListingCard({ listing, onOpenParking, openBestParking }: Listing
             </span>
           )}
         </div>
+
+        {walkDistance && (
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-slate-500 dark:text-neutral-400">
+            <span>{walkDistance}</span>
+            {listing.distance_maps_url && (
+              <a
+                href={listing.distance_maps_url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1 font-medium text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
+              >
+                <Bus className="h-3.5 w-3.5" aria-hidden="true" />
+                Vezi cu autobuzul
+              </a>
+            )}
+          </div>
+        )}
 
         {(heatingLabel || parkingLabel || listing.parking_match_count > 0) && (
           <div className="flex flex-wrap items-center gap-1.5 pt-1">

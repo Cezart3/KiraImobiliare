@@ -242,6 +242,62 @@ def list_listings(
     )
 
 
+@router.get("/listings-by-ids", response_model=list[ListingOut])
+def listings_by_ids(
+    db: Annotated[Session, Depends(get_db)],
+    ids: Annotated[list[int], Query()] = [],  # noqa: B006 (FastAPI query default)
+    near: Annotated[list[str] | None, Query()] = None,
+):
+    """Fetch specific listings by id (used by the Favorites view so saved
+    listings show regardless of what's currently cached client-side). Honors
+    `near` for distance annotation/sorting, like the main list endpoint."""
+    if not ids:
+        return []
+    rows = db.scalars(select(Listing).where(Listing.id.in_(ids[:200]))).all()
+    by_id = {r.id: r for r in rows}
+    # preserve the caller's id order by default
+    ordered = [by_id[i] for i in ids if i in by_id]
+
+    city_slug = ordered[0].city_slug if ordered else None
+    origins = _resolve_origins(db, near, city_slug) if (near and city_slug) else []
+    dist_by_id = _distances(ordered, origins) if origins else {}
+    if origins:
+        ordered.sort(key=lambda r: dist_by_id.get(r.id, (float("inf"),))[0])
+
+    match_ids = [r.id for r in ordered]
+    matches_by_listing: dict[int, list[ParkingMatch]] = {}
+    if match_ids:
+        ms = db.scalars(
+            select(ParkingMatch)
+            .options(joinedload(ParkingMatch.parking))
+            .where(ParkingMatch.listing_id.in_(match_ids))
+            .order_by(ParkingMatch.distance_m)
+        ).all()
+        for m in ms:
+            matches_by_listing.setdefault(m.listing_id, []).append(m)
+
+    out_list: list[ListingOut] = []
+    for r in ordered:
+        out = ListingOut.model_validate(r)
+        out.snippet = (r.description or "")[:220]
+        lm = matches_by_listing.get(r.id, [])
+        out.parking_match_count = len(lm)
+        if lm:
+            out.best_parking = _match_out(r, lm[0])
+        dist = dist_by_id.get(r.id)
+        if dist is not None and r.lat and r.lon:
+            meters, olat, olon, label = dist
+            out.distance_to_origin_m = int(meters)
+            out.distance_to_origin_walk_min = walk_minutes(meters)
+            out.distance_origin_label = label
+            out.distance_maps_url = (
+                "https://www.google.com/maps/dir/?api=1"
+                f"&origin={r.lat},{r.lon}&destination={olat},{olon}&travelmode=transit"
+            )
+        out_list.append(out)
+    return out_list
+
+
 @router.get("/listings/{listing_id}", response_model=ListingDetailOut)
 def get_listing(listing_id: int, db: Annotated[Session, Depends(get_db)]):
     listing = db.get(Listing, listing_id)

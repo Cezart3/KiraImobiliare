@@ -18,7 +18,7 @@ export type ParkingFilter =
 
 export type ParkingKind = 'subteran' | 'garaj' | 'exterior' | 'unknown'
 
-export type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'parking'
+export type SortOption = 'newest' | 'price_asc' | 'price_desc' | 'parking' | 'distance'
 
 export interface CityZone {
   slug: string
@@ -89,6 +89,11 @@ export interface Listing {
   dedup_group: string | null
   parking_match_count: number
   best_parking: ParkingMatch | null
+  // set only when the request supplied origin address(es) via `near`
+  distance_to_origin_m: number | null
+  distance_to_origin_walk_min: number | null
+  distance_origin_label: string | null
+  distance_maps_url: string | null
 }
 
 export interface ListingDetail extends Listing {
@@ -143,4 +148,8 @@ export interface PortalResponse {
 export interface SyncResponse {
   subscribed: boolean
   sub_status: string | null
+}
+
+export interface FavoritesResponse {
+  ids: number[]
 }

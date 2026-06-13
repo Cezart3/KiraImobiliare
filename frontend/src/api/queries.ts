@@ -11,6 +11,10 @@ export const queryKeys = {
   listing: (id: number) => ['listing', id] as const,
   stats: ['stats'] as const,
   me: ['me'] as const,
+  favorites: ['favorites'] as const,
+  localFavorites: ['localFavorites'] as const,
+  favoriteListings: (ids: number[], near: string[]) =>
+    ['favoriteListings', [...ids].sort((a, b) => a - b).join(','), near.join('|')] as const,
 }
 
 export function useCities() {
@@ -37,6 +41,22 @@ export function useListingDetail(id: number | null) {
     queryKey: queryKeys.listing(id ?? -1),
     queryFn: () => apiClient.get<ListingDetail>(`/listings/${id}`),
     enabled: id !== null,
+  })
+}
+
+/** Fetch saved listings by id (Favorites view). Works regardless of what the
+ *  client has cached this session; optionally ranks by distance via `near`. */
+export function useFavoriteListings(ids: number[], near: string[] = []) {
+  return useQuery({
+    queryKey: queryKeys.favoriteListings(ids, near),
+    queryFn: () => {
+      const params = new URLSearchParams()
+      ids.forEach((id) => params.append('ids', String(id)))
+      near.forEach((n) => params.append('near', n))
+      return apiClient.get<Listing[]>('/listings-by-ids', params)
+    },
+    enabled: ids.length > 0,
+    placeholderData: (prev) => prev,
   })
 }
 

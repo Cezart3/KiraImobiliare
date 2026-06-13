@@ -6,6 +6,7 @@ import { PrivacyPage } from '@/pages/legal/PrivacyPage'
 import { TermsPage } from '@/pages/legal/TermsPage'
 import { CookiesPage } from '@/pages/legal/CookiesPage'
 import { CookieNotice } from '@/components/CookieNotice'
+import { CompareProvider } from '@/context/CompareContext'
 import { ApiError } from '@/api/client'
 
 const queryClient = new QueryClient({
@@ -25,10 +26,10 @@ const queryClient = new QueryClient({
 /** Root layout: renders the active route plus the global cookie notice. */
 function RootLayout() {
   return (
-    <>
+    <CompareProvider>
       <Outlet />
       <CookieNotice />
-    </>
+    </CompareProvider>
   )
 }
 

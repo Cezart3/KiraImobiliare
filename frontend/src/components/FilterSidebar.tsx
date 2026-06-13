@@ -1,9 +1,10 @@
 import { useState } from 'react'
-import { RotateCcw } from 'lucide-react'
+import { Plus, RotateCcw, X } from 'lucide-react'
 import type { City } from '@/api/types'
 import type { Filters } from '@/lib/searchParams'
-import { hasActiveFilters } from '@/lib/searchParams'
+import { hasActiveFilters, MAX_NEAR_ADDRESSES } from '@/lib/searchParams'
 import { formatSiteName } from '@/lib/format'
+import { PERSON_OPTIONS } from '@/lib/recommendation'
 import { Chip, SegmentedControl, FilterSection } from './primitives'
 
 interface FilterSidebarProps {
@@ -40,12 +41,19 @@ const SORT_OPTIONS = [
   { value: 'parking' as const, label: 'Șanse parcare' },
 ]
 
+const SORT_OPTION_DISTANCE = { value: 'distance' as const, label: 'Cele mai apropiate' }
+
 const ZONE_SEARCH_THRESHOLD = 10
+const NEAR_PLACEHOLDER = 'ex: Piața Unirii, sau Str. Memorandumului 5'
 
 export function FilterSidebar({ city, filters, onChange, onReset }: FilterSidebarProps) {
   const [priceMinInput, setPriceMinInput] = useState(filters.priceMin?.toString() ?? '')
   const [priceMaxInput, setPriceMaxInput] = useState(filters.priceMax?.toString() ?? '')
   const [zoneFilter, setZoneFilter] = useState('')
+  // At least one input is always shown, even if `near` is empty.
+  const [nearInputs, setNearInputs] = useState<string[]>(
+    filters.near.length > 0 ? filters.near : [''],
+  )
 
   // Re-sync local price inputs when the URL-driven filters change externally
   // (e.g. "Resetează filtrele" or browser back/forward). Adjusting state
@@ -62,6 +70,13 @@ export function FilterSidebar({ city, filters, onChange, onReset }: FilterSideba
     setPriceMaxInput(filters.priceMax?.toString() ?? '')
   }
 
+  // Re-sync local "near" inputs when the URL-driven filters change externally.
+  const [prevNear, setPrevNear] = useState(filters.near)
+  if (filters.near !== prevNear) {
+    setPrevNear(filters.near)
+    setNearInputs(filters.near.length > 0 ? filters.near : [''])
+  }
+
   const commitPriceMin = () => {
     const n = priceMinInput.trim() === '' ? null : Number.parseInt(priceMinInput, 10)
     onChange({ priceMin: n !== null && Number.isFinite(n) && n >= 0 ? n : null, page: 1 })
@@ -70,6 +85,36 @@ export function FilterSidebar({ city, filters, onChange, onReset }: FilterSideba
   const commitPriceMax = () => {
     const n = priceMaxInput.trim() === '' ? null : Number.parseInt(priceMaxInput, 10)
     onChange({ priceMax: n !== null && Number.isFinite(n) && n >= 0 ? n : null, page: 1 })
+  }
+
+  /** Pushes the (trimmed, non-empty) local address inputs to the URL/filters.
+   * Automatically switches sorting to "distance" when at least one address is set
+   * and the user hasn't already chosen a different sort. */
+  const commitNear = (inputs: string[]) => {
+    const near = inputs.map((v) => v.trim()).filter((v) => v.length > 0)
+    const patch: Partial<Filters> = { near, page: 1 }
+    if (near.length > 0 && filters.sort !== 'distance') {
+      patch.sort = 'distance'
+    } else if (near.length === 0 && filters.sort === 'distance') {
+      patch.sort = 'newest'
+    }
+    onChange(patch)
+  }
+
+  const updateNearInput = (index: number, value: string) => {
+    setNearInputs((prev) => prev.map((v, i) => (i === index ? value : v)))
+  }
+
+  const addNearInput = () => {
+    setNearInputs((prev) => (prev.length < MAX_NEAR_ADDRESSES ? [...prev, ''] : prev))
+  }
+
+  const removeNearInput = (index: number) => {
+    setNearInputs((prev) => {
+      const next = prev.length > 1 ? prev.filter((_, i) => i !== index) : ['']
+      commitNear(next)
+      return next
+    })
   }
 
   const toggleRoom = (room: number) => {
@@ -170,6 +215,23 @@ export function FilterSidebar({ city, filters, onChange, onReset }: FilterSideba
         </div>
       </FilterSection>
 
+      <FilterSection title="Închiriez pentru">
+        <div className="flex flex-wrap gap-2">
+          {PERSON_OPTIONS.map((opt) => (
+            <Chip
+              key={opt.value}
+              active={filters.persons === opt.value}
+              onClick={() => onChange({ persons: opt.value })}
+            >
+              {opt.label}
+            </Chip>
+          ))}
+        </div>
+        <p className="mt-2 text-xs text-slate-400 dark:text-neutral-500">
+          Influențează prețul/persoană și recomandările de pe carduri.
+        </p>
+      </FilterSection>
+
       {zones.length > 0 && (
         <FilterSection title="Zone">
           {zones.length > ZONE_SEARCH_THRESHOLD && (
@@ -258,6 +320,52 @@ export function FilterSidebar({ city, filters, onChange, onReset }: FilterSideba
         </FilterSection>
       )}
 
+      <FilterSection title="Distanța față de tine">
+        <div className="flex flex-col gap-2">
+          {nearInputs.map((value, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <input
+                type="text"
+                placeholder={NEAR_PLACEHOLDER}
+                aria-label={`Adresă ${index + 1}`}
+                value={value}
+                onChange={(e) => updateNearInput(index, e.target.value)}
+                onBlur={() => commitNear(nearInputs)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') commitNear(nearInputs)
+                }}
+                className="h-10 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100 dark:placeholder:text-neutral-500"
+              />
+              {(nearInputs.length > 1 || value.trim()) && (
+                <button
+                  type="button"
+                  onClick={() => removeNearInput(index)}
+                  aria-label="Șterge adresa"
+                  className="rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:text-neutral-500 dark:hover:bg-neutral-800 dark:hover:text-neutral-300"
+                >
+                  <X className="h-4 w-4" aria-hidden="true" />
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+        {nearInputs.length < MAX_NEAR_ADDRESSES && (
+          <button
+            type="button"
+            onClick={addNearInput}
+            className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-emerald-700 hover:text-emerald-800 dark:text-emerald-400 dark:hover:text-emerald-300"
+          >
+            <Plus className="h-3.5 w-3.5" aria-hidden="true" />
+            adaugă încă o adresă
+          </button>
+        )}
+        {filters.near.length > 0 && (
+          <p className="mt-2 text-xs text-slate-400 dark:text-neutral-500">
+            Pe carduri vei vedea distanța pe jos și un link spre rută cu autobuzul.
+          </p>
+        )}
+      </FilterSection>
+
       <FilterSection title="Sortare">
         <select
           value={filters.sort}
@@ -270,6 +378,9 @@ export function FilterSidebar({ city, filters, onChange, onReset }: FilterSideba
               {opt.label}
             </option>
           ))}
+          {filters.near.length > 0 && (
+            <option value={SORT_OPTION_DISTANCE.value}>{SORT_OPTION_DISTANCE.label}</option>
+          )}
         </select>
       </FilterSection>
     </div>

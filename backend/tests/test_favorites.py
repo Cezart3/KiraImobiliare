@@ -89,6 +89,18 @@ def test_favorites_sync_merges(client):
     assert ids[2] in merged and ids[1] in merged and 99999 not in merged
 
 
+def test_listings_by_ids(client):
+    ids = client._listing_ids  # type: ignore[attr-defined]
+    r = client.get("/api/listings-by-ids", params=[("ids", ids[2]), ("ids", ids[0])])
+    assert r.status_code == 200
+    body = r.json()
+    # returns requested listings, preserving caller order when no `near`
+    assert [item["id"] for item in body] == [ids[2], ids[0]]
+    # empty ids -> empty list, unknown ids skipped
+    assert client.get("/api/listings-by-ids").json() == []
+    assert client.get("/api/listings-by-ids", params=[("ids", 999999)]).json() == []
+
+
 def test_distance_annotation(client, monkeypatch):
     # avoid network: stub the geocoder used by the listings route
     from app.api.routes import listings as listings_route

@@ -7,6 +7,8 @@ import type { Heating, ParkingFilter, SortOption } from '@/api/types'
 export const DEFAULT_CITY = 'cluj-napoca'
 export const DEFAULT_SORT: SortOption = 'newest'
 export const DEFAULT_PAGE_SIZE = 24
+export const DEFAULT_PERSONS = 1
+export const MAX_NEAR_ADDRESSES = 3
 
 export interface Filters {
   city: string
@@ -21,6 +23,8 @@ export interface Filters {
   sites: string[]
   sort: SortOption
   page: number
+  near: string[]
+  persons: number
 }
 
 const PARKING_VALUES: ParkingFilter[] = [
@@ -30,7 +34,7 @@ const PARKING_VALUES: ParkingFilter[] = [
   'rentable_nearby',
 ]
 
-const SORT_VALUES: SortOption[] = ['newest', 'price_asc', 'price_desc', 'parking']
+const SORT_VALUES: SortOption[] = ['newest', 'price_asc', 'price_desc', 'parking', 'distance']
 
 const HEATING_VALUES: Heating[] = ['centrala_proprie', 'termoficare']
 
@@ -71,6 +75,11 @@ export function filtersFromSearchParams(params: URLSearchParams): Filters {
 
   const page = parseIntOrNull(params.get('page'))
 
+  const near = dedupe(params.getAll('near')).slice(0, MAX_NEAR_ADDRESSES)
+
+  const personsRaw = parseIntOrNull(params.get('persons'))
+  const persons = personsRaw && personsRaw >= 1 && personsRaw <= 3 ? personsRaw : DEFAULT_PERSONS
+
   return {
     city: params.get('city') || DEFAULT_CITY,
     q: params.get('q') ?? '',
@@ -84,6 +93,8 @@ export function filtersFromSearchParams(params: URLSearchParams): Filters {
     sites: dedupe(params.getAll('sites')),
     sort,
     page: page && page > 0 ? page : 1,
+    near,
+    persons,
   }
 }
 
@@ -107,6 +118,8 @@ export function filtersToSearchParams(filters: Filters): URLSearchParams {
   for (const s of filters.sites) params.append('sites', s)
   if (filters.sort !== DEFAULT_SORT) params.set('sort', filters.sort)
   if (filters.page > 1) params.set('page', String(filters.page))
+  for (const n of filters.near) params.append('near', n)
+  if (filters.persons !== DEFAULT_PERSONS) params.set('persons', String(filters.persons))
 
   return params
 }
@@ -128,6 +141,7 @@ export function filtersToApiParams(filters: Filters, pageSize = DEFAULT_PAGE_SIZ
   params.set('sort', filters.sort)
   params.set('page', String(filters.page))
   params.set('page_size', String(pageSize))
+  for (const n of filters.near) params.append('near', n)
 
   return params
 }
@@ -143,6 +157,7 @@ export function countActiveFilters(filters: Filters): number {
   if (filters.parking.length > 0) count++
   if (filters.includeNearby) count++
   if (filters.sites.length > 0) count++
+  if (filters.near.length > 0) count++
   return count
 }
 
@@ -151,7 +166,8 @@ export function hasActiveFilters(filters: Filters): boolean {
   return countActiveFilters(filters) > 0 || filters.q.trim().length > 0
 }
 
-/** Returns filters reset to defaults but keeping the current city. */
+/** Returns filters reset to defaults but keeping the current city and the
+ * person-count preference (a personalization setting, not a search filter). */
 export function clearedFilters(filters: Filters): Filters {
   return {
     city: filters.city,
@@ -166,5 +182,7 @@ export function clearedFilters(filters: Filters): Filters {
     sites: [],
     sort: DEFAULT_SORT,
     page: 1,
+    near: [],
+    persons: filters.persons,
   }
 }
