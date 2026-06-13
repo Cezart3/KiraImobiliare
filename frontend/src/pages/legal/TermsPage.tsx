@@ -15,11 +15,12 @@ export function TermsPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="Gratuit, fără cont, fără plată">
+      <LegalSection title="Gratuit, doar pentru uz personal local">
         <p>
-          Aplicația este complet gratuită. Nu necesită cont, nu colectează date pe un server al
-          nostru și nu există nicio plată. Tot ce salvezi (favorite, preferințe) rămâne în
-          browserul tău.
+          Aplicația este gratuită pentru uz personal. Nu necesită cont, nu colectează date pe un
+          server al nostru și nu există nicio plată. Tot ce salvezi (favorite, preferințe) rămâne
+          în browserul tău. Codul îți este pus la dispoziție ca să-l rulezi local, pentru tine —
+          nu pentru a-l redistribui public sau a face bani din el (vezi secțiunea „Licență").
         </p>
       </LegalSection>
 
