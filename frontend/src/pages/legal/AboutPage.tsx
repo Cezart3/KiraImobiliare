@@ -30,6 +30,14 @@ export function AboutPage() {
         </p>
       </LegalSection>
 
+      <LegalSection title="De ce „Kira"?">
+        <p>
+          Kira e cățelușa mea 🐶 — partenera mea de frustrare în lunile în care căutam o chirie
+          și jonglam cu 6 site-uri deschise în paralel. {SITE_NAME} rezolvă fix bătaia de cap prin
+          care am trecut împreună, așa că poartă numele ei.
+        </p>
+      </LegalSection>
+
       <LegalSection title="Contact">
         <p>
           Întrebări, sugestii sau probleme: {CONTACT_EMAIL}. Citim fiecare mesaj.

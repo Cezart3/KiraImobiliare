@@ -99,6 +99,12 @@ Dacă proiectul prinde, urmează **anunțuri de vânzare imobiliare** (nu doar c
 mai multe orașe. **Ai idei sau ai găsit un bug?** Deschide un *issue* pe GitHub sau
 scrie la cezartocaciu233@gmail.com — chiar citesc fiecare mesaj. Un ⭐ pe repo ajută.
 
+## De ce „Kira"?
+
+Kira e cățelușa mea 🐶 — partenera mea de frustrare în lunile în care căutam o chirie
+și jonglam cu 6 site-uri deschise în paralel. Tool-ul ăsta rezolvă fix bătaia de cap
+prin care am trecut împreună. Așa că i-am pus numele ei.
+
 ## Notă legală
 
 Proiect personal/educațional, pentru **uz local și personal**. Scraping politicos
