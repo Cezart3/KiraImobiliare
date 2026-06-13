@@ -87,7 +87,7 @@ export function PrivacyPage() {
       <LegalSection title="Cât timp păstrăm datele">
         <p>
           Datele contului: până la ștergerea contului. Poți șterge contul oricând din meniul de
-          cont («Șterge contul») — ștergerea anulează automat abonamentul și elimină datele tale.
+          cont («Șterge contul») — ștergerea elimină datele tale.
           Documentele de facturare se păstrează conform obligațiilor fiscale legale.
         </p>
       </LegalSection>

@@ -43,7 +43,8 @@ export function PaywallBanner({ total, visibleLimit }: PaywallBannerProps) {
         {visibleLimit !== null && (
           <>Vezi primele {visibleLimit} gratuit. </>
         )}
-        Deblochează toate anunțurile pentru 15 lei/lună — anulezi oricând, la fel de simplu.
+        Deblochează toate anunțurile pentru 15 lei — acces 30 de zile, plată unică, fără
+        reînnoire automată.
       </p>
 
       <button
@@ -52,7 +53,7 @@ export function PaywallBanner({ total, visibleLimit }: PaywallBannerProps) {
         disabled={checkoutMutation.isPending}
         className="mt-5 inline-flex h-11 items-center justify-center rounded-lg bg-emerald-600 px-6 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-60"
       >
-        {checkoutMutation.isPending ? 'Se redirecționează...' : 'Deblochează tot — 15 lei/lună'}
+        {checkoutMutation.isPending ? 'Se redirecționează...' : 'Deblochează tot — 15 lei / 30 zile'}
       </button>
 
       {errorMessage && (

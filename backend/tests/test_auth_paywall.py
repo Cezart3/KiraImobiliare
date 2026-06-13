@@ -1,11 +1,11 @@
 """Auth (register/login/google/logout) + freemium paywall gating + billing state."""
+import uuid
 from datetime import timedelta
 
 import pytest
 from fastapi.testclient import TestClient
 
 from app.api.routes import auth as auth_route
-from app.api.routes.billing import apply_subscription_state
 from app.core import ratelimit
 from app.core.config import settings
 from app.db.base import SessionLocal, init_db
@@ -225,6 +225,7 @@ def test_paywall_subscriber_sees_all(client, monkeypatch):
     with SessionLocal() as db:
         u = db.query(User).filter(User.email == "ana@example.com").one()
         u.sub_status = "active"
+        u.sub_period_end = utcnow() + timedelta(days=30)  # paid access window
         db.commit()
     client.post(
         "/api/auth/login", json={"email": "ana@example.com", "password": "parola123"}
@@ -247,40 +248,36 @@ def test_delete_account(fresh_client):
     assert fresh_client.post("/api/auth/delete-account").status_code == 401
 
 
-# ---------- billing state mapping ----------
+# ---------- billing: one-time 30-day access ----------
 
 
-def test_apply_subscription_state_and_has_access(client):
+def test_grant_access_one_time_and_renewal(client):
+    from app.api.routes.billing import ACCESS_DAYS, grant_access
+
     with SessionLocal() as db:
-        u = db.query(User).filter(User.email == "ana@example.com").one()
-        u.stripe_customer_id = "cus_test_1"
-        u.sub_status = "none"
+        u = User(email=f"pay-{uuid.uuid4().hex[:8]}@example.com", password_hash="x")
+        db.add(u)
         db.commit()
 
-        end_ts = int((utcnow() + timedelta(days=30)).timestamp())
-        # 2025+ API shape: period end on the subscription item
-        sub = {
-            "status": "active",
-            "items": {"data": [{"current_period_end": end_ts}]},
-        }
-        out = apply_subscription_state(db, "cus_test_1", sub)
-        assert out is not None and out.sub_status == "active"
-        assert out.has_access() is True
-
-        # canceled but paid period not over -> access until period end
-        apply_subscription_state(
-            db, "cus_test_1", {"status": "canceled", "current_period_end": end_ts}
-        )
+        # first payment: 30 days from now
+        grant_access(db, u)
         db.refresh(u)
-        assert u.sub_status == "canceled" and u.has_access() is True
+        assert u.sub_status == "active" and u.has_access() is True
+        first_end = u.sub_period_end
+        assert first_end is not None
+        assert abs((first_end - utcnow()).days - ACCESS_DAYS) <= 1
 
-        # canceled and period over -> no access
-        past = int((utcnow() - timedelta(days=1)).timestamp())
-        apply_subscription_state(
-            db, "cus_test_1", {"status": "canceled", "current_period_end": past}
-        )
+        # renewal while still active: stacks another 30 days from current end
+        grant_access(db, u)
+        db.refresh(u)
+        assert (u.sub_period_end - first_end).days == ACCESS_DAYS
+
+        # expired access -> no access; buying again starts fresh from now
+        u.sub_period_end = utcnow() - timedelta(days=1)
+        db.commit()
         db.refresh(u)
         assert u.has_access() is False
-
-        # unknown customer -> no crash
-        assert apply_subscription_state(db, "cus_missing", {"status": "active"}) is None
+        grant_access(db, u)
+        db.refresh(u)
+        assert u.has_access() is True
+        assert abs((u.sub_period_end - utcnow()).days - ACCESS_DAYS) <= 1

@@ -54,6 +54,7 @@ def _micro_migrate() -> None:
 
     added = {
         "listings": {"price_negotiable": "BOOLEAN NOT NULL DEFAULT 0"},
+        "users": {"last_payment_session": "VARCHAR(80)"},
     }
     insp = inspect(engine)
     with engine.begin() as conn:

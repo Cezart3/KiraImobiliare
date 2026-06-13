@@ -141,10 +141,6 @@ export interface CheckoutResponse {
   url: string
 }
 
-export interface PortalResponse {
-  url: string
-}
-
 export interface SyncResponse {
   subscribed: boolean
   sub_status: string | null

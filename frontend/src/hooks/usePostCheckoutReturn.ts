@@ -5,18 +5,18 @@ import { useSyncMutation } from './useBilling'
 export type CheckoutReturnStatus = 'success' | 'cancelled' | null
 
 function readStatus(searchParams: URLSearchParams): CheckoutReturnStatus {
-  const abonament = searchParams.get('abonament')
-  if (abonament === 'succes') return 'success'
-  if (abonament === 'anulat') return 'cancelled'
+  const plata = searchParams.get('plata')
+  if (plata === 'succes') return 'success'
+  if (plata === 'anulat') return 'cancelled'
   return null
 }
 
 /**
- * Handles the return from Stripe Checkout: looks for `?abonament=succes` or
- * `?abonament=anulat` in the URL (captured once on mount), syncs subscription
- * status (on success), strips the `abonament` param while preserving all
- * other filter params, and returns a status for the caller to render a
- * dismissible banner/toast.
+ * Handles the return from Stripe Checkout: looks for `?plata=succes` or
+ * `?plata=anulat` in the URL (captured once on mount), syncs payment status
+ * (on success), strips the `plata` param while preserving all other filter
+ * params, and returns a status for the caller to render a dismissible
+ * banner/toast.
  */
 export function usePostCheckoutReturn(
   searchParams: URLSearchParams,
@@ -36,7 +36,7 @@ export function usePostCheckoutReturn(
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev)
-        next.delete('abonament')
+        next.delete('plata')
         return next
       },
       { replace: true },

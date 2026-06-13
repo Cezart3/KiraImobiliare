@@ -251,20 +251,21 @@ sudo -u kira /srv/kira/backend/.venv/bin/python \
 
 ## PARTEA 6 — Stripe (test mode → demo funcțional) (10 min)  █ TU
 
-### 6.1 Produs + preț
+### 6.1 Produs + preț (plată UNICĂ, nu abonament)
 - dashboard.stripe.com (colț stânga-sus comută pe **Test mode**).
-- Products → Add product → nume "Kira Plus" → preț **recurring**, **15 RON**,
-  **monthly** → Save. Copiază **Price ID** (`price_...`) → în `.env` `RS_STRIPE_PRICE_ID`.
+- Products → Add product → nume "Kira acces 30 zile" → preț **One time** (unic),
+  **15 RON** → Save. ⚠️ NU alege "recurring" — modelul nostru e plată unică care dă
+  30 de zile, fără reînnoire. Copiază **Price ID** (`price_...`) → `.env`
+  `RS_STRIPE_PRICE_ID`.
 
 ### 6.2 Cheie secretă
 - Developers → API keys → copiază **Secret key** (`sk_test_...`) → `.env`
   `RS_STRIPE_SECRET_KEY`.
 
-### 6.3 Webhook (ca abonamentele să se sincronizeze automat)
+### 6.3 Webhook (ca plata să acorde accesul automat)
 - Developers → Webhooks → Add endpoint:
   - URL: `https://kiraimobiliare.ro/api/billing/webhook`
-  - Events: `checkout.session.completed`, `customer.subscription.created`,
-    `customer.subscription.updated`, `customer.subscription.deleted`
+  - Event: `checkout.session.completed`
   - Add endpoint → copiază **Signing secret** (`whsec_...`) → `.env`
     `RS_STRIPE_WEBHOOK_SECRET`.
 

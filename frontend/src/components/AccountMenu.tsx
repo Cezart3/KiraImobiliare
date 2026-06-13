@@ -1,12 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CheckCircle2, ChevronDown, CreditCard, LogOut, Trash2, User, Unlock, X } from 'lucide-react'
+import { CheckCircle2, ChevronDown, LogOut, RefreshCw, Trash2, User, Unlock, X } from 'lucide-react'
 import { useMe } from '@/hooks/useMe'
 import {
   useCheckoutMutation,
   useDeleteAccountMutation,
   useLogoutMutation,
-  usePortalMutation,
 } from '@/hooks/useBilling'
 import { ApiError } from '@/api/client'
 import { DeleteAccountDialog } from './DeleteAccountDialog'
@@ -23,12 +22,11 @@ export function AccountMenu() {
   const menuRef = useRef<HTMLDivElement>(null)
 
   const checkoutMutation = useCheckoutMutation()
-  const portalMutation = usePortalMutation()
   const logoutMutation = useLogoutMutation()
   const deleteAccountMutation = useDeleteAccountMutation()
 
   const actionError = (() => {
-    const err = checkoutMutation.error ?? portalMutation.error
+    const err = checkoutMutation.error
     if (!err) return null
     return err instanceof ApiError ? err.message : 'A apărut o eroare. Încearcă din nou.'
   })()
@@ -130,16 +128,22 @@ export function AccountMenu() {
           </div>
 
           {me.subscribed && (
-            <button
-              type="button"
-              role="menuitem"
-              onClick={() => portalMutation.mutate()}
-              disabled={portalMutation.isPending}
-              className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:text-neutral-200 dark:hover:bg-neutral-800"
-            >
-              <CreditCard className="h-4 w-4 text-slate-400 dark:text-neutral-500" aria-hidden="true" />
-              {portalMutation.isPending ? 'Se redirecționează...' : 'Gestionează abonamentul'}
-            </button>
+            <>
+              <div className="flex items-center gap-2 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-400">
+                <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+                Acces complet activ
+              </div>
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => checkoutMutation.mutate()}
+                disabled={checkoutMutation.isPending}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 transition-colors hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60 dark:text-neutral-200 dark:hover:bg-neutral-800"
+              >
+                <RefreshCw className="h-4 w-4 text-slate-400 dark:text-neutral-500" aria-hidden="true" />
+                {checkoutMutation.isPending ? 'Se redirecționează...' : 'Reînnoiește (15 lei / 30 zile)'}
+              </button>
+            </>
           )}
 
           {showUnlock && (
@@ -151,7 +155,7 @@ export function AccountMenu() {
               className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-emerald-700 transition-colors hover:bg-emerald-50 disabled:cursor-not-allowed disabled:opacity-60 dark:text-emerald-400 dark:hover:bg-emerald-900/30"
             >
               <Unlock className="h-4 w-4" aria-hidden="true" />
-              {checkoutMutation.isPending ? 'Se redirecționează...' : 'Deblochează tot — 15 lei/lună'}
+              {checkoutMutation.isPending ? 'Se redirecționează...' : 'Deblochează tot — 15 lei / 30 zile'}
             </button>
           )}
 

@@ -7,8 +7,8 @@ interface CheckoutReturnBannerProps {
 }
 
 /** Dismissible banner shown after returning from Stripe Checkout
- * (`?abonament=succes` or `?abonament=anulat`, already stripped from the URL
- * by usePostCheckoutReturn). */
+ * (`?plata=succes` or `?plata=anulat`, already stripped from the URL by
+ * usePostCheckoutReturn). */
 export function CheckoutReturnBanner({ status, onDismiss }: CheckoutReturnBannerProps) {
   if (!status) return null
 
@@ -17,8 +17,8 @@ export function CheckoutReturnBanner({ status, onDismiss }: CheckoutReturnBanner
       <div className="mx-auto mt-4 flex w-full max-w-7xl items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 shadow-sm sm:px-6 lg:px-8 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
         <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0" aria-hidden="true" />
         <p className="flex-1">
-          <span className="font-semibold">Abonament activ — mulțumim!</span> Acum vezi toate
-          anunțurile.
+          <span className="font-semibold">Acces activ — mulțumim!</span> Ai acces complet 30 de
+          zile. Acum vezi toate anunțurile.
         </p>
         <button
           type="button"

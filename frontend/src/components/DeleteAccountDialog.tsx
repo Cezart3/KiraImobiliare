@@ -48,7 +48,7 @@ export function DeleteAccountDialog({ open, onClose, onConfirm, isPending, error
         <h2 className="text-lg font-bold text-slate-900 dark:text-neutral-50">Ștergi contul definitiv?</h2>
 
         <p className="mt-2 text-sm text-slate-600 dark:text-neutral-300">
-          Se anulează automat și abonamentul. Acțiunea nu poate fi anulată.
+          Îți ștergem definitiv contul și datele. Acțiunea nu poate fi anulată.
         </p>
 
         {error && (

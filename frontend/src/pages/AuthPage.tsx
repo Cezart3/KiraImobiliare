@@ -150,7 +150,7 @@ export function AuthPage() {
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-neutral-400">
             {mode === 'login'
-              ? 'Intră în cont pentru a-ți gestiona abonamentul.'
+              ? 'Intră în cont pentru a debloca toate anunțurile.'
               : 'Durează doar câteva secunde.'}
           </p>
 

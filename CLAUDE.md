@@ -29,7 +29,7 @@ Target cities: Cluj-Napoca, Oradea, Timisoara, Iasi, Targu Mures, Bucuresti.
 - Legal: in-app /despre (good-faith aggregation + source opt-out), /termeni has an IP + anti-scraping clause, /confidentialitate, /cookies. Product name "Kira" © in Terms.
 - Settings via `.env` at repo root, prefix `RS_` (see `.env.example`).
 - Freemium paywall: free users get first `RS_FREE_LISTING_LIMIT` listings, but `total` in `/api/listings` is ALWAYS the real count (product requirement). Gating lives ONLY server-side in `listings.py`; never trust the client.
-- Subscription: 15 RON/month Stripe. Cancel must stay one click (Billing Portal). Checkout has an idempotency key + server-side duplicate-subscription check — keep both when touching billing.
+- Billing: ONE-TIME 15 RON Stripe payment = 30 days access (`mode="payment"`, NOT a subscription, nothing auto-renews, no Billing Portal). `grant_access` stacks 30d (extends from current end if still active). `has_access()` is purely date-based (`sub_period_end > now`). Each paid Checkout session credited once via `last_payment_session`. Checkout has an idempotency key. First launch month is free (communicated in UI/Terms). Redirect params: `?plata=succes|anulat`.
 - Auth endpoints are rate-limited per IP (`core/ratelimit.py`, in-memory — swap for Redis if multi-worker).
 - Account deletion (`/auth/delete-account`) must cancel live Stripe subs first (GDPR erasure without zombie charges).
 - Deploy: single Hetzner VPS (Caddy + uvicorn + worker via systemd) — see `docs/DEPLOY.md`. Prod checklist: RS_SECRET_KEY (32+ chars), RS_COOKIE_SECURE=true, RS_ENABLE_ADMIN_ENDPOINTS=false.

@@ -171,13 +171,15 @@ class User(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
     stripe_customer_id: Mapped[str | None] = mapped_column(String(64), index=True)
-    # none | active | past_due | canceled — access lasts until sub_period_end
+    # none | active — access lasts until sub_period_end (one-time 30-day model)
     sub_status: Mapped[str] = mapped_column(String(16), default="none")
     sub_period_end: Mapped[datetime | None] = mapped_column(DateTime)
+    # last Stripe Checkout session credited, so a payment is never granted twice
+    last_payment_session: Mapped[str | None] = mapped_column(String(80))
 
     def has_access(self) -> bool:
-        if self.sub_status == "active":
-            return True
+        # one-time 30-day model: access is purely date-based (paid period not yet
+        # over). No "active forever" — when sub_period_end passes, access ends.
         return self.sub_period_end is not None and self.sub_period_end > utcnow()
 
 

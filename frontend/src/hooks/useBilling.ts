@@ -1,9 +1,9 @@
 import { useMutation } from '@tanstack/react-query'
 import { apiClient } from '@/api/client'
-import type { CheckoutResponse, PortalResponse, SyncResponse } from '@/api/types'
+import type { CheckoutResponse, SyncResponse } from '@/api/types'
 import { useInvalidateMeAndListings } from './useMe'
 
-/** Starts a Stripe Checkout session and redirects the browser there. */
+/** Starts a one-time Stripe Checkout (15 lei / 30 days) and redirects there. */
 export function useCheckoutMutation() {
   return useMutation({
     mutationFn: () => apiClient.post<CheckoutResponse>('/billing/checkout'),
@@ -13,17 +13,7 @@ export function useCheckoutMutation() {
   })
 }
 
-/** Opens the Stripe Billing Portal (manage/cancel subscription). */
-export function usePortalMutation() {
-  return useMutation({
-    mutationFn: () => apiClient.post<PortalResponse>('/billing/portal'),
-    onSuccess: (data) => {
-      window.location.href = data.url
-    },
-  })
-}
-
-/** Re-syncs subscription status after returning from Stripe Checkout. */
+/** Credits the payment + refreshes access state after returning from Checkout. */
 export function useSyncMutation() {
   const invalidateMeAndListings = useInvalidateMeAndListings()
   return useMutation({
@@ -41,8 +31,8 @@ export function useLogoutMutation() {
   })
 }
 
-/** Permanently deletes the account (GDPR right to erasure). Cancels any live
- * Stripe subscription first, then refreshes session + listings state. */
+/** Permanently deletes the account (GDPR right to erasure), then refreshes
+ * session + listings state. */
 export function useDeleteAccountMutation() {
   const invalidateMeAndListings = useInvalidateMeAndListings()
   return useMutation({
