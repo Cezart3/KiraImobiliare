@@ -30,40 +30,102 @@ tău. Fiecare card te trimite la anunțul original de pe site-ul sursă.
 
 ---
 
-## Cum îl pornești (pas cu pas, pentru oricine)
+## Cum îl pornești — ghid complet pentru ORICINE (chiar dacă n-ai mai folosit un terminal)
 
-Ai nevoie o singură dată de: **Python 3.12+** și **Node.js 20+** (le instalezi gratis
-de pe python.org și nodejs.org).
+Pare mult, dar e doar copy-paste. Durează ~15 minute prima dată. Urmează în ordine,
+nu sări pași. Ghidul e pentru **Windows** (jos ai și notele pentru Mac/Linux).
 
-### 1. Descarcă proiectul
-```bash
+### Pasul 0 — Instalează cele 3 programe gratuite (o singură dată)
+
+Ai nevoie de trei programe. Le descarci gratis, dai next-next-install la toate:
+
+1. **Python** (motorul aplicației)
+   - Mergi la 👉 https://www.python.org/downloads/
+   - Apasă butonul galben mare „Download Python".
+   - Deschide fișierul descărcat. **FOARTE IMPORTANT:** în prima fereastră,
+     bifează căsuța **„Add python.exe to PATH"** (jos), apoi apasă „Install Now".
+   - (Dacă uiți să bifezi, dezinstalează și reia — altfel nu merge.)
+
+2. **Node.js** (pentru interfața din browser)
+   - Mergi la 👉 https://nodejs.org/
+   - Apasă butonul mare „LTS" (versiunea recomandată). Deschide fișierul, next-next-install.
+
+3. **Git** (ca să descarci proiectul)
+   - Mergi la 👉 https://git-scm.com/downloads
+   - Alege Windows, descarcă, next-next-install (lasă toate setările implicite).
+
+După ce le-ai instalat pe toate trei, **repornește calculatorul** (ca să le „vadă" sistemul).
+
+### Pasul 1 — Deschide un terminal
+
+Un „terminal" e o fereastră unde scrii comenzi. Pe Windows:
+- Apasă tasta **Windows**, scrie **`powershell`**, apasă Enter.
+- Se deschide o fereastră albastră/neagră. Acolo lipești comenzile de mai jos.
+- Ca să **lipești** în terminal: click dreapta (sau Ctrl+V).
+
+### Pasul 2 — Descarcă proiectul
+
+Lipește asta în terminal și apasă Enter (descarcă proiectul în folderul tău):
+```
 git clone https://github.com/Cezart3/KiraImobiliare.git
 cd KiraImobiliare
 ```
 
-### 2. Pornește backend-ul (un terminal)
-```bash
+### Pasul 3 — Pornește „creierul" aplicației (backend)
+
+Lipește pe rând (Enter după fiecare bloc). Prima comandă pregătește, a doua instalează
+(durează 1-2 min), a treia pornește:
+```
 cd backend
 python -m venv .venv
-.venv/Scripts/python.exe -m pip install -e .      # Windows
-# pe Mac/Linux:  .venv/bin/pip install -e .
-.venv/Scripts/python.exe -m uvicorn app.main:app --port 8000
+.venv\Scripts\python.exe -m pip install -e .
+.venv\Scripts\python.exe -m uvicorn app.main:app --port 8000
 ```
+Când vezi un mesaj cu „Uvicorn running on http://127.0.0.1:8000" — **merge!**
+⚠️ **Lasă această fereastră deschisă** (dacă o închizi, aplicația se oprește).
 
-### 3. Pornește interfața (al doilea terminal)
-```bash
-cd frontend
+### Pasul 4 — Pornește interfața (al doilea terminal)
+
+Deschide un **AL DOILEA** terminal (repetă Pasul 1 — încă o fereastră PowerShell).
+Lipește:
+```
+cd KiraImobiliare\frontend
 npm install
 npm run dev
 ```
+`npm install` durează 1-2 min prima dată. Când vezi „Local: http://localhost:5173" —
+gata! Lasă și fereastra asta deschisă.
 
-### 4. Deschide în browser
-**http://localhost:5173** — alege orașul, apasă **„Actualizează anunțuri"** și gata.
-Prima actualizare durează câteva minute (aduce anunțuri de la 6 surse); după aceea
-totul e instant. Apeși „Actualizează" oricând vrei anunțuri proaspete.
+### Pasul 5 — Folosește aplicația
 
-> Opțional: copiază `.env.example` în `.env` dacă vrei să ajustezi viteza de scraping,
-> bugetul de geocodare etc. Nu e obligatoriu — aplicația merge cu valorile implicite.
+Deschide în browser (Chrome, Edge, etc.): **http://localhost:5173**
+
+Alege orașul → apasă **„Actualizează anunțuri"**. Prima dată durează câteva minute
+(aduce anunțuri de la 6 surse); după aceea totul e instant. Apeși „Actualizează"
+oricând vrei anunțuri proaspete. Gata — caută în voie! 🎉
+
+### Cum o pornești data viitoare
+
+Nu mai reinstalezi nimic. Doar deschizi 2 terminale și rulezi:
+- Terminal 1: `cd KiraImobiliare\backend` apoi `.venv\Scripts\python.exe -m uvicorn app.main:app --port 8000`
+- Terminal 2: `cd KiraImobiliare\frontend` apoi `npm run dev`
+- Deschizi http://localhost:5173
+
+### Cum o oprești
+În fiecare terminal apasă **Ctrl+C** (sau pur și simplu închide ferestrele).
+
+### Pe Mac sau Linux?
+La fel, doar că:
+- Python/Node/Git le instalezi de pe aceleași site-uri (sau cu `brew` pe Mac).
+- La Pasul 3 folosește `.venv/bin/python` în loc de `.venv\Scripts\python.exe`
+  (de ex. `.venv/bin/pip install -e .` și `.venv/bin/python -m uvicorn app.main:app --port 8000`).
+
+### Ceva nu merge?
+- „python nu este recunoscut" → n-ai bifat „Add to PATH" la instalare; reinstalează Python cu căsuța bifată, apoi repornește calculatorul.
+- Tot blocat? Scrie-mi: cezartocaciu233@gmail.com — te ajut.
+
+> Opțional (avansat): copiază `.env.example` în `.env` dacă vrei să ajustezi viteza de
+> scraping etc. Nu e necesar — merge cu valorile implicite.
 
 ---
 
