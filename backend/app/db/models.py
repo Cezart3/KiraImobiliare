@@ -162,43 +162,6 @@ class GeoCache(Base):
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
 
 
-class User(Base):
-    __tablename__ = "users"
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
-    password_hash: Mapped[str] = mapped_column(String(128))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
-
-    stripe_customer_id: Mapped[str | None] = mapped_column(String(64), index=True)
-    # none | active — access lasts until sub_period_end (one-time 30-day model)
-    sub_status: Mapped[str] = mapped_column(String(16), default="none")
-    sub_period_end: Mapped[datetime | None] = mapped_column(DateTime)
-    # last Stripe Checkout session credited, so a payment is never granted twice
-    last_payment_session: Mapped[str | None] = mapped_column(String(80))
-
-    def has_access(self) -> bool:
-        # one-time 30-day model: access is purely date-based (paid period not yet
-        # over). No "active forever" — when sub_period_end passes, access ends.
-        return self.sub_period_end is not None and self.sub_period_end > utcnow()
-
-
-class Favorite(Base):
-    """A listing saved by a logged-in user. Anonymous users keep favorites in
-    localStorage client-side; on login the client syncs them up here."""
-    __tablename__ = "favorites"
-    __table_args__ = (UniqueConstraint("user_id", "listing_id", name="uq_fav_user_listing"),)
-
-    id: Mapped[int] = mapped_column(primary_key=True)
-    user_id: Mapped[int] = mapped_column(
-        ForeignKey("users.id", ondelete="CASCADE"), index=True
-    )
-    listing_id: Mapped[int] = mapped_column(
-        ForeignKey("listings.id", ondelete="CASCADE"), index=True
-    )
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
-
-
 class ScrapeRun(Base):
     __tablename__ = "scrape_runs"
 

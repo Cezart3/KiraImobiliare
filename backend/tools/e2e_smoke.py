@@ -7,7 +7,6 @@ Run: python tools/e2e_smoke.py  [--base http://localhost:5173]
 import argparse
 import sys
 import time
-import uuid
 
 import requests
 
@@ -47,27 +46,19 @@ def main() -> int:
         any(t["slug"] == "floresti" for t in cluj.get("nearby_towns", [])),
     )
 
-    # ---- listings anonymous: paywall gating ----
+    # ---- listings: basic pagination ----
     r = requests.get(f"{api}/listings", params={"city": "cluj-napoca", "page_size": 60})
     data = r.json()
     total = data.get("total", 0)
     items = data.get("items", [])
     check("listings: returns items", len(items) > 0, f"got {len(items)}")
-    check("listings: real total present", total > len(items), f"total={total}")
-    check("listings: paywall locks anon", data.get("locked") is True, str(data.get("locked")))
-    vis = data.get("visible_limit")
-    check(
-        "listings: capped at free limit",
-        vis is not None and len(items) == vis,
-        f"limit={vis} items={len(items)}",
-    )
-    check("listings: pages=1 while locked", data.get("pages") == 1)
+    check("listings: total >= items", total >= len(items), f"total={total}")
 
-    # page=2 must not leak more
+    # page=2 returns the next page (or empty if not enough rows)
     r2 = requests.get(
         f"{api}/listings", params={"city": "cluj-napoca", "page": 2, "page_size": 60}
     )
-    check("listings: page2 cannot bypass paywall", r2.json().get("page") == 1)
+    check("listings: page2 reflects requested page", r2.json().get("page") == 2)
 
     # ---- card data integrity (the bugs we fixed) ----
     for city in ("cluj-napoca", "iasi", "bucuresti", "oradea", "targu-mures", "timisoara"):
@@ -123,50 +114,13 @@ def main() -> int:
         rd = requests.get(f"{api}/listings/{lid}")
         check("detail: 200 + description field", rd.status_code == 200 and "description" in rd.json())
 
-    # ---- auth flow ----
-    s = requests.Session()
-    email = f"e2e-{uuid.uuid4().hex[:8]}@example.com"
-    pw = "parolaTest123"
-
-    me0 = s.get(f"{api}/auth/me").json()
-    check("auth: anon me", me0.get("authenticated") is False)
-
-    rr = s.post(f"{api}/auth/register", json={"email": email, "password": pw})
-    check("auth: register 200", rr.status_code == 200, rr.text[:120])
-    check("auth: register authenticates", rr.json().get("authenticated") is True)
-
-    # duplicate
-    rdup = requests.post(f"{api}/auth/register", json={"email": email, "password": pw})
-    check("auth: duplicate -> 409", rdup.status_code == 409)
-
-    # short pw / long pw / bad email
-    check("auth: short pw -> 422",
-          requests.post(f"{api}/auth/register",
-                        json={"email": f"x{uuid.uuid4().hex[:6]}@e.com", "password": "short"}).status_code == 422)
-    check("auth: 80-char pw -> 422 (no 500)",
-          requests.post(f"{api}/auth/register",
-                        json={"email": f"x{uuid.uuid4().hex[:6]}@e.com", "password": "x" * 80}).status_code == 422)
-    check("auth: bad email -> 422",
-          requests.post(f"{api}/auth/register",
-                        json={"email": "nope", "password": pw}).status_code == 422)
-
-    # logged-in user still capped (no Stripe sub)
-    li = s.get(f"{api}/listings", params={"city": "cluj-napoca", "page_size": 60}).json()
-    check("auth: free user still locked", li.get("locked") is True)
-
-    # logout
-    s.post(f"{api}/auth/logout")
-    check("auth: logout clears session", s.get(f"{api}/auth/me").json().get("authenticated") is False)
-
-    # login back
-    rl = s.post(f"{api}/auth/login", json={"email": email, "password": pw})
-    check("auth: login 200", rl.status_code == 200)
-    check("auth: wrong pw -> 401",
-          requests.post(f"{api}/auth/login", json={"email": email, "password": "WRONGpw123"}).status_code == 401)
-
-    # ---- billing without stripe keys -> graceful 503 (not 500) ----
-    rb = s.post(f"{api}/billing/checkout")
-    check("billing: checkout 503 when Stripe unset (graceful)", rb.status_code in (503, 409), f"got {rb.status_code}")
+    # ---- listings-by-ids (used by the Favorites view) ----
+    if any_item:
+        lid = any_item[0]["id"]
+        rbi = requests.get(f"{api}/listings-by-ids", params={"ids": [lid]})
+        check("listings-by-ids: 200 + returns the listing", rbi.status_code == 200 and any(
+            i["id"] == lid for i in rbi.json()
+        ))
 
     # ---- security headers ----
     rh = requests.get(f"{api}/health")
@@ -178,10 +132,6 @@ def main() -> int:
     check("img proxy: rejects non-whitelisted host", rip.status_code == 403, f"got {rip.status_code}")
     rip2 = requests.get(f"{api}/img", params={"u": "ftp://x/y"})
     check("img proxy: rejects bad scheme", rip2.status_code == 400)
-
-    # ---- cleanup: delete the e2e account ----
-    rdel = s.post(f"{api}/auth/delete-account")
-    check("gdpr: delete-account 200", rdel.status_code == 200)
 
     # ---- summary ----
     n_fail = sum(1 for r, _, _ in results if r == FAIL)

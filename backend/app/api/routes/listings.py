@@ -6,10 +6,10 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import func, or_, select
 from sqlalchemy.orm import Session, joinedload
 
-from app.api.deps import get_current_user, get_db
+from app.api.deps import get_db
 from app.core.cities import load_cities
 from app.core.config import settings
-from app.db.models import Listing, ParkingMatch, User, utcnow
+from app.db.models import Listing, ParkingMatch, utcnow
 from app.schemas.listing import (
     ListingDetailOut,
     ListingOut,
@@ -107,7 +107,6 @@ def _match_out(listing: Listing, m: ParkingMatch) -> ParkingMatchOut:
 def list_listings(
     city: str,
     db: Annotated[Session, Depends(get_db)],
-    user: Annotated[User | None, Depends(get_current_user)] = None,
     price_min: float | None = None,
     price_max: float | None = None,
     rooms: Annotated[list[int] | None, Query()] = None,
@@ -164,15 +163,6 @@ def list_listings(
 
     base = select(Listing).where(*conds)
     total = db.scalar(select(func.count()).select_from(base.subquery())) or 0
-
-    # freemium paywall: free users see the first N results but the real total
-    locked = False
-    visible_limit: int | None = None
-    if settings.paywall_enabled and not (user is not None and user.has_access()):
-        visible_limit = settings.free_listing_limit
-        page = 1
-        page_size = min(page_size, visible_limit)
-        locked = total > visible_limit
 
     # optional: distances from user-supplied origin address(es). Pure local math
     # on coordinates we already store; geocoding the origins uses Nominatim (free,
@@ -242,9 +232,7 @@ def list_listings(
         total=total,
         page=page,
         page_size=page_size,
-        pages=1 if visible_limit is not None else max(1, math.ceil(total / page_size)),
-        locked=locked,
-        visible_limit=visible_limit,
+        pages=max(1, math.ceil(total / page_size)),
     )
 
 

@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Heart, LayoutGrid, Scale, SlidersHorizontal, X } from 'lucide-react'
-import { useCities, useListings, useFavoriteListings } from '@/api/queries'
+import { useCities, useHasData, useListings } from '@/api/queries'
 import {
   clearedFilters,
   countActiveFilters,
@@ -12,20 +12,19 @@ import {
 import { getCachedListings } from '@/lib/listingCache'
 import { useFavorites } from '@/hooks/useFavorites'
 import { useCompare } from '@/hooks/useCompare'
+import { useScrape } from '@/hooks/useScrape'
 import { Header } from '@/components/Header'
 import { FilterSidebar } from '@/components/FilterSidebar'
 import { ListingGrid } from '@/components/ListingGrid'
 import { ListingGridSkeleton } from '@/components/Skeletons'
-import { EmptyState, ErrorState } from '@/components/EmptyState'
+import { EmptyState, ErrorState, FirstRunState } from '@/components/EmptyState'
 import { Pagination } from '@/components/Pagination'
 import { ParkingDrawer } from '@/components/ParkingDrawer'
 import { CompareDrawer } from '@/components/CompareDrawer'
 import { BestFavorite } from '@/components/BestFavorite'
 import { Footer } from '@/components/Footer'
-import { PaywallBanner } from '@/components/PaywallBanner'
-import { CheckoutReturnBanner } from '@/components/CheckoutReturnBanner'
+import { RefreshControl } from '@/components/RefreshControl'
 import { ApiError } from '@/api/client'
-import { usePostCheckoutReturn } from '@/hooks/usePostCheckoutReturn'
 
 export function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -36,9 +35,9 @@ export function SearchPage() {
   const [favoritesView, setFavoritesView] = useState(false)
   const [compareOpen, setCompareOpen] = useState(false)
 
-  const checkoutReturn = usePostCheckoutReturn(searchParams, setSearchParams)
   const favorites = useFavorites()
   const compare = useCompare()
+  const scrape = useScrape()
 
   const { data: cities, isLoading: citiesLoading } = useCities()
   const {
@@ -49,17 +48,18 @@ export function SearchPage() {
     error: listingsErrorObj,
     refetch: refetchListings,
   } = useListings(filters)
+  const { data: hasDataInfo } = useHasData(filters.city)
 
   const currentCity = cities?.find((c) => c.slug === filters.city)
 
-  // "Favorite" view fetches the saved listings by id from the backend, so they
-  // show regardless of what's cached this session, and can be ranked by distance.
-  const favoriteIds = Array.from(favorites.ids)
-  const { data: fetchedFavorites, isLoading: favoritesLoading } = useFavoriteListings(
-    favoritesView ? favoriteIds : [],
-    filters.near,
-  )
-  const favoriteListings = fetchedFavorites ?? []
+  // True once we know for certain the city has zero listings at all (not just
+  // an over-filtered search). Distinguishes the first-run welcome panel from
+  // the regular "nothing found, adjust filters" empty state.
+  const isFirstRun = hasDataInfo?.count === 0
+
+  // "Favorite" view renders saved listings from the session listing cache,
+  // filtered by favorite ids (no backend favorites endpoint — local only).
+  const favoriteListings = getCachedListings(favorites.ids)
 
   // compare can mix favorites + browsed listings; fall back to the session cache
   const compareListings = getCachedListings(compare.selectedIds)
@@ -118,8 +118,6 @@ export function SearchPage() {
         isLoading={listingsLoading}
       />
 
-      <CheckoutReturnBanner status={checkoutReturn.status} onDismiss={checkoutReturn.dismiss} />
-
       <main className="mx-auto flex w-full max-w-7xl flex-1 gap-6 px-4 py-6 sm:px-6 lg:px-8">
         {/* Desktop sidebar */}
         <aside className="hidden w-[290px] flex-shrink-0 lg:block">
@@ -151,35 +149,43 @@ export function SearchPage() {
             </button>
           </div>
 
-          {/* "Toate" / "Favorite" view toggle */}
-          <div className="mb-4 inline-flex rounded-lg border border-slate-200 bg-white p-1 dark:border-neutral-700 dark:bg-neutral-900">
-            <button
-              type="button"
-              onClick={() => setFavoritesView(false)}
-              aria-pressed={!favoritesView}
-              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                !favoritesView
-                  ? 'bg-emerald-600 text-white'
-                  : 'text-slate-600 hover:text-slate-800 dark:text-neutral-300 dark:hover:text-neutral-100'
-              }`}
-            >
-              <LayoutGrid className="h-3.5 w-3.5" aria-hidden="true" />
-              Toate
-            </button>
-            <button
-              type="button"
-              onClick={() => setFavoritesView(true)}
-              aria-pressed={favoritesView}
-              className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                favoritesView
-                  ? 'bg-emerald-600 text-white'
-                  : 'text-slate-600 hover:text-slate-800 dark:text-neutral-300 dark:hover:text-neutral-100'
-              }`}
-            >
-              <Heart className="h-3.5 w-3.5" aria-hidden="true" />
-              Favorite ({favorites.count})
-            </button>
+          {/* "Toate" / "Favorite" view toggle + refresh control */}
+          <div className="mb-1 flex flex-wrap items-start justify-between gap-3">
+            <div className="inline-flex rounded-lg border border-slate-200 bg-white p-1 dark:border-neutral-700 dark:bg-neutral-900">
+              <button
+                type="button"
+                onClick={() => setFavoritesView(false)}
+                aria-pressed={!favoritesView}
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                  !favoritesView
+                    ? 'bg-emerald-600 text-white'
+                    : 'text-slate-600 hover:text-slate-800 dark:text-neutral-300 dark:hover:text-neutral-100'
+                }`}
+              >
+                <LayoutGrid className="h-3.5 w-3.5" aria-hidden="true" />
+                Toate
+              </button>
+              <button
+                type="button"
+                onClick={() => setFavoritesView(true)}
+                aria-pressed={favoritesView}
+                className={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
+                  favoritesView
+                    ? 'bg-emerald-600 text-white'
+                    : 'text-slate-600 hover:text-slate-800 dark:text-neutral-300 dark:hover:text-neutral-100'
+                }`}
+              >
+                <Heart className="h-3.5 w-3.5" aria-hidden="true" />
+                Favorite ({favorites.count})
+              </button>
+            </div>
+
+            <RefreshControl scrape={scrape} city={filters.city} />
           </div>
+
+          <p className="mb-4 text-xs text-slate-400 dark:text-neutral-500">
+            Datele sunt pe calculatorul tău. Apasă „Actualizează" oricând pentru anunțuri proaspete.
+          </p>
 
           {showNoOriginNotice && (
             <p className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-400">
@@ -188,9 +194,7 @@ export function SearchPage() {
           )}
 
           {favoritesView ? (
-            favoritesLoading ? (
-              <ListingGridSkeleton />
-            ) : favoriteListings.length > 0 ? (
+            favoriteListings.length > 0 ? (
               <>
                 <BestFavorite
                   listings={favoriteListings}
@@ -229,19 +233,21 @@ export function SearchPage() {
                 />
               </div>
 
-              {listingsData.locked ? (
-                <PaywallBanner total={listingsData.total} visibleLimit={listingsData.visible_limit} />
-              ) : (
-                <div className="mt-8">
-                  <Pagination
-                    page={listingsData.page}
-                    pages={listingsData.pages}
-                    total={listingsData.total}
-                    onPageChange={handlePageChange}
-                  />
-                </div>
-              )}
+              <div className="mt-8">
+                <Pagination
+                  page={listingsData.page}
+                  pages={listingsData.pages}
+                  total={listingsData.total}
+                  onPageChange={handlePageChange}
+                />
+              </div>
             </>
+          ) : isFirstRun ? (
+            <FirstRunState
+              cityName={currentCity?.name ?? filters.city}
+              citySlug={filters.city}
+              scrape={scrape}
+            />
           ) : (
             <EmptyState />
           )}

@@ -5,7 +5,6 @@ import type { City } from '@/api/types'
 import { SITE_NAME } from '@/lib/site'
 import { CitySelect } from './CitySelect'
 import { ThemeToggle } from './ThemeToggle'
-import { AccountMenu } from './AccountMenu'
 
 interface HeaderProps {
   cities: City[]
@@ -67,7 +66,6 @@ export function Header({
 
           <div className="flex items-center gap-3 sm:order-last">
             <ThemeToggle />
-            <AccountMenu />
           </div>
         </div>
 

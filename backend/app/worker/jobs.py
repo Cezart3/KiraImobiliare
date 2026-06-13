@@ -128,11 +128,4 @@ def run_scrape_city(
                 )
         summary["parking_matches"] = rebuild_matches(db, city)
     log.info("scrape %s done: %s", city_slug, summary)
-    # email if any source errored / returned nothing (no-op if SMTP unset)
-    try:
-        from app.services.alerts import alert_scrape_problems
-
-        alert_scrape_problems(city_slug, summary)
-    except Exception:  # alerts must never break a scrape
-        log.exception("alert check failed for %s", city_slug)
     return summary

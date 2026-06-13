@@ -80,7 +80,7 @@ class Geocoder:
                 settings.nominatim_url,
                 params=params,
                 timeout=20,
-                headers={"User-Agent": "RentScalper/0.1 (personal project)"},
+                headers={"User-Agent": "Kira/1.0 (local rental-search tool; personal use)"},
             )
             data = r.json()
             if data:

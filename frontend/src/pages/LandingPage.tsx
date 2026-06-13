@@ -4,7 +4,6 @@ import { useCities } from '@/api/queries'
 import { DEFAULT_CITY } from '@/lib/searchParams'
 import { SITE_NAME, SITE_TAGLINE } from '@/lib/site'
 import { ThemeToggle } from '@/components/ThemeToggle'
-import { AccountMenu } from '@/components/AccountMenu'
 import { Footer } from '@/components/Footer'
 
 const FEATURES = [
@@ -49,7 +48,6 @@ export function LandingPage() {
 
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <AccountMenu />
           </div>
         </div>
       </header>
@@ -106,11 +104,6 @@ export function LandingPage() {
               Vezi anunțurile
             </button>
           </div>
-
-          <p className="mx-auto mt-4 max-w-xl text-xs text-slate-400 dark:text-neutral-500">
-            Prima lună de la lansare este gratuită pentru toți. După aceea, acces complet pentru
-            15 lei / 30 de zile — plată unică, fără reînnoire automată.
-          </p>
         </div>
 
         {/* Feature points */}

@@ -107,8 +107,6 @@ export interface ListingsResponse {
   page: number
   page_size: number
   pages: number
-  locked: boolean
-  visible_limit: number | null
 }
 
 export interface SiteRunInfo {
@@ -127,25 +125,28 @@ export interface CityStats {
   last_runs: SiteRunInfo[]
 }
 
-export interface MeOut {
-  authenticated: boolean
-  email: string | null
-  subscribed: boolean
-  sub_status: string | null
-  paywall_enabled: boolean
-  free_listing_limit: number
-  google_client_id: string | null
+export interface ScrapeStartResponse {
+  started: true
+  city: string
 }
 
-export interface CheckoutResponse {
-  url: string
+export interface ScrapeRunProgress {
+  site: string
+  kind: string
+  status: string
+  found: number | null
+  upserted: number | null
 }
 
-export interface SyncResponse {
-  subscribed: boolean
-  sub_status: string | null
+export interface ScrapeStatus {
+  running: boolean
+  city: string | null
+  error: string | null
+  summary: unknown
+  recent_runs: ScrapeRunProgress[]
 }
 
-export interface FavoritesResponse {
-  ids: number[]
+export interface ScrapeHasData {
+  city: string
+  count: number
 }

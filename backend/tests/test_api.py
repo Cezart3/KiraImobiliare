@@ -145,37 +145,6 @@ def test_detail_with_matches(client):
     assert detail["parking_matches"][0]["is_approx"] is True
 
 
-def test_admin_stats(client):
-    r = client.get("/api/admin/stats")
-    assert r.status_code == 200
-    body = r.json()
-    assert body["listings_active"] == 3  # stale row excluded
-    assert body["listings_total"] == 4
-    assert {s["site"] for s in body["sources"]} == {"storia", "olx"}
-    assert all(s["age_min"] < 10 for s in body["sources"])
-    assert all(s["status"] == "ok" for s in body["sources"])
-    assert body["health"] in ("ok", "warn", "error")
-    assert "coverage" in body and "with_image_pct" in body["coverage"]
-
-
-def test_admin_stats_token_guard(client, monkeypatch):
-    from app.core.config import settings
-
-    monkeypatch.setattr(settings, "enable_admin_endpoints", False)
-    assert client.get("/api/admin/stats").status_code == 403
-    monkeypatch.setattr(settings, "admin_token", "sekrit-token")
-    assert (
-        client.get("/api/admin/stats", headers={"X-Admin-Token": "wrong"}).status_code
-        == 403
-    )
-    assert (
-        client.get(
-            "/api/admin/stats", headers={"X-Admin-Token": "sekrit-token"}
-        ).status_code
-        == 200
-    )
-
-
 def test_cities_meta(client):
     r = client.get("/api/cities")
     assert r.status_code == 200

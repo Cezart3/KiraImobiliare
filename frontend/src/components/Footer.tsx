@@ -132,6 +132,10 @@ export function Footer({ citySlug }: FooterProps) {
         <p className="mt-8 border-t border-slate-200 pt-4 text-xs text-slate-400 dark:border-neutral-800 dark:text-neutral-500">
           Anunțurile aparțin site-urilor sursă; fiecare card trimite către anunțul original.
         </p>
+        <p className="mt-1 text-xs text-slate-400 dark:text-neutral-500">
+          În lucru: dacă proiectul prinde, adăugăm și anunțuri de vânzare imobiliare. Ai idei sau
+          feedback? Scrie-ne.
+        </p>
       </div>
     </footer>
   )

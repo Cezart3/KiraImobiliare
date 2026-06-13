@@ -19,7 +19,7 @@ def main() -> None:
     logging.basicConfig(
         level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s"
     )
-    ap = argparse.ArgumentParser(description="RentScalper scraping worker")
+    ap = argparse.ArgumentParser(description="Kira scraping worker")
     ap.add_argument("--once", action="store_true", help="run a single pass and exit")
     ap.add_argument("--city", help="restrict to one city slug")
     ap.add_argument("--site", help="restrict to one site adapter")

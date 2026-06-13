@@ -72,9 +72,7 @@ class ListingDetailOut(ListingOut):
 
 class ListingPage(BaseModel):
     items: list[ListingOut]
-    total: int          # always the REAL count, also for free users
+    total: int
     page: int
     page_size: int
     pages: int
-    locked: bool = False           # true when results were cut by the paywall
-    visible_limit: int | None = None

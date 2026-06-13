@@ -13,10 +13,6 @@ dependencies = [
     "beautifulsoup4>=4.12",
     "apscheduler>=3.10,<4",
     "tenacity>=8.3",
-    "stripe>=10",
-    "PyJWT>=2.8",
-    "bcrypt>=4.1",
-    "google-auth>=2.30",
 ]
 
 [project.optional-dependencies]
@@ -45,7 +41,6 @@ select = ["E", "F", "I", "UP", "B", "SIM"]
 
 [tool.ruff.lint.per-file-ignores]
 "tools/*" = ["E501"]  # one-off probe/maintenance scripts
-"app/api/routes/admin.py" = ["E501"]  # embedded HTML/CSS/JS dashboard string
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

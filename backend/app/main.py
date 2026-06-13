@@ -6,16 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 import app.scraping.sites  # noqa: F401  (import side-effect: register site adapters)
-from app.api.routes import (
-    admin,
-    auth,
-    billing,
-    favorites,
-    images,
-    listings,
-    meta,
-    parking,
-)
+from app.api.routes import images, listings, meta, parking, scrape
 from app.core import ratelimit
 from app.core.config import settings
 from app.db.base import init_db
@@ -28,21 +19,10 @@ logging.basicConfig(
 @asynccontextmanager
 async def lifespan(_: FastAPI):
     init_db()
-    log = logging.getLogger(__name__)
-    if settings.secret_key == "dev-secret-change-me" or len(settings.secret_key) < 32:
-        log.warning(
-            "SECURITY: RS_SECRET_KEY is default/short — fine for dev, NEVER for prod "
-            "(generate one: openssl rand -hex 32)"
-        )
-    if settings.cookie_secure and settings.enable_admin_endpoints:
-        log.warning(
-            "SECURITY: admin endpoints are open while cookie_secure=true suggests "
-            "production — set RS_ENABLE_ADMIN_ENDPOINTS=false + RS_ADMIN_TOKEN"
-        )
     yield
 
 
-app = FastAPI(title="RentScalper API", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="Kira API", version="1.0.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
@@ -55,7 +35,7 @@ app.add_middleware(
 @app.middleware("http")
 async def global_rate_limit(request: Request, call_next):
     """Coarse per-IP flood protection across the whole API. Endpoint-specific
-    limits (auth, billing, images) sit on top of this one."""
+    limits (images) sit on top of this one."""
     limit = settings.global_rate_limit_per_min
     if limit > 0 and request.url.path.startswith("/api"):
         ip = request.client.host if request.client else "?"
@@ -82,10 +62,7 @@ for r in (
     parking.router,
     meta.router,
     images.router,
-    admin.router,
-    auth.router,
-    billing.router,
-    favorites.router,
+    scrape.router,
 ):
     api.include_router(r)
 

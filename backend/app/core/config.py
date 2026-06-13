@@ -37,16 +37,6 @@ class Settings(BaseSettings):
     scrape_interval_min: int = 180
     listing_active_days: int = 4       # listing shown while seen within N days
 
-    # monitoring / alerts (SMTP optional — alerts skipped if unset)
-    alert_email: str = ""             # where to send "a source broke" emails
-    smtp_host: str = ""
-    smtp_port: int = 587
-    smtp_user: str = ""
-    smtp_password: str = ""
-    smtp_from: str = ""               # defaults to smtp_user if empty
-    # a source is "stale" if its newest active listing is older than this (hours)
-    source_stale_hours: int = 12
-
     # parking <-> rent matching
     parking_match_max_m: int = 1000
     parking_matches_per_listing: int = 5
@@ -58,32 +48,11 @@ class Settings(BaseSettings):
     ors_api_key: str = ""              # openrouteservice key (optional, real walk routes)
 
     image_cache_dir: Path = VAR_DIR / "img_cache"
-    enable_admin_endpoints: bool = True
-    admin_token: str = ""              # when set, X-Admin-Token grants admin access
-                                       # even with enable_admin_endpoints=false (prod)
-
-    # auth / sessions
-    secret_key: str = "dev-secret-change-me"   # set RS_SECRET_KEY in prod!
-    session_days: int = 30
-    cookie_secure: bool = False                # True behind HTTPS
-    google_client_id: str = ""                 # OAuth client ID for "Sign in with Google"
-    auth_rate_limit_per_min: int = 20          # auth attempts per IP per minute
 
     # abuse protection (0 disables a limit)
     global_rate_limit_per_min: int = 600       # per IP, all /api/* routes combined
     img_rate_limit_per_min: int = 400          # per IP, /api/img upstream proxy
     image_cache_max_mb: int = 2000             # disk cap for the image cache (LRU prune)
-
-    # freemium paywall
-    paywall_enabled: bool = True
-    free_listing_limit: int = 9                # anonymous/free users see this many
-                                               # (9 = full 3x3 grid on desktop)
-
-    # Stripe (subscription "RentScalper Plus", 15 RON/month)
-    stripe_secret_key: str = ""
-    stripe_price_id: str = ""                  # price_... for the monthly RON plan
-    stripe_webhook_secret: str = ""            # whsec_...
-    app_base_url: str = "http://localhost:5173"
 
 
 settings = Settings()

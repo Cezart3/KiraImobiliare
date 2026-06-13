@@ -1,4 +1,5 @@
-import { SearchX, AlertTriangle, RefreshCw } from 'lucide-react'
+import { SearchX, AlertTriangle, RefreshCw, DownloadCloud } from 'lucide-react'
+import type { UseScrapeResult } from '@/hooks/useScrape'
 
 export function EmptyState() {
   return (
@@ -7,6 +8,55 @@ export function EmptyState() {
       <p className="text-base font-medium text-slate-700 dark:text-neutral-300">
         Niciun anunț — încearcă filtre mai largi
       </p>
+    </div>
+  )
+}
+
+interface FirstRunStateProps {
+  cityName: string
+  scrape: UseScrapeResult
+  citySlug: string
+}
+
+/** Welcome panel shown when a city has no data yet at all (vs. an
+ * over-filtered search). Lets the user kick off the first scrape. */
+export function FirstRunState({ cityName, scrape, citySlug }: FirstRunStateProps) {
+  const { start, running, progress, error, justFinished } = scrape
+
+  return (
+    <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 bg-white px-6 py-16 text-center dark:border-neutral-700 dark:bg-neutral-900">
+      <DownloadCloud className="mb-3 h-10 w-10 text-emerald-500 dark:text-emerald-400" aria-hidden="true" />
+      <p className="text-base font-medium text-slate-700 dark:text-neutral-300">
+        Bun venit! Încă nu ai anunțuri pentru {cityName}.
+      </p>
+      <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-neutral-400">
+        Apasă butonul de mai jos ca să aduci anunțurile. Prima actualizare durează câteva minute
+        (de la 6 surse). După aceea, totul e instant.
+      </p>
+
+      <button
+        type="button"
+        onClick={() => start(citySlug)}
+        disabled={running || !citySlug}
+        className="mt-5 inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
+      >
+        <RefreshCw className={`h-4 w-4 ${running ? 'animate-spin' : ''}`} aria-hidden="true" />
+        {running ? 'Se actualizează… (poate dura câteva minute)' : 'Adu anunțurile acum'}
+      </button>
+
+      {running && progress && (
+        <p className="mt-3 text-xs text-slate-500 dark:text-neutral-400">{progress}</p>
+      )}
+
+      {!running && justFinished && (
+        <p className="mt-3 text-xs font-medium text-emerald-600 dark:text-emerald-400">
+          Anunțuri actualizate.
+        </p>
+      )}
+
+      {!running && error && (
+        <p className="mt-3 text-xs font-medium text-red-600 dark:text-red-400">{error}</p>
+      )}
     </div>
   )
 }

@@ -1,20 +1,26 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import { apiClient } from './client'
-import type { City, CityStats, Listing, ListingDetail, ListingsResponse } from './types'
+import type {
+  City,
+  CityStats,
+  Listing,
+  ListingDetail,
+  ListingsResponse,
+  ScrapeHasData,
+  ScrapeStartResponse,
+  ScrapeStatus,
+} from './types'
 import type { Filters } from '@/lib/searchParams'
 import { filtersToApiParams, DEFAULT_PAGE_SIZE } from '@/lib/searchParams'
 
 export const queryKeys = {
   cities: ['cities'] as const,
   listings: (params: URLSearchParams) => ['listings', params.toString()] as const,
-  listingsAll: ['listings'] as const,
   listing: (id: number) => ['listing', id] as const,
   stats: ['stats'] as const,
-  me: ['me'] as const,
-  favorites: ['favorites'] as const,
   localFavorites: ['localFavorites'] as const,
-  favoriteListings: (ids: number[], near: string[]) =>
-    ['favoriteListings', [...ids].sort((a, b) => a - b).join(','), near.join('|')] as const,
+  scrapeStatus: ['scrapeStatus'] as const,
+  hasData: (city: string) => ['hasData', city] as const,
 }
 
 export function useCities() {
@@ -44,28 +50,47 @@ export function useListingDetail(id: number | null) {
   })
 }
 
-/** Fetch saved listings by id (Favorites view). Works regardless of what the
- *  client has cached this session; optionally ranks by distance via `near`. */
-export function useFavoriteListings(ids: number[], near: string[] = []) {
-  return useQuery({
-    queryKey: queryKeys.favoriteListings(ids, near),
-    queryFn: () => {
-      const params = new URLSearchParams()
-      ids.forEach((id) => params.append('ids', String(id)))
-      near.forEach((n) => params.append('near', n))
-      return apiClient.get<Listing[]>('/listings-by-ids', params)
-    },
-    enabled: ids.length > 0,
-    placeholderData: (prev) => prev,
-  })
-}
-
 export function useCityStats(enabled: boolean = true) {
   return useQuery({
     queryKey: queryKeys.stats,
     queryFn: () => apiClient.get<CityStats[]>('/stats'),
     staleTime: 5 * 60 * 1000,
     enabled,
+  })
+}
+
+/** Starts a scrape for a city. The backend runs it in the background; poll
+ * `useScrapeStatus` for progress. */
+export function useStartScrape() {
+  return useMutation({
+    mutationFn: (params: { city: string; maxPages?: number }) =>
+      apiClient.post<ScrapeStartResponse>('/scrape', {
+        city: params.city,
+        max_pages: params.maxPages,
+      }),
+  })
+}
+
+/** Polls the current scrape status. Re-polls every ~3s while the last known
+ * status says a scrape is running, and stops on its own once it finishes —
+ * no manual interval bookkeeping needed. */
+export function useScrapeStatus(enabled: boolean) {
+  return useQuery({
+    queryKey: queryKeys.scrapeStatus,
+    queryFn: () => apiClient.get<ScrapeStatus>('/scrape/status'),
+    enabled,
+    refetchInterval: (query) => (query.state.data?.running ? 3000 : false),
+  })
+}
+
+/** Whether a city already has any listings — used to tell "first run, no data
+ * yet" apart from "filters returned nothing". */
+export function useHasData(city: string) {
+  return useQuery({
+    queryKey: queryKeys.hasData(city),
+    queryFn: () => apiClient.get<ScrapeHasData>('/scrape/has-data', new URLSearchParams({ city })),
+    enabled: Boolean(city),
+    staleTime: 30 * 1000,
   })
 }
 
