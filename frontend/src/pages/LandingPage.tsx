@@ -59,7 +59,12 @@ export function LandingPage() {
           </h1>
           <p className="mx-auto mt-4 max-w-2xl text-base text-slate-500 sm:text-lg dark:text-neutral-400">
             {SITE_NAME} adună anunțurile de pe Storia, OLX, Imobiliare, Publi24 și altele — cu
-            filtre pe care site-urile normale nu le au.
+            filtre pe care site-urile normale nu le au: centrală proprie vs termoficare, parcare
+            și distanța pe jos până la adresa ta.
+          </p>
+          <p className="mx-auto mt-3 max-w-2xl text-sm text-slate-400 dark:text-neutral-500">
+            🐶 Numele vine de la Kira, cățelușa mea — partenera mea de frustrare cât am căutat
+            chirie cu 6 site-uri deschise în paralel. De-acolo a pornit tot.
           </p>
         </div>
 

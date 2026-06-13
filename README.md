@@ -11,6 +11,10 @@ nu le au:
 Rulează **100% local, gratuit, fără cont, fără plată.** Datele rămân pe calculatorul
 tău. Fiecare card te trimite la anunțul original de pe site-ul sursă.
 
+> 🐶 **De ce „Kira"?** E numele cățelușei mele — partenera mea de frustrare în lunile
+> în care căutam o chirie jonglând cu 6 site-uri deschise în paralel. Tool-ul ăsta
+> rezolvă fix bătaia de cap prin care am trecut împreună, așa că îi poartă numele.
+
 > Gândit pentru studenți din centrele universitare: Cluj-Napoca, București, Timișoara,
 > Iași, Oradea, Târgu Mureș.
 
@@ -98,12 +102,6 @@ frontend/  React 18 · TypeScript · Tailwind v4 · TanStack Query
 Dacă proiectul prinde, urmează **anunțuri de vânzare imobiliare** (nu doar chirii) și
 mai multe orașe. **Ai idei sau ai găsit un bug?** Deschide un *issue* pe GitHub sau
 scrie la cezartocaciu233@gmail.com — chiar citesc fiecare mesaj. Un ⭐ pe repo ajută.
-
-## De ce „Kira"?
-
-Kira e cățelușa mea 🐶 — partenera mea de frustrare în lunile în care căutam o chirie
-și jonglam cu 6 site-uri deschise în paralel. Tool-ul ăsta rezolvă fix bătaia de cap
-prin care am trecut împreună. Așa că i-am pus numele ei.
 
 ## Notă legală
 
