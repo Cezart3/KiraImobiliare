@@ -229,3 +229,28 @@ def test_parking_area_plus_no_own_spot_stays_area():
 def test_parking_stradala_is_area():
     s, _ = classify_parking("Parcare stradala pe baza de abonament lunar")
     assert s == ParkingStatus.AREA_POSSIBLE
+
+
+def test_needs_enrich_parking_hint():
+    # storia hides "loc de parcare inclus in pret" behind a fold; a listing with
+    # a decent snippet + images but weak parking status, whose title mentions
+    # parking, must still be queued for a full-description fetch.
+    from app.worker.jobs import _needs_enrich
+
+    class L:
+        def __init__(self, title, desc, status, images):
+            self.title = title
+            self.description = desc
+            self.parking_status = status
+            self.images = images
+
+    long_desc = "x" * 250
+    # weak status + parking in title -> enrich
+    assert _needs_enrich(L("Apartament 3 camere parcare", long_desc, "likely_included", ["a"]))
+    assert _needs_enrich(L("Garsoniera cu garaj", long_desc, "unknown", ["a"]))
+    # already strong -> no need
+    assert not _needs_enrich(L("Apartament parcare", long_desc, "included", ["a"]))
+    # no parking hint, rich enough -> no need
+    assert not _needs_enrich(L("Apartament 2 camere", long_desc, "unknown", ["a"]))
+    # thin desc always enriches
+    assert _needs_enrich(L("Apartament", "scurt", "included", ["a"]))

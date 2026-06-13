@@ -18,6 +18,22 @@ from app.services.matching import rebuild_matches
 
 log = logging.getLogger(__name__)
 
+# parking words worth a full-description fetch when the status is still weak
+_PARKING_HINT = ("parcare", "garaj", "parking")
+_WEAK_PARKING = {"unknown", "likely_included"}
+
+
+def _needs_enrich(obj) -> bool:
+    if len(obj.description or "") < 200 or not obj.images:
+        return True
+    # parking still ambiguous but the title/snippet mentions parking -> the
+    # decisive phrase is likely folded inside the full description
+    if obj.parking_status in _WEAK_PARKING:
+        hay = f"{obj.title} {obj.description}".lower()
+        if any(w in hay for w in _PARKING_HINT):
+            return True
+    return False
+
 
 def _scrape_kind(
     db, scraper: SiteScraper, city: CityConfig, geocoder: Geocoder, kind: str, pages: int
@@ -48,12 +64,12 @@ def _scrape_kind(
                 continue
             upserted += 1
             # enrich anything thin — also OLD rows that never got their detail
-            # fetch (budget caps each run; backfill completes across runs)
-            if (
-                kind == "rent"
-                and obj is not None
-                and (len(obj.description or "") < 200 or not obj.images)
-            ):
+            # fetch (budget caps each run; backfill completes across runs).
+            # Also enrich when parking is still ambiguous but the title/snippet
+            # hints at parking: sites (esp. storia) hide "loc de parcare inclus
+            # in pret" in the full description behind a "see more" fold, so the
+            # short snippet alone misclassifies it as merely "likely".
+            if kind == "rent" and obj is not None and _needs_enrich(obj):
                 enrich_queue.append((raw, obj))
             if found % 50 == 0:
                 db.commit()

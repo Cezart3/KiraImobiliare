@@ -21,7 +21,9 @@ class Settings(BaseSettings):
     request_delay_s: float = 1.5
     request_timeout_s: int = 25
     max_pages_per_site: int = 10
-    detail_fetch_budget: int = 40      # detail-page fetches per site per run
+    detail_fetch_budget: int = 120     # detail-page fetches per site per run
+                                       # (covers thin rows + parking-hint rows whose
+                                       #  "inclus in pret" line is folded in the full desc)
     geocode_budget_per_run: int = 80   # new Nominatim lookups per run
     ron_per_eur: float = 5.0           # rough conversion for budget filtering
 
