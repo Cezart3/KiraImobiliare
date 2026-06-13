@@ -8,7 +8,7 @@ export function AboutPage() {
     <LegalLayout title={`Despre ${SITE_NAME}`}>
       <LegalSection title="Ce este">
         <p>
-          {SITE_NAME} este un instrument gratuit, open-source, care rulează local pe calculatorul
+          {SITE_NAME} este un instrument gratuit care rulează local pe calculatorul
           tău. Strânge într-un singur loc anunțuri de închiriere publicate pe site-uri terțe
           (Storia, OLX, Imobiliare, Publi24 și altele) și le face ușor de căutat, cu filtre pe
           care site-urile sursă nu le oferă. Nu este o agenție imobiliară și nu intermediază
@@ -30,7 +30,7 @@ export function AboutPage() {
         </p>
       </LegalSection>
 
-      <LegalSection title="De ce „Kira"?">
+      <LegalSection title="De ce Kira?">
         <p>
           Kira e cățelușa mea 🐶 — partenera mea de frustrare în lunile în care căutam o chirie
           și jonglam cu 6 site-uri deschise în paralel. {SITE_NAME} rezolvă fix bătaia de cap prin
