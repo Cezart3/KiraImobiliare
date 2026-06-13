@@ -15,9 +15,12 @@ import re
 from app.core.textutil import fold
 from app.db.models import ParkingKind, ParkingStatus
 
+_NEG = r"nu (?:are|exista|include|detine|dispune de|beneficiaza de)"
 _NONE = [
     r"fara (?:loc de )?parcare",
-    r"nu (?:are|exista|include|detine) (?:loc de )?parcare",
+    rf"{_NEG} (?:un )?(?:loc(?:ul)? (?:de |propriu )?)?parcare",
+    rf"{_NEG} loc (?:propriu )?(?:de )?parcare",
+    r"nu (?:are|detine) (?:loc de )?parcare propri",
 ]
 _EXTRA_COST = [
     r"parcare contra cost",
@@ -30,7 +33,13 @@ _STRONG = [
     r"garaj inclus",
     r"loc de parcare propriu",
     r"parcare propri[ea]",
-    r"include \w{0,15}\s?parcare",
+    # "include ... parcare" / "pretul include ... loc de parcare" — allow a few
+    # words in between (\w only matches one token, so use a bounded any-char gap)
+    r"includ[ae].{0,30}parcare",
+    r"pretul include.{0,30}(?:loc de )?parcare",
+    r"(?:loc de )?parcare.{0,20}inclus(?:a|e)?\b",
+    # "dispune de / are / beneficiaza de ... loc de parcare/garaj" = belongs to flat
+    r"(?:dispune de|are|beneficiaza de|cu propriul?).{0,20}(?:loc de parcare|garaj)",
     r"cu loc de parcare",
     r"cu garaj",
     r"loc (?:de )?parcare subteran",
@@ -39,15 +48,15 @@ _STRONG = [
 ]
 _AREA = [
     r"posibilitat\w* (?:de )?parcare",
+    r"posibiliate de parcare",  # common misspelling seen in real ads
     r"parcare (?:in|prin) zona",
     r"parcare pe strada",
+    r"parcare stradala",
     r"parcare la liber",
     r"locuri? nemarcat",
     r"parcare nemarcat",
     r"se gaseste parcare",
     r"parcare gratuita in zona",
-    r"parcare in fata blocului",
-    r"parcare langa bloc",
 ]
 _WEAK = [
     r"loc de parcare",
@@ -70,9 +79,12 @@ def classify_parking(text: str, structured_hint: bool = False) -> tuple[ParkingS
     structured_hint: site provided a structured GARAGE/PARKING tag (e.g. storia tags).
     """
     t = fold(" ".join((text or "").split()))
+    # "...nu dispune de loc propriu, dar exista posibilitate de parcare in zona":
+    # the flat has no OWN spot but area parking exists -> area_possible, not none.
+    has_area = any(r.search(t) for r in _AREA_RE)
     if not t:
         status, conf = ParkingStatus.UNKNOWN, 0
-    elif any(r.search(t) for r in _NONE_RE):
+    elif any(r.search(t) for r in _NONE_RE) and not has_area:
         status, conf = ParkingStatus.NONE, 3
     elif any(r.search(t) for r in _EXTRA_RE) and not _INCLUS.search(t):
         status, conf = ParkingStatus.AREA_POSSIBLE, 2

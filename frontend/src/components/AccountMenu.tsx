@@ -11,9 +11,9 @@ import {
 import { ApiError } from '@/api/client'
 import { DeleteAccountDialog } from './DeleteAccountDialog'
 
-/** Top-right account area: "Intră în cont" / "Creează cont" when anonymous
- * (navigates to the dedicated /cont page), or a dropdown with subscription/
- * account actions when authenticated. */
+/** Top-right account area: a single "Cont" button when anonymous (navigates
+ * to the dedicated /cont page, which offers both login and register), or a
+ * dropdown with subscription/account actions when authenticated. */
 export function AccountMenu() {
   const { data: me } = useMe()
   const navigate = useNavigate()
@@ -85,22 +85,13 @@ export function AccountMenu() {
   if (!me?.authenticated) {
     return (
       <>
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => navigate('/cont?mode=register')}
-            className="hidden h-10 items-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-medium text-slate-700 shadow-sm transition-colors hover:bg-slate-50 sm:inline-flex dark:border-neutral-700 dark:bg-neutral-900 dark:text-neutral-200 dark:hover:bg-neutral-800"
-          >
-            Creează cont
-          </button>
-          <button
-            type="button"
-            onClick={() => navigate('/cont')}
-            className="inline-flex h-10 items-center rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
-          >
-            Intră în cont
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={() => navigate('/cont')}
+          className="inline-flex h-10 items-center rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700"
+        >
+          Cont
+        </button>
         {deletedNotice}
       </>
     )

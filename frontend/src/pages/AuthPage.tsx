@@ -183,7 +183,7 @@ export function AuthPage() {
             <div className="mt-6">
               <div ref={googleButtonRef} className="flex justify-center" />
               <p className="mt-2 text-center text-xs text-slate-400 dark:text-neutral-500">
-                Fără parolă — autentificare directă cu contul Google.
+                Continuă cu Google — fără parolă. Funcționează și pentru autentificare, și pentru cont nou.
               </p>
 
               <div className="my-6 flex items-center gap-3">
@@ -247,6 +247,30 @@ export function AuthPage() {
                   ? 'Autentificare'
                   : 'Creează cont'}
             </button>
+
+            {mode === 'login' ? (
+              <p className="text-center text-sm text-slate-500 dark:text-neutral-400">
+                Nu ai cont?{' '}
+                <button
+                  type="button"
+                  onClick={() => handleModeChange('register')}
+                  className="font-medium text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+                >
+                  Creează unul
+                </button>
+              </p>
+            ) : (
+              <p className="text-center text-sm text-slate-500 dark:text-neutral-400">
+                Ai deja cont?{' '}
+                <button
+                  type="button"
+                  onClick={() => handleModeChange('login')}
+                  className="font-medium text-emerald-600 transition-colors hover:text-emerald-700 dark:text-emerald-400 dark:hover:text-emerald-300"
+                >
+                  Autentifică-te
+                </button>
+              </p>
+            )}
           </form>
         </div>
 

@@ -196,3 +196,36 @@ def test_to_eur_separator_disambiguation():
     assert to_eur("906,29 eur") == 906.3        # decimal comma
     assert to_eur("1.234.567 eur") == 1234567
     assert to_eur("2 000 lei") == 400
+
+
+# ---------- parking: real-world phrasings that were misclassified ----------
+
+
+def test_parking_include_multiword_gap():
+    # "pretul include si un loc de parcare..." — words between include & parcare
+    s, _ = classify_parking("Pretul include si un loc de parcare in fata blocului")
+    assert s == ParkingStatus.INCLUDED
+
+
+def test_parking_dispune_de_loc():
+    s, _ = classify_parking("Apartamentul dispune de un loc de parcare langa bloc")
+    assert s == ParkingStatus.INCLUDED
+
+
+def test_parking_negated_dispune_is_not_included():
+    s, _ = classify_parking("Apartamentul nu dispune de loc de parcare")
+    assert s == ParkingStatus.NONE
+
+
+def test_parking_area_plus_no_own_spot_stays_area():
+    # has area parking but no OWN spot -> area_possible, not none, not included
+    s, _ = classify_parking(
+        "Exista posibilitate de parcare in zona, insa apartamentul nu dispune "
+        "de loc propriu de parcare"
+    )
+    assert s == ParkingStatus.AREA_POSSIBLE
+
+
+def test_parking_stradala_is_area():
+    s, _ = classify_parking("Parcare stradala pe baza de abonament lunar")
+    assert s == ParkingStatus.AREA_POSSIBLE
