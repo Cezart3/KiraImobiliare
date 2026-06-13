@@ -21,7 +21,10 @@ class Settings(BaseSettings):
     user_agent: str = ""               # override the default identifiable UA if a source blocks it
     request_delay_s: float = 1.5
     request_timeout_s: int = 25
-    max_pages_per_site: int = 10
+    # high cap so a run reaches each site's LAST page (scrapers stop on their own
+    # when a site returns no more results) — the goal is ALL current listings, not
+    # a sample. Lower it via RS_MAX_PAGES_PER_SITE if you want faster/lighter runs.
+    max_pages_per_site: int = 40
     detail_fetch_budget: int = 120     # detail-page fetches per site per run
                                        # (covers thin rows + parking-hint rows whose
                                        #  "inclus in pret" line is folded in the full desc)

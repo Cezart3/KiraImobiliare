@@ -266,7 +266,7 @@ def upsert_parking(
         else 1
     )
     if new_rank > _PRECISION_RANK.get(spot.geo_precision or "none", 0):
-        lat, lon, prec = _geolocate(city, zone, town, street, geocoder)
+        lat, lon, prec = _geolocate(city, zone, town, street, None, geocoder)
         spot.lat, spot.lon, spot.geo_precision = lat, lon, prec
 
     spot.last_seen_at = utcnow()

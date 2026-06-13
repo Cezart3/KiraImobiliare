@@ -152,3 +152,23 @@ def test_cities_meta(client):
     assert "cluj-napoca" in cities
     assert any(z["slug"] == "manastur" for z in cities["cluj-napoca"]["zones"])
     assert any(t["slug"] == "floresti" for t in cities["cluj-napoca"]["nearby_towns"])
+
+
+def test_upsert_parking_geocodes_without_crash(client):
+    # regression: _geolocate signature gained a landmark arg; upsert_parking must
+    # pass it (None) so parking spots still geocode instead of raising TypeError.
+    from app.core.cities import get_city
+    from app.scraping.base import RawListing
+    from app.scraping.pipeline import upsert_parking
+    from app.services.geo import Geocoder
+
+    with SessionLocal() as db:
+        city = get_city("cluj-napoca")
+        raw = RawListing(
+            site="storia", url="https://test/parking-geo-1",
+            title="Loc de parcare subteran Marasti", description="loc parcare",
+            price_value="50", price_currency="EUR", location_text="Marasti",
+        )
+        spot, created, drop = upsert_parking(db, raw, city, Geocoder(db, budget=0))
+        assert drop is None and spot is not None  # no TypeError, spot stored
+        assert spot.lat is not None and spot.lon is not None  # geocoded (zone centroid)
