@@ -136,4 +136,4 @@ author. © 2026 Cezar Tocaciu — all rights reserved.
 
 ---
 
-<sub>Author: Cezar Tocaciu · [LinkedIn](https://www.linkedin.com/in/tocaciu-cezar-0865373b6/)</sub>
+<sub>Author: Cezar Tocaciu · [LinkedIn](https://www.linkedin.com/in/tocaciu-cezar-0865373b6/) · [Instagram](https://instagram.com/tcezar3)</sub>

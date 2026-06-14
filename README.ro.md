@@ -205,4 +205,4 @@ drepturile rezervate. Pentru orice altă utilizare, scrie la cezartocaciu233@gma
 
 ---
 
-<sub>Autor: Cezar Tocaciu · [LinkedIn](https://www.linkedin.com/in/tocaciu-cezar-0865373b6/)</sub>
+<sub>Autor: Cezar Tocaciu · [LinkedIn](https://www.linkedin.com/in/tocaciu-cezar-0865373b6/) · [Instagram](https://instagram.com/tcezar3)</sub>
