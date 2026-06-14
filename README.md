@@ -84,6 +84,11 @@ Open **http://localhost:5173**, pick a city, click **"Actualizează anunțuri"**
 listings). The first refresh takes ~10–12 minutes (it pulls every current listing from
 all sources — you'll see live progress); afterwards it's instant.
 
+> **Troubleshooting:** if `python -m venv` fails with a `venvlauncher.exe` copy error,
+> you have Anaconda active (`(base)` in your prompt) — run `conda deactivate` first, or
+> use python.org's Python. If port 8000 is "already in use", close any old run of the
+> app (or reboot to free the port), then retry.
+
 ### For developers
 ```bash
 cd backend

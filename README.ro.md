@@ -124,7 +124,9 @@ La fel, doar că:
   (de ex. `.venv/bin/pip install -e .` și `.venv/bin/python -m uvicorn app.main:app --port 8000`).
 
 ### Ceva nu merge?
-- „python nu este recunoscut" → n-ai bifat „Add to PATH" la instalare; reinstalează Python cu căsuța bifată, apoi repornește calculatorul.
+- **„python nu este recunoscut"** → n-ai bifat „Add to PATH" la instalare; reinstalează Python cu căsuța bifată, apoi repornește calculatorul.
+- **Eroare la `python -m venv .venv`** (mesaj cu `venvlauncher.exe` / „Unable to copy") → ai **Anaconda** instalat și e activ (vezi `(base)` la începutul liniei din terminal). Scrie întâi `conda deactivate`, apoi reia de la `python -m venv .venv`. (Sau folosește Python „normal" de pe python.org, nu cel din Anaconda.)
+- **„address already in use" / `Errno 10048` pe portul 8000** → ai deja ceva pornit pe acel port (de obicei o rulare veche a aplicației, lăsată deschisă). Cel mai simplu: închide acea fereastră veche de terminal și reia Pasul 3. (Pe Windows, dacă nu o găsești, repornește calculatorul — eliberează portul sigur.)
 - Tot blocat? Scrie-mi: cezartocaciu233@gmail.com — te ajut.
 
 > Opțional (avansat): copiază `.env.example` în `.env` dacă vrei să ajustezi viteza de
