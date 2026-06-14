@@ -102,7 +102,7 @@ gata! Lasă și fereastra asta deschisă.
 
 Deschide în browser (Chrome, Edge, etc.): **http://localhost:5173**
 
-Alege orașul → apasă **„Actualizează anunțuri"**. Prima dată durează ~10–15 minute
+Alege orașul → apasă **„Actualizează anunțuri"**. Prima dată durează ~10–12 minute
 (aduce TOATE anunțurile de la 6 surse — vezi progresul live pe ecran, nu e blocat,
 doar lucrează); după aceea totul e instant. Apeși „Actualizează" oricând vrei anunțuri
 proaspete. Gata — caută în voie! 🎉

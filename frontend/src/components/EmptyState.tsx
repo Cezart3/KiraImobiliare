@@ -30,10 +30,11 @@ export function FirstRunState({ cityName, scrape, citySlug }: FirstRunStateProps
         Bun venit! Încă nu ai anunțuri pentru {cityName}.
       </p>
       <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-neutral-400">
-        Apasă butonul de mai jos ca să aduci anunțurile. Prima actualizare durează mai mult
-        (aprox. <strong>10–15 minute</strong>, variază în funcție de oraș) pentru că aduce
-        <strong> toate</strong> anunțurile de la 6 surse, politicos, ca să nu fim blocați.
-        Vezi progresul live mai jos — nu e blocat, doar lucrează. După prima rulare, totul e instant.
+        Apasă butonul de mai jos ca să aduci anunțurile. Prima actualizare durează
+        <strong> ~10–12 minute</strong> (puțin mai mult sau mai puțin în funcție de oraș)
+        pentru că aduce <strong>toate</strong> anunțurile de la 6 surse, politicos, ca să
+        nu fim blocați. Vezi progresul live mai jos — nu e blocat, doar lucrează.
+        După prima rulare, totul e instant.
       </p>
 
       <button
@@ -43,7 +44,7 @@ export function FirstRunState({ cityName, scrape, citySlug }: FirstRunStateProps
         className="mt-5 inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-700 disabled:cursor-not-allowed disabled:opacity-70"
       >
         <RefreshCw className={`h-4 w-4 ${running ? 'animate-spin' : ''}`} aria-hidden="true" />
-        {running ? 'Se actualizează… (10–15 min prima dată)' : 'Adu anunțurile acum'}
+        {running ? 'Se actualizează… (~10 min prima dată)' : 'Adu anunțurile acum'}
       </button>
 
       {running && progress && (
