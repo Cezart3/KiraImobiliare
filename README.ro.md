@@ -13,6 +13,9 @@ nu le au:
 Rulează **100% local, gratuit, fără cont, fără plată.** Datele rămân pe calculatorul
 tău. Fiecare card te trimite la anunțul original de pe site-ul sursă.
 
+> ⭐ **Dacă îl folosești, îți place ideea sau ți-a ușurat căutarea — dă un star la repo, te rog.**
+> Te costă un click și ajută enorm proiectul (așa îl găsesc și alți studenți). Mulțumesc! 🙏
+
 > 🐶 **De ce „Kira"?** E numele cățelușei mele — partenera mea de frustrare în lunile
 > în care căutam o chirie jonglând cu 6 site-uri deschise în paralel. Tool-ul ăsta
 > rezolvă fix bătaia de cap prin care am trecut împreună, așa că îi poartă numele.
@@ -166,7 +169,10 @@ frontend/  React 18 · TypeScript · Tailwind v4 · TanStack Query
 
 Dacă proiectul prinde, urmează **anunțuri de vânzare imobiliare** (nu doar chirii) și
 mai multe orașe. **Ai idei sau ai găsit un bug?** Deschide un *issue* pe GitHub sau
-scrie la cezartocaciu233@gmail.com — chiar citesc fiecare mesaj. Un ⭐ pe repo ajută.
+scrie la cezartocaciu233@gmail.com — chiar citesc fiecare mesaj.
+
+> ⭐ **Îți place Kira? Dă-i un star pe GitHub** — e cel mai util lucru pe care-l poți face,
+> durează un click, și așa află și alți studenți de tool. Mulțumesc mult! 🙏
 
 ## Notă legală
 

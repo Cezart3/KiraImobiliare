@@ -13,6 +13,9 @@ sites don't offer:
 It runs **100% locally — free, no account, no payment.** Your data stays on your
 machine and every card links back to the original ad on the source site.
 
+> ⭐ **If you use it, like the idea, or it saves you some hassle — please give the repo a star.**
+> It costs you one click and helps the project enormously (it's how other students find it). Thank you! 🙏
+
 > 🐶 **Why "Kira"?** It's my dog's name — my companion in frustration during the months
 > I spent hunting for a rental with six browser tabs open at once. This tool fixes the
 > exact headache we went through together, so it carries her name.
@@ -101,7 +104,10 @@ cd backend
 
 If the project gains traction: **for-sale property listings** (not just rentals) and
 more cities. **Ideas or a bug?** Open an issue or email cezartocaciu233@gmail.com —
-I read every message. A ⭐ helps.
+I read every message.
+
+> ⭐ **Enjoying Kira? Star the repo** — it's the single most helpful thing you can do, it
+> takes one click, and it's how more students discover the tool. Much appreciated! 🙏
 
 ## Legal note
 
