@@ -83,6 +83,10 @@ python -m venv .venv
 .venv\Scripts\python.exe -m pip install -e .
 .venv\Scripts\python.exe -m uvicorn app.main:app --port 8000
 ```
+⚠️ Ca la frontend: după ce lipești tot blocul, **s-ar putea să trebuiască să apeși Enter
+încă o dată** după ce se termină instalarea (`pip install`), ca să pornească ultima linie
+(`uvicorn`). Dacă pare că s-a oprit după instalare — mai dă un Enter.
+
 Când vezi un mesaj cu „Uvicorn running on http://127.0.0.1:8000" — **merge!**
 ⚠️ **Lasă această fereastră deschisă** (dacă o închizi, aplicația se oprește).
 
@@ -95,8 +99,12 @@ cd KiraImobiliare\frontend
 npm install
 npm run dev
 ```
-`npm install` durează 1-2 min prima dată. Când vezi „Local: http://localhost:5173" —
-gata! Lasă și fereastra asta deschisă.
+⚠️ **După ce lipești, s-ar putea să trebuiască să apeși Enter de două ori.** Prima dată
+pornește `npm install` (durează 1-2 min); când se termină, ultima linie (`npm run dev`)
+rămâne scrisă dar **neexecutată** — apasă **Enter** încă o dată ca să pornească interfața.
+Dacă nu se întâmplă nimic după `npm install`, ăsta e motivul: mai dă un Enter.
+
+Când vezi „Local: http://localhost:5173" — gata! Lasă și fereastra asta deschisă.
 
 ### Pasul 5 — Folosește aplicația
 
