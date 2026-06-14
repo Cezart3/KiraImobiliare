@@ -193,7 +193,7 @@ def upsert_rental(
     if reason:
         return None, False, reason
     if mentions_other_city(raw.location_text, city.slug) and not find_town(
-        city, raw.location_text
+        city, raw.location_text, raw.title
     ):
         return None, False, "other-city"
 
@@ -229,7 +229,7 @@ def upsert_parking(
     if price is not None and price > settings.parking_max_eur:
         return None, False, "too-expensive"
     if mentions_other_city(raw.location_text, city.slug) and not find_town(
-        city, raw.location_text
+        city, raw.location_text, raw.title
     ):
         return None, False, "other-city"
 

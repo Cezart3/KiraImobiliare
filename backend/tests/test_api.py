@@ -172,3 +172,49 @@ def test_upsert_parking_geocodes_without_crash(client):
         spot, created, drop = upsert_parking(db, raw, city, Geocoder(db, budget=0))
         assert drop is None and spot is not None  # no TypeError, spot stored
         assert spot.lat is not None and spot.lon is not None  # geocoded (zone centroid)
+
+
+def test_out_of_area_listings_dropped(client):
+    # regression: ads whose structured location names an out-of-area town that
+    # isn't the target city and isn't a configured nearby_town leaked in (e.g.
+    # Campia Turzii ~30km, Turda, Baia Mare in another county). Runs on the
+    # location field only; a title containing a street/square named after a city
+    # (Strada Craiova, Piata Alba Iulia) must NOT be dropped.
+    from app.core.cities import get_city
+    from app.scraping.base import RawListing
+    from app.scraping.pipeline import upsert_rental
+    from app.services.geo import Geocoder
+
+    city = get_city("cluj-napoca")
+    foreign = [
+        RawListing(site="storia", url="https://test/ct", price_value="250",
+                   price_currency="EUR", location_text="Campia Turzii",
+                   title="Inchiriez garsoniera str. Gheorghe Baritiu"),
+        RawListing(site="storia", url="https://test/td", price_value="300",
+                   price_currency="EUR", location_text="Turda, Cluj",
+                   title="Apartament 2 camere"),
+        RawListing(site="storia", url="https://test/bm", price_value="300",
+                   price_currency="EUR", location_text="Baia Mare, Maramures",
+                   title="Garsoniera Sasar"),
+    ]
+    # legit listings whose street/square is NAMED after a city must still pass,
+    # plus a real nearby_town (Floresti)
+    allowed = [
+        RawListing(site="storia", url="https://test/cr", price_value="400",
+                   price_currency="EUR", location_text="Strada Craiova, Cluj-Napoca",
+                   title="2 camere zona Horea"),
+        RawListing(site="storia", url="https://test/cj", price_value="450",
+                   price_currency="EUR", location_text="Cluj-Napoca",
+                   title="Garsoniera langa Piata Alba Iulia"),
+        RawListing(site="storia", url="https://test/fl", price_value="350",
+                   price_currency="EUR", location_text="Floresti",
+                   title="Apartament 2 camere Floresti"),
+    ]
+    with SessionLocal() as db:
+        geo = Geocoder(db, budget=0)
+        for raw in foreign:
+            _, _, drop = upsert_rental(db, raw, city, geo)
+            assert drop == "other-city", f"{raw.location_text!r} should be dropped"
+        for raw in allowed:
+            listing, _, drop = upsert_rental(db, raw, city, geo)
+            assert drop is None and listing is not None, f"{raw.location_text!r} should pass"
