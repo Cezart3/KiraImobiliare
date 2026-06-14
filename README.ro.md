@@ -111,7 +111,7 @@ Când vezi „Local: http://localhost:5173" — gata! Lasă și fereastra asta d
 Deschide în browser (Chrome, Edge, etc.): **http://localhost:5173**
 
 Alege orașul → apasă **„Actualizează anunțuri"**. Prima dată durează ~10–12 minute
-(aduce TOATE anunțurile de la 6 surse — vezi progresul live pe ecran, nu e blocat,
+(aduce TOATE anunțurile de la 5 surse — vezi progresul live pe ecran, nu e blocat,
 doar lucrează); după aceea totul e instant. Apeși „Actualizează" oricând vrei anunțuri
 proaspete. Gata — caută în voie! 🎉
 

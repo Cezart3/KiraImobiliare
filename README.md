@@ -50,7 +50,7 @@ backend/   Python 3.12 · FastAPI · SQLAlchemy 2.0 (typed) · APScheduler · SQ
 frontend/  React 18 · TypeScript (strict) · Tailwind v4 · TanStack Query · React Router
 ```
 
-**Engineering highlights:** 6 source adapters behind one `SiteScraper` contract
+**Engineering highlights:** 5 source adapters behind one `SiteScraper` contract
 (JSON-embedded + HTML); pure-regex Romanian extractors (heating, parking taxonomy,
 price-separator disambiguation, street, landmarks); a geocoding ladder
 (street → landmark → zone → city) with a budgeted, DB-cached Nominatim client;

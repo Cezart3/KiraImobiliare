@@ -32,7 +32,7 @@ export function FirstRunState({ cityName, scrape, citySlug }: FirstRunStateProps
       <p className="mt-2 max-w-md text-sm text-slate-500 dark:text-neutral-400">
         Apasă butonul de mai jos ca să aduci anunțurile. Prima actualizare durează
         <strong> ~10–12 minute</strong> (puțin mai mult sau mai puțin în funcție de oraș)
-        pentru că aduce <strong>toate</strong> anunțurile de la 6 surse, politicos, ca să
+        pentru că aduce <strong>toate</strong> anunțurile de la 5 surse, politicos, ca să
         nu fim blocați. Vezi progresul live mai jos — nu e blocat, doar lucrează.
         După prima rulare, totul e instant.
       </p>

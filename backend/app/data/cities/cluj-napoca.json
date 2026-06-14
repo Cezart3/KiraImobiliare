@@ -26,9 +26,6 @@
     },
     "lajumate": {
       "location": "cluj/cluj-napoca"
-    },
-    "capital": {
-      "enabled": true
     }
   },
   "zones": [

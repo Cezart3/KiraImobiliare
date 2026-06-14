@@ -2,7 +2,6 @@
 from bs4 import BeautifulSoup
 
 from app.scraping.extractors.price import PRICE_TEXT_RE
-from app.scraping.sites.capital import _CAP_PRICE_RE, CapitalScraper
 from app.scraping.sites.imobiliare import ImobiliareScraper
 from app.scraping.sites.olx import OlxScraper, _extract_js_string, _photo_urls
 from app.scraping.sites.publi24 import Publi24Scraper
@@ -123,19 +122,3 @@ def test_publi24_card_parse():
     assert raw.url == "https://www.publi24.ro/anunt/x"
     # alternation matches the 'eur' prefix first — enough for the EUR hint downstream
     assert raw.price_value == "250" and raw.price_currency.lower().startswith("eur")
-
-
-# --- capital --------------------------------------------------------------------
-
-def test_capital_price_regex():
-    m = _CAP_PRICE_RE.search("Comision 0% 1,000€/lună Ap 3 camere Zorilor")
-    assert m and m.group(1) == "1,000"
-
-
-def test_capital_to_raw():
-    raw = CapitalScraper()._to_raw(
-        "https://capitalimobiliare.ro/proprietate/ap-x/",
-        "Comision 0% 750€/lună Apartament 2 camere Gheorgheni",
-    )
-    assert raw.price_value == "750" and raw.price_currency == "EUR"
-    assert "Gheorgheni" in raw.title
