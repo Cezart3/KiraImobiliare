@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Kira — LinkedIn poster</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html,body { background:#0a0a0a; }
+
+  .poster {
+    width:1200px; height:1200px;
+    background:
+      radial-gradient(900px 600px at 50% -10%, #10b98122, transparent 60%),
+      linear-gradient(180deg,#0b0f0d 0%,#0a0a0a 55%,#070707 100%);
+    color:#f5f5f5; font-family:'Inter',system-ui,sans-serif;
+    position:relative; overflow:hidden;
+    display:flex; flex-direction:column; padding:64px 72px;
+  }
+  .poster::before{
+    content:""; position:absolute; inset:0;
+    background-image:radial-gradient(#ffffff0a 1px,transparent 1px);
+    background-size:34px 34px; pointer-events:none;
+  }
+
+  .brand{ display:flex; align-items:center; gap:16px; }
+  .logo{ width:64px; height:64px; border-radius:18px;
+    background:linear-gradient(135deg,#10b981,#059669);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow:0 10px 28px #10b98155; }
+  .logo svg{ width:36px; height:36px; stroke:#fff; fill:none; stroke-width:2.4; }
+  .brand .name{ font-size:40px; font-weight:900; letter-spacing:-1px; }
+
+  h1{ margin-top:28px; font-size:62px; line-height:1.04; font-weight:900; letter-spacing:-2px; }
+  h1 .accent{ color:#10b981; }
+  .sub{ margin-top:16px; font-size:26px; line-height:1.4; font-weight:500; color:#cfd8d3; max-width:1000px; }
+
+  /* main row: screenshot left, features right */
+  .row{ margin-top:36px; display:flex; gap:34px; align-items:stretch; flex:1; min-height:0; }
+  .shot{ flex:0 0 600px; border-radius:20px; overflow:hidden;
+    border:1px solid #ffffff1a; box-shadow:0 30px 70px #000000aa, 0 0 0 6px #10b98112;
+    position:relative; }
+  .shot img{ width:100%; height:100%; object-fit:cover; object-position:top left; display:block; }
+
+  .features{ flex:1; display:flex; flex-direction:column; justify-content:center; gap:18px; }
+  .feat{ display:flex; align-items:center; gap:18px; }
+  .feat .ico{ flex:0 0 56px; width:56px; height:56px; border-radius:14px;
+    background:#10b9811f; border:1px solid #10b98140;
+    display:flex; align-items:center; justify-content:center; }
+  .feat .ico svg{ width:30px; height:30px; stroke:#10b981; fill:none; stroke-width:2.2; }
+  .feat .txt b{ display:block; font-size:26px; font-weight:800; letter-spacing:-.3px; }
+  .feat .txt span{ display:block; margin-top:3px; font-size:20px; color:#b8c2bd; line-height:1.3; }
+
+  .footer{ margin-top:34px; display:flex; align-items:center; justify-content:space-between; }
+  .tags{ display:flex; gap:12px; }
+  .tag{ font-size:23px; font-weight:700; color:#0a0a0a; background:#10b981; border-radius:999px; padding:10px 22px; }
+  .tag.ghost{ background:transparent; color:#10b981; border:2px solid #10b98166; }
+  .link{ font-size:26px; font-weight:800; letter-spacing:-.4px; }
+  .link .u{ color:#10b981; }
+</style>
+</head>
+<body>
+  <div class="poster">
+    <div class="brand">
+      <div class="logo"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/></svg></div>
+      <div class="name">Kira</div>
+    </div>
+
+    <h1>Every rental in your city,<br/><span class="accent">filtered the right way.</span></h1>
+    <p class="sub">Pulls listings from 5 Romanian sites into one search — with filters the source sites don't offer.</p>
+
+    <div class="row">
+      <div class="shot"><img src="poster-listings-src.png" alt="Kira listings" /></div>
+      <div class="features">
+        <div class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A4.5 4.5 0 0 0 12 22a4.5 4.5 0 0 0 3.5-7.5C14 13 13 11 13 9c0-1.5-1-3-1-3s-3 2-3 5c0 1.2-.5 2-.5 3.5z"/></svg></div>
+          <div class="txt"><b>Gas boiler vs. district heating</b><span>read from the ad text</span></div>
+        </div>
+        <div class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M9 16V8h3.5a2.5 2.5 0 0 1 0 5H9"/></svg></div>
+          <div class="txt"><b>Parking included or rentable nearby</b><span>with walking distance</span></div>
+        </div>
+        <div class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3"/><path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"/></svg></div>
+          <div class="txt"><b>Distance to your address</b><span>e.g. your university, via Google Maps</span></div>
+        </div>
+        <div class="feat">
+          <div class="ico"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="10" x2="20" y2="10"/><line x1="4" y1="14" x2="14" y2="14"/></svg></div>
+          <div class="txt"><b>Price, rooms, neighbourhood filters</b><span>see only what fits you</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="tags">
+        <span class="tag">free</span>
+        <span class="tag ghost">runs locally</span>
+        <span class="tag ghost">Python + React</span>
+      </div>
+      <div class="link">github.com/<span class="u">Cezart3/KiraImobiliare</span></div>
+    </div>
+  </div>
+</body>
+</html>
