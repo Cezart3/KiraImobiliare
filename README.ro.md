@@ -13,6 +13,12 @@ nu le au:
 Rulează **100% local, gratuit, fără cont, fără plată.** Datele rămân pe calculatorul
 tău. Fiecare card te trimite la anunțul original de pe site-ul sursă.
 
+> 🔎 **Vrei să vezi întâi cum arată? [kira-imobiliare.vercel.app](https://kira-imobiliare.vercel.app)**
+> — un demo public în care **toate anunțurile sunt inventate**. Rulează aplicația
+> reală peste text generat: același API, aceleași extractoare, aceeași potrivire cu
+> parcările. Nu s-a scrapat nimic acolo, iar scraping-ul e dezactivat pe demo.
+> Anunțuri reale apar doar dacă îl rulezi tu, local — pentru asta e făcut.
+
 > ⭐ **Dacă îl folosești, îți place ideea sau ți-a ușurat căutarea — dă un star la repo, te rog.**
 > Te costă un click și ajută enorm proiectul (așa îl găsesc și alți studenți). Mulțumesc! 🙏
 
@@ -199,6 +205,10 @@ terțe (OLX, Storia etc.), ai căror Termeni și Condiții **interzic** preluare
 este utilizare privată și mult mai apărabilă; însă a publica un serviciu public sau a
 face bani din datele lor ar încălca acei termeni și legislația privind bazele de date.
 De aceea: **use local = ok; publicare/comercial = nu.**
+
+Demo-ul linkuit la început nu e o excepție de la asta. Nu conține date de la nimeni:
+toate anunțurile de acolo sunt generate, iar scraping-ul e oprit pe acel deployment,
+deci nu există nimic al vreunui site terț care să fie republicat.
 
 Drepturile de autor asupra codului aparțin autorului. © 2026 Cezar Tocaciu — toate
 drepturile rezervate. Pentru orice altă utilizare, scrie la cezartocaciu233@gmail.com.
