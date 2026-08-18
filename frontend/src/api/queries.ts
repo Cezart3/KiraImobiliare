@@ -14,6 +14,7 @@ import type { Filters } from '@/lib/searchParams'
 import { filtersToApiParams, DEFAULT_PAGE_SIZE } from '@/lib/searchParams'
 
 export const queryKeys = {
+  mode: ['mode'] as const,
   cities: ['cities'] as const,
   listings: (params: URLSearchParams) => ['listings', params.toString()] as const,
   listing: (id: number) => ['listing', id] as const,
@@ -21,6 +22,15 @@ export const queryKeys = {
   localFavorites: ['localFavorites'] as const,
   scrapeStatus: ['scrapeStatus'] as const,
   hasData: (city: string) => ['hasData', city] as const,
+}
+
+/** Whether this instance is the public demo (invented data, scraping off). */
+export function useMode() {
+  return useQuery({
+    queryKey: queryKeys.mode,
+    queryFn: () => apiClient.get<{ demo: boolean }>('/mode'),
+    staleTime: Infinity,
+  })
 }
 
 export function useCities() {

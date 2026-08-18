@@ -14,6 +14,13 @@ from app.schemas.meta import CityOut, CityStatsOut, PlaceOut, SiteRunOut
 router = APIRouter(tags=["meta"])
 
 
+@router.get("/mode")
+def mode():
+    """Whether this instance serves the public demo (invented data, scraping
+    disabled) or a normal local install. The UI reads it on load."""
+    return {"demo": settings.demo}
+
+
 @router.get("/cities", response_model=list[CityOut])
 def cities():
     out = []

@@ -1,17 +1,67 @@
 """Distance helpers + Nominatim geocoding with DB cache and per-run budget."""
+import json
 import logging
 import math
 import re
 import time
+from functools import lru_cache
 
 import requests
 from sqlalchemy.orm import Session
 
 from app.core.cities import CityConfig
-from app.core.config import settings
+from app.core.config import DATA_DIR, settings
+from app.core.textutil import fold
 from app.db.models import GeoCache
 
 log = logging.getLogger(__name__)
+
+_DEMO_ORIGINS_PATH = DATA_DIR / "demo_origins.json"
+
+
+@lru_cache(maxsize=1)
+def _demo_origins() -> dict[str, tuple[tuple[tuple[str, ...], float, float], ...]]:
+    """Places the public demo can resolve on its own. Loaded once."""
+    raw = json.loads(_DEMO_ORIGINS_PATH.read_text(encoding="utf-8"))
+    out: dict[str, tuple[tuple[tuple[str, ...], float, float], ...]] = {}
+    for city_slug, places in raw.items():
+        if city_slug.startswith("_"):
+            continue
+        out[city_slug] = tuple(
+            (
+                tuple({fold(p["name"]), *(fold(a) for a in p.get("aliases", []))}),
+                p["lat"],
+                p["lon"],
+            )
+            for p in places
+        )
+    return out
+
+
+def demo_geocode(addr: str, city: CityConfig) -> tuple[float, float] | None:
+    """Resolve a place from the bundled table, or give up.
+
+    The demo runs on a public host, and geocoding arbitrary strings typed by
+    strangers through a shared community service is the kind of traffic OSM asks
+    people not to send. So the demo answers for the handful of places someone
+    would actually measure from — universities, the station, the malls — and
+    returns nothing for anything else. It never calls out.
+    """
+    needle = fold(addr)
+    if not needle:
+        return None
+
+    # the bundled table first (universities, the station, hospitals), then the
+    # places the city config already knows about
+    for aliases, lat, lon in _demo_origins().get(city.slug, ()):
+        if any(alias and (alias in needle or needle in alias) for alias in aliases):
+            return (lat, lon)
+
+    for place in (*city.landmarks, *city.zones):
+        if any(alias and (alias in needle or needle in alias) for alias in place.aliases):
+            return (place.lat, place.lon)
+
+    return None
 
 _NR_RE = re.compile(r"\bnr\.?\s*", re.I)
 
@@ -55,6 +105,8 @@ class Geocoder:
         row = self.db.get(GeoCache, query)
         if row is not None:
             return (row.lat, row.lon) if row.found else None
+        if settings.demo:
+            return demo_geocode(addr, city)
         if self.budget <= 0:
             return None
 

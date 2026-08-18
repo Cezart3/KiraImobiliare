@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Heart, LayoutGrid, Scale, SlidersHorizontal, X } from 'lucide-react'
-import { useCities, useHasData, useListings } from '@/api/queries'
+import { useCities, useHasData, useListings, useMode } from '@/api/queries'
 import {
   clearedFilters,
   countActiveFilters,
@@ -38,6 +38,7 @@ export function SearchPage() {
   const favorites = useFavorites()
   const compare = useCompare()
   const scrape = useScrape()
+  const isDemo = useMode().data?.demo ?? false
 
   const { data: cities, isLoading: citiesLoading } = useCities()
   const {
@@ -180,11 +181,13 @@ export function SearchPage() {
               </button>
             </div>
 
-            <RefreshControl scrape={scrape} city={filters.city} />
+            {!isDemo && <RefreshControl scrape={scrape} city={filters.city} />}
           </div>
 
           <p className="mb-4 text-xs text-slate-400 dark:text-neutral-500">
-            Datele sunt pe calculatorul tău. Apasă „Actualizează" oricând pentru anunțuri proaspete.
+            {isDemo
+              ? 'Anunțuri inventate, generate o singură dată. Filtrele, sortarea și potrivirea cu parcările rulează pe codul real.'
+              : 'Datele sunt pe calculatorul tău. Apasă „Actualizează" oricând pentru anunțuri proaspete.'}
           </p>
 
           {showNoOriginNotice && (

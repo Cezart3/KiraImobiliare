@@ -1,0 +1,11 @@
+# Runtime dependencies for the Vercel demo function (api/index.py).
+# Mirrors backend/pyproject.toml minus the server (Vercel provides the runtime)
+# and minus the Postgres extra (the demo runs on bundled SQLite).
+fastapi>=0.115
+sqlalchemy>=2.0.30
+pydantic>=2.7
+pydantic-settings>=2.3
+requests>=2.32
+beautifulsoup4>=4.12
+apscheduler>=3.10,<4
+tenacity>=8.3

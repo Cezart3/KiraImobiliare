@@ -7,6 +7,7 @@ import { TermsPage } from '@/pages/legal/TermsPage'
 import { CookiesPage } from '@/pages/legal/CookiesPage'
 import { AboutPage } from '@/pages/legal/AboutPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
+import { DemoBanner } from '@/components/DemoBanner'
 import { ErrorBoundary } from '@/components/ErrorBoundary'
 import { CompareProvider } from '@/context/CompareContext'
 import { ApiError } from '@/api/client'
@@ -30,6 +31,7 @@ const queryClient = new QueryClient({
 function RootLayout() {
   return (
     <CompareProvider>
+      <DemoBanner />
       <Outlet />
     </CompareProvider>
   )

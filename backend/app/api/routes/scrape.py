@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 
 from app.api.deps import get_db
 from app.core.cities import load_cities
+from app.core.config import settings
 from app.db.models import Listing, ScrapeRun, utcnow
 from app.worker.jobs import run_scrape_city
 
@@ -43,6 +44,14 @@ def _run(city_slug: str, max_pages: int | None) -> None:
 @router.post("/scrape")
 def start_scrape(body: ScrapeStart):
     """Kick off a fresh scrape for one city (runs in the background)."""
+    if settings.demo:
+        raise HTTPException(
+            status_code=403,
+            detail=(
+                "Demo public: nu se rulează scraping de aici. "
+                "Rulează aplicația local pentru anunțuri reale."
+            ),
+        )
     if body.city not in load_cities():
         raise HTTPException(status_code=404, detail=f"Oraș necunoscut: {body.city}")
     if not _lock.acquire(blocking=False):

@@ -1,0 +1,95 @@
+{
+  "_comment": "Origins the public demo can resolve without calling Nominatim. A public instance must not geocode arbitrary user input through a shared service, so in demo mode the geocoder answers from this table and returns nothing for anything else. Coordinates are approximate points of well-known public places.",
+  "cluj-napoca": [
+    {
+      "name": "Universitatea Tehnică din Cluj-Napoca",
+      "aliases": ["utcn", "universitatea tehnica", "politehnica", "tehnica cluj", "ac cluj", "facultatea de automatica"],
+      "lat": 46.7723,
+      "lon": 23.5895
+    },
+    {
+      "name": "Universitatea Babeș-Bolyai",
+      "aliases": ["ubb", "universitatea babes bolyai", "babes bolyai", "universitatea babes-bolyai"],
+      "lat": 46.7659,
+      "lon": 23.5905
+    },
+    {
+      "name": "FSEGA",
+      "aliases": ["fsega", "facultatea de stiinte economice", "stiinte economice"],
+      "lat": 46.7788,
+      "lon": 23.6207
+    },
+    {
+      "name": "UMF Cluj",
+      "aliases": ["umf", "universitatea de medicina", "medicina cluj", "facultatea de medicina"],
+      "lat": 46.7669,
+      "lon": 23.5807
+    },
+    {
+      "name": "USAMV Cluj",
+      "aliases": ["usamv", "agronomie", "universitatea de stiinte agricole"],
+      "lat": 46.7570,
+      "lon": 23.5735
+    },
+    {
+      "name": "Piața Unirii",
+      "aliases": ["piata unirii", "unirii", "centru", "centrul orasului"],
+      "lat": 46.7700,
+      "lon": 23.5896
+    },
+    {
+      "name": "Gara Cluj-Napoca",
+      "aliases": ["gara", "gara cluj", "gara cluj napoca"],
+      "lat": 46.7823,
+      "lon": 23.5966
+    },
+    {
+      "name": "Iulius Mall",
+      "aliases": ["iulius mall", "iulius", "zona iulius"],
+      "lat": 46.7704,
+      "lon": 23.6243
+    },
+    {
+      "name": "VIVO! Cluj",
+      "aliases": ["vivo", "polus", "vivo cluj", "polus center"],
+      "lat": 46.7869,
+      "lon": 23.5378
+    },
+    {
+      "name": "Spitalul Clinic Județean de Urgență",
+      "aliases": ["spitalul judetean", "spital judetean", "urgenta cluj", "spitalul de urgenta"],
+      "lat": 46.7684,
+      "lon": 23.5714
+    },
+    {
+      "name": "Parcul Central Simion Bărnuțiu",
+      "aliases": ["parcul central", "parcul mare", "cluj arena"],
+      "lat": 46.7714,
+      "lon": 23.5827
+    },
+    {
+      "name": "Piața Mărăști",
+      "aliases": ["piata marasti", "marasti"],
+      "lat": 46.7805,
+      "lon": 23.6125
+    },
+    {
+      "name": "Bosch Cluj (Jucu)",
+      "aliases": ["bosch", "jucu", "parc industrial tetarom iii"],
+      "lat": 46.8657,
+      "lon": 23.7623
+    },
+    {
+      "name": "Tetarom I",
+      "aliases": ["tetarom", "tetarom 1", "tetarom i"],
+      "lat": 46.7891,
+      "lon": 23.5609
+    },
+    {
+      "name": "Aeroportul Internațional Cluj",
+      "aliases": ["aeroport", "aeroportul cluj", "aeroportul international"],
+      "lat": 46.7852,
+      "lon": 23.6862
+    }
+  ]
+}

@@ -14,6 +14,10 @@ class Settings(BaseSettings):
         env_file=REPO_DIR / ".env", env_prefix="RS_", extra="ignore"
     )
 
+    # public demo mode: invented data, and the two routes that can reach a
+    # third-party site (scrape, image proxy) are closed. See api/index.py.
+    demo: bool = False
+
     database_url: str = f"sqlite:///{(VAR_DIR / 'rentscalper.db').as_posix()}"
     cors_origins: list[str] = ["http://localhost:5173", "http://127.0.0.1:5173"]
 

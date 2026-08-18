@@ -94,6 +94,11 @@ def _maybe_prune_cache(cache_dir: Path) -> None:
 
 @router.get("/img")
 def image_proxy(u: Annotated[str, Query(max_length=700)], request: Request):
+    if settings.demo:
+        # the demo serves invented listings, which carry no photos; keeping the
+        # only egress-capable route closed means a public instance cannot be
+        # pointed at a third-party CDN
+        raise HTTPException(status_code=404, detail="Not available in the demo")
     parts = urlsplit(u)
     if parts.scheme not in ("http", "https"):
         raise HTTPException(status_code=400, detail="Invalid URL")
