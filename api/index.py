@@ -62,6 +62,36 @@ if not RUNTIME_DB.exists():
 os.environ.setdefault("RS_DATABASE_URL", f"sqlite:///{RUNTIME_DB.as_posix()}")
 os.environ.setdefault("RS_DEMO", "1")
 
+from fastapi.responses import FileResponse  # noqa: E402
+from starlette.staticfiles import StaticFiles  # noqa: E402
+
 from app.main import app  # noqa: E402  (must follow the env setup above)
+
+DIST = ROOT / "frontend" / "dist"
+
+if DIST.is_dir():
+    # Vercel routes every request to this function once it detects a backend
+    # framework in the project, so the function also serves the built SPA. The
+    # API routes are registered above and keep priority over the catch-all.
+    assets = DIST / "assets"
+    if assets.is_dir():
+        app.mount("/assets", StaticFiles(directory=assets), name="assets")
+
+    INDEX = DIST / "index.html"
+    DIST_ROOT = DIST.resolve()
+
+    @app.get("/{path:path}", include_in_schema=False)
+    def serve_spa(path: str) -> FileResponse:
+        """Static file if one matches, otherwise the SPA shell.
+
+        The candidate is resolved and checked to be inside the build output, so
+        a crafted path cannot walk out of it.
+        """
+        if path:
+            candidate = (DIST / path).resolve()
+            if candidate.is_file() and candidate.is_relative_to(DIST_ROOT):
+                return FileResponse(candidate)
+        return FileResponse(INDEX)
+
 
 __all__ = ["app"]

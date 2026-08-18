@@ -1,3 +1,5 @@
+import contextlib
+
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
@@ -8,7 +10,11 @@ class Base(DeclarativeBase):
     pass
 
 
-VAR_DIR.mkdir(parents=True, exist_ok=True)
+# a read-only deployment (the demo runs from a serverless bundle where only
+# /tmp is writable) has nowhere to put this; the database lives elsewhere there,
+# set by RS_DATABASE_URL
+with contextlib.suppress(OSError):
+    VAR_DIR.mkdir(parents=True, exist_ok=True)
 
 _connect_args = (
     {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
