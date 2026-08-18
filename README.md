@@ -13,6 +13,12 @@ sites don't offer:
 It runs **100% locally — free, no account, no payment.** Your data stays on your
 machine and every card links back to the original ad on the source site.
 
+> 🔎 **Want to see the interface first? [kira-imobiliare.vercel.app](https://kira-imobiliare.vercel.app)**
+> — a public demo in which **every listing is invented**. It runs the real
+> application over generated ad text: same API, same extractors, same parking
+> matching. Nothing there was scraped, and scraping is disabled on it. Real
+> listings only come from running it yourself, which is what the tool is for.
+
 > ⭐ **If you use it, like the idea, or it saves you some hassle — please give the repo a star.**
 > It costs you one click and helps the project enormously (it's how other students find it). Thank you! 🙏
 
@@ -133,6 +139,10 @@ themselves) is private use and far more defensible; running a public service or 
 money from their data would breach those terms and database-rights law. Hence:
 **local use = fine; public/commercial = no.** Copyright in the code remains with the
 author. © 2026 Cezar Tocaciu — all rights reserved.
+
+The demo linked at the top is not an exception to this. It carries no listing data
+from anyone: every ad in it was generated, and scraping is switched off on that
+deployment, so there is nothing there belonging to a third-party site to republish.
 
 ---
 
